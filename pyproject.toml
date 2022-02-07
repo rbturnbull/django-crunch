@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "django-crunch"
+version = "0.1.0"
+description = "A data processing orcestration tool."
+authors = ["Robert Turnbull <robert.turnbull@unimelb.edu.au>"]
+license = "Apache-2.0"
+readme = "README.md"
+packages = [
+    { include = "crunch" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Django = "^3.2"
+django-cms = "^3.9.0"
+typer = {extras = ["all"], version = "^0.4.0"}
+djangorestframework = "^3.13.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+ipykernel = "^6.6.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+crunch = "crunch.agent.main:app"
