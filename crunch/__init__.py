@@ -1,1 +1,1 @@
-default_app_config = "crunch.django.apps.CrunchConfig"
+default_app_config = "crunch.django.app.apps.CrunchConfig"
