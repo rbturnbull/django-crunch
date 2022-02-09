@@ -114,3 +114,16 @@ def makemigrations():
 @app.command()
 def createsuperuser():
     return django_command("createsuperuser")    
+
+
+@app.command()
+def shell():
+    return django_command("shell_plus")    
+
+
+@app.command()
+def collectstatic():
+    return django_command("collectstatic")    
+
+
+    

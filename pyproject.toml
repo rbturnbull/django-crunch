@@ -29,3 +29,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 crunch = "crunch.cli.main:app"
+crunchsite = "crunch.django.proj.manage:main"
