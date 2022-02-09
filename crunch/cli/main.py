@@ -107,5 +107,10 @@ def migrate():
 
 
 @app.command()
+def makemigrations():
+    return django_command("makemigrations", ["crunch"])
+
+
+@app.command()
 def createsuperuser():
     return django_command("createsuperuser")    

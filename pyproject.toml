@@ -17,6 +17,7 @@ typer = {extras = ["all"], version = "^0.4.0"}
 djangorestframework = "^3.13.1"
 rich = "^11.1.0"
 django-extensions = "^3.1.5"
+django-polymorphic = "^3.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
