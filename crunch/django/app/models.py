@@ -11,8 +11,8 @@ class Project(PolymorphicModel):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
-        return reverse("crunch:project-detail", kwargs={"slug": self.slug})
+    # def get_absolute_url(self):
+    #     return reverse("crunch:project-detail", kwargs={"slug": self.slug})
     
 
 class Dataset(PolymorphicModel):

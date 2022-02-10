@@ -1,7 +1,9 @@
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from rest_framework import viewsets
+from rest_framework import permissions
+from . import models, serializers
 
-from . import models
 
 class ProjectListView(PermissionRequiredMixin, ListView):
     model = models.Project
@@ -12,5 +14,26 @@ class ProjectListView(PermissionRequiredMixin, ListView):
 class ProjectDetailView(PermissionRequiredMixin, DetailView):
     model = models.Project
     permission_required = "crunch.view_project"
+    # lookup_field = 'slug'
+
+
+class ProjectAPI(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = models.Project.objects.all()
+    serializer_class = serializers.ProjectSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+    lookup_field = 'slug'
+
+
+class DatasetAPI(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = models.Dataset.objects.all()
+    serializer_class = serializers.DatasetSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+    lookup_field = 'slug'
 
 
