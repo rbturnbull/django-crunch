@@ -1,2 +1,8 @@
 
 <h2>{{project}}</h2>
+
+<ul>
+{% for dataset in project.dataset_set.all %}
+    <li><a href='{{dataset.get_absolute_url}}'>{{dataset}}</a></li>
+{% endfor %}
+</ul>

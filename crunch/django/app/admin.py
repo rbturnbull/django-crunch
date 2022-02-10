@@ -17,5 +17,6 @@ class ProjectChildAdmin(PolymorphicChildModelAdmin):
 
 admin.site.register(models.Project)
 admin.site.register(models.Dataset)
+admin.site.register(models.Attribute)
 
 

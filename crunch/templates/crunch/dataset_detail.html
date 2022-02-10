@@ -1,0 +1,10 @@
+
+<h2>{{dataset}}</h2>
+
+<h2>{{dataset.project}}</h2>
+
+<ul>
+{% for attribute in dataset.attribute_set.all %}
+    <li>{{attribute.key}} - {{attribute.value}}</li>
+{% endfor %}
+</ul>

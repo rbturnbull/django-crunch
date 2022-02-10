@@ -23,8 +23,13 @@ class ProjectAPI(viewsets.ModelViewSet):
     """
     queryset = models.Project.objects.all()
     serializer_class = serializers.ProjectSerializer
-    # permission_classes = [permissions.DjangoModelPermissions]
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.DjangoModelPermissions]
+    lookup_field = 'slug'
+
+
+class DatasetDetailView(PermissionRequiredMixin, DetailView):
+    model = models.Dataset
+    permission_required = "crunch.view_dataset"
     lookup_field = 'slug'
 
 
@@ -35,8 +40,6 @@ class DatasetAPI(viewsets.ModelViewSet):
     queryset = models.Dataset.objects.all()
     serializer_class = serializers.DatasetSerializer
     permission_classes = [permissions.DjangoModelPermissions]
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
     lookup_field = 'slug'
 
 
