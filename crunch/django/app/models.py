@@ -7,6 +7,7 @@ from polymorphic.models import PolymorphicModel
 class Project(PolymorphicModel):
     name = models.CharField(max_length=1023, unique=True)
     slug = AutoSlugField(populate_from='name', unique=True)
+    snakefile = models.TextField(default="", blank=True)
 
     def __str__(self):
         return self.name
@@ -32,11 +33,14 @@ class Dataset(PolymorphicModel):
 
 class Attribute(PolymorphicModel):
     # project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='attributes')
     key = models.CharField(max_length=255)
 
     def as_dict(self):
         return dict(key=self.key)
+
+    def as_html(self):
+        return ""
 
 
 class CharAttribute(Attribute):
@@ -47,6 +51,9 @@ class CharAttribute(Attribute):
         d['value'] = self.value
         return d
 
+    def as_html(self):
+        return self.value
+
 
 class FloatAttribute(Attribute):
     value = models.FloatField()
@@ -56,6 +63,9 @@ class FloatAttribute(Attribute):
         d['value'] = self.value
         return d
 
+    def as_html(self):
+        return self.value
+
 
 class IntegerAttribute(Attribute):
     value = models.IntegerField()
@@ -64,6 +74,9 @@ class IntegerAttribute(Attribute):
         d = super().as_dict()
         d['value'] = self.value
         return d
+
+    def as_html(self):
+        return self.value
 
 
 

@@ -5,7 +5,7 @@ from . import models
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Project
-        fields = ['name', 'slug',]
+        fields = ['name', 'slug','snakefile']
 
 
 class AttributeSerializer(serializers.ModelSerializer):
@@ -19,8 +19,8 @@ class AttributeSerializer(serializers.ModelSerializer):
 
 class DatasetSerializer(serializers.HyperlinkedModelSerializer):
     project = serializers.HyperlinkedRelatedField(view_name='crunch:api:project-detail', read_only='True', lookup_field='slug')
-    attribute_set = AttributeSerializer(many=True)
+    attributes = AttributeSerializer(many=True)
 
     class Meta:
         model = models.Dataset
-        fields = ['name', 'slug','project', 'attribute_set']
+        fields = ['name', 'slug','project', 'attributes']

@@ -1,9 +1,13 @@
-import os
-import sys
+import json
 from pathlib import Path
 from typing import Optional
 from typing import List
 import typer
+
+from rich.console import Console
+console = Console()
+
+
 
 from . import connections
 
@@ -18,13 +22,50 @@ def run(
     dataset:str,
     url:str = url_arg,
     token:str = token_arg,
+    directory:Path = None,
 ):
     """
     Processes a dataset.
     """
-    print(f"Processing {dataset} from project {project} at {url}.")
-    result = connections.get_json_response( url, f"/api/datasets/{dataset}", token )
-    print(result)
+    console.print(f"Processing '{dataset}' from project '{project}' at {url}.")
+
+    # Notify site to lock
+
+    # Create temporary dir
+    directory = directory or Path('tmp')
+    directory.mkdir(exist_ok=True, parents=True)
+    console.print(f"Using temporary directory '{directory}'.")
+
+    # TODO Check to see if there is an old dataset.json
+
+    # get dataset details
+    dataset_data = connections.get_json_response( url, f"/api/datasets/{dataset}", token )
+    # TODO raise exception
+    assert dataset_data['slug'] == dataset
+    assert project in dataset_data['project']
+    with open(directory/'project.json', 'w', encoding='utf-8') as f:
+        json.dump(dataset_data, f, ensure_ascii=False, indent=4)
+
+    # get project details
+    project_data = connections.get_json_response( url, f"/api/projects/{project}", token )
+    # TODO raise exception
+    assert project_data['slug'] == project
+    with open(directory/'project.json', 'w', encoding='utf-8') as f:
+        json.dump(project_data, f, ensure_ascii=False, indent=4)
+
+    # pull data
+
+    # get snakefile
+    with open(directory/'Snakefile', 'w', encoding='utf-8') as f:
+        f.write(project_data['snakefile'])
+
+    # run workflow
+
+    # push data 
+
+    # notify
+
+    # print(result)
 
 
 @app.command()
@@ -35,7 +76,7 @@ def next(
     """
     Processes the next dataset in a project.
     """
-    print(f"Processing the next dataset from {url}")
+    console.print(f"Processing the next dataset from {url}")
 
 
 @app.command()
@@ -47,26 +88,24 @@ def loop(
     """
     Loops through all the datasets in a project and stops when complete.
     """
-    print(f"Looping through all the datasets from {url} and will stop when complete.")
-
-
+    console.print(f"Looping through all the datasets from {url} and will stop when complete.")
 
 
 @app.command()
 def add_project(
-    name:str,
+    project:str,
     url:str = url_arg,
     token:str = token_arg,
 ):
     """
     Adds a new project to the hosted site.
     """
-    print(f"Adding project {name} on the hosted site {url}.")
+    console.print(f"Adding project '{project}' on the hosted site {url}.")
 
 
 @app.command()
 def add_dataset(
-    name:str,
+    dataset:str,
     project:str,
     url:str = url_arg,
     token:str = token_arg,
@@ -74,7 +113,24 @@ def add_dataset(
     """
     Adds a new dataset to a project on the hosted site.
     """
-    print(f"Adding dataset {name} to project {project} on the hosted site {url}.")
+    console.print(f"Adding dataset '{dataset}' to project '{project}' on the hosted site {url}.")
+
+
+@app.command()
+def add_dataset(
+    dataset:str,
+    project:str,
+    url:str = url_arg,
+    token:str = token_arg,
+):
+    """
+    Adds a new attribute to a dataset.
+    """
+    console.print(f"Adding attribute to dataset '{dataset}' to project '{project}' on the hosted site {url}.")
+
+
+
+
 
 
 

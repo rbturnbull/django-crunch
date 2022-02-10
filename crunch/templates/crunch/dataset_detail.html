@@ -1,10 +1,11 @@
 
 <h2>{{dataset}}</h2>
 
-<h2>{{dataset.project}}</h2>
+<h3>Project: <a href='{{dataset.project.get_absolute_url}}'>{{dataset.project}}</a></h3>
 
+<h3>Attributes</h3>
 <ul>
-{% for attribute in dataset.attribute_set.all %}
-    <li>{{attribute.key}} - {{attribute.value}}</li>
+{% for attribute in dataset.attributes.all %}
+    <li>{{attribute.key}} - {{attribute.as_html}}</li>
 {% endfor %}
 </ul>
