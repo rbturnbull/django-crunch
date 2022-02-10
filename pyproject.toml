@@ -19,6 +19,7 @@ rich = "^11.1.0"
 django-extensions = "^3.1.5"
 django-polymorphic = "^3.1.0"
 requests = "^2.27.1"
+snakemake = "^6.15.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

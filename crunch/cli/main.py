@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional
 from typing import List
 import typer
-
+import subprocess
 from rich.console import Console
 console = Console()
 
@@ -23,6 +23,7 @@ def run(
     url:str = url_arg,
     token:str = token_arg,
     directory:Path = None,
+    cores:str = "1",
 ):
     """
     Processes a dataset.
@@ -60,6 +61,8 @@ def run(
         f.write(project_data['snakefile'])
 
     # run workflow
+    result = subprocess.Popen(["snakemake", "--cores", cores], cwd=directory)
+    console.log(f"{result}")
 
     # push data 
 
