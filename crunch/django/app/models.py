@@ -31,10 +31,39 @@ class Dataset(PolymorphicModel):
 
 
 class Attribute(PolymorphicModel):
+    # project = models.ForeignKey(Project, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     key = models.CharField(max_length=255)
+
+    def as_dict(self):
+        return dict(key=self.key)
+
+
+class CharAttribute(Attribute):
     value = models.CharField(max_length=1023)
     
+    def as_dict(self):
+        d = super().as_dict()
+        d['value'] = self.value
+        return d
+
+
+class FloatAttribute(Attribute):
+    value = models.FloatField()
+
+    def as_dict(self):
+        d = super().as_dict()
+        d['value'] = self.value
+        return d
+
+
+class IntegerAttribute(Attribute):
+    value = models.IntegerField()
+
+    def as_dict(self):
+        d = super().as_dict()
+        d['value'] = self.value
+        return d
 
 
 

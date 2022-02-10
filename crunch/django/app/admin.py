@@ -15,8 +15,34 @@ class ProjectChildAdmin(PolymorphicChildModelAdmin):
 #     list_filter = (PolymorphicChildModelFilter,)  # This is optional.
 
 
+class AttributeChildAdmin(PolymorphicChildModelAdmin):
+    base_model = models.Attribute
+
+
+@admin.register(models.CharAttribute)
+class CharAttributeAdmin(AttributeChildAdmin):
+    pass
+
+
+@admin.register(models.IntegerAttribute)
+class IntegerAttributeAdmin(AttributeChildAdmin):
+    pass
+
+
+@admin.register(models.FloatAttribute)
+class FloatAttributeAdmin(AttributeChildAdmin):
+    pass
+
+
+@admin.register(models.Attribute)
+class AttributeParentAdmin(PolymorphicParentModelAdmin):
+    base_model = models.Attribute  # Optional, explicitly set here.
+    child_models = (models.IntegerAttribute, models.FloatAttribute, models.CharAttribute,)
+    list_filter = (PolymorphicChildModelFilter,)  # This is optional.
+
+
 admin.site.register(models.Project)
 admin.site.register(models.Dataset)
-admin.site.register(models.Attribute)
+# admin.site.register(models.Attribute)
 
 
