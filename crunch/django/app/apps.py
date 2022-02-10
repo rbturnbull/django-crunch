@@ -7,4 +7,4 @@ class CrunchConfig(AppConfig):
         super().ready()
         
         # needed because the autodiscover doesn't work unless admin.py is in top directory of app
-        from . import admin
+        from . import admin, tokens

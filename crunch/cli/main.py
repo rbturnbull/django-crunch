@@ -5,6 +5,8 @@ from typing import Optional
 from typing import List
 import typer
 
+from . import connections
+
 app = typer.Typer()
 
 url_arg = typer.Argument(..., envvar="CRUNCH_URL", help="The URL for the endpoint for the project on the hosted site.")
@@ -12,6 +14,7 @@ token_arg = typer.Argument(..., envvar="CRUNCH_TOKEN", help="An access token for
 
 @app.command()
 def run(
+    project:str,
     dataset:str,
     url:str = url_arg,
     token:str = token_arg,
@@ -19,7 +22,9 @@ def run(
     """
     Processes a dataset.
     """
-    print(f"Processing {dataset} from {url}")
+    print(f"Processing {dataset} from project {project} at {url}.")
+    result = connections.get_json_response( url, f"/api/datasets/{dataset}", token )
+    print(result)
 
 
 @app.command()
@@ -37,11 +42,14 @@ def next(
 def loop(
     url:str = url_arg,
     token:str = token_arg,
+    project:str = "",
 ):
     """
     Loops through all the datasets in a project and stops when complete.
     """
     print(f"Looping through all the datasets from {url} and will stop when complete.")
+
+
 
 
 @app.command()
