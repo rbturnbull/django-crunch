@@ -83,7 +83,7 @@ def next(
     Processes the next dataset in a project.
     """
     console.print(f"Processing the next dataset from {url}")
-    next = connections.get_json_response( url, f"/api/next/", token )
+    next = connections.get_json_response( url, f"api/next/", token )
     if 'dataset' in next and 'project' in next:
         return run(project=next['project'], dataset=next['dataset'], url=url, token=token, directory=directory, cores=cores)
 

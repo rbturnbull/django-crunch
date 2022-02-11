@@ -25,8 +25,6 @@ class Project(TimeStampedModel, PolymorphicModel):
         return reverse("crunch:project-detail", kwargs={"slug": self.slug})
 
 
-    
-
 class Dataset(TimeStampedModel, PolymorphicModel):
     name = models.CharField(max_length=1023)
     slug = AutoSlugField(populate_from='name')
@@ -41,6 +39,14 @@ class Dataset(TimeStampedModel, PolymorphicModel):
     def get_absolute_url(self):
         return f"{self.project.get_absolute_url()}datasets/{self.slug}"
 
+    @classmethod
+    def unprocessed(cls):
+        return cls.objects.filter(statuses=None)
+
+    @classmethod
+    def next_unprocessed(cls):
+        return cls.unprocessed().first()
+
 
 Stage = models.IntegerChoices('Stage', 'SETUP WORKFLOW UPLOAD')
 State = models.IntegerChoices('State', 'START FAIL SUCCESS')
@@ -54,6 +60,8 @@ class Status(TimeStampedModel):
 
     # Diagnostic info
     agent_user = OptionalCharField(help_text="The name of the user running the agent (see https://docs.python.org/3/library/getpass.html).")
+    version = OptionalCharField(help_text="The django-crunch version number of the agent.")
+    revision = OptionalCharField(help_text="The django-crunch git revision hash of the agent.")
     # terminal = OptionalCharField(help_text="the tty or pseudo-tty associated with the agent user (see https://psutil.readthedocs.io/en/latest/).")
     system = OptionalCharField(help_text="Returns the system/OS name, such as 'Linux', 'Darwin', 'Java', 'Windows' (see https://docs.python.org/3/library/platform.html).")
     system_release = OptionalCharField(help_text="Returns the system’s release, e.g. '2.2.0' or 'NT' (see https://docs.python.org/3/library/platform.html).")

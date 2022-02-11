@@ -1,6 +1,47 @@
 import platform, socket, re, uuid, psutil, os
 import getpass
 
+import os
+from pathlib import Path
+import subprocess
+
+def version():
+    import importlib.metadata
+    version = importlib.metadata.version("django-crunch")
+    return version
+
+
+# Return the git revision as a string
+def git_revision(cwd=None):
+    """
+    Gets the git revision hash for the working directory of this file
+
+    Adapted from https://stackoverflow.com/a/40170206 which was taken from NumPy
+    """
+    cwd = cwd or Path(__file__).parent
+    def _minimal_ext_cmd(cmd):
+        # construct minimal environment
+        env = {}
+        for k in ['SYSTEMROOT', 'PATH']:
+            v = os.environ.get(k)
+            if v is not None:
+                env[k] = v
+        # LANGUAGE is used on win32
+        env['LANGUAGE'] = 'C'
+        env['LANG'] = 'C'
+        env['LC_ALL'] = 'C'
+        out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env, cwd=cwd).communicate()[0]
+        return out
+
+    try:
+        out = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
+        GIT_REVISION = out.strip().decode('ascii')
+    except OSError:
+        GIT_REVISION = "Unknown"
+
+    return GIT_REVISION
+
+
 def get_diagnostic(diagnostics, key, func, default=""):
     try:
         result = func()
@@ -14,6 +55,8 @@ def get_diagnostics():
 
     # adapts code from here: https://stackoverflow.com/questions/3103178/how-to-get-the-system-info-with-python
     get_diagnostic(diagnostics, 'agent_user', lambda: getpass.getuser())
+    get_diagnostic(diagnostics, 'version', lambda: version())
+    get_diagnostic(diagnostics, 'revision', lambda: git_revision())
     get_diagnostic(diagnostics, 'system', lambda: platform.system())
     get_diagnostic(diagnostics, 'system_release', lambda: platform.release())
     get_diagnostic(diagnostics, 'system_version', lambda: platform.version())

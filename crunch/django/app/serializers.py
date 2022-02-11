@@ -24,3 +24,35 @@ class DatasetSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Dataset
         fields = ['name', 'slug','project', 'attributes']
+
+
+class DatasetReferenceSerializer(serializers.Serializer):
+    project = serializers.CharField(max_length=255)
+    dataset = serializers.CharField(max_length=255)
+
+    
+
+class StatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Status
+        fields = [
+            "id", 
+            "dataset", 
+            "site_user", 
+            "stage", 
+            "state", 
+            "note",
+
+            "agent_user",
+            "system",
+            "system_release",
+            "system_version",
+            "machine",
+            "hostname",
+            "ip_address",
+            "mac_address",
+            "memory_total",
+            "memory_free",
+            "disk_total",
+            "disk_free",
+        ]

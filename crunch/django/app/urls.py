@@ -9,12 +9,16 @@ from . import views
 router = routers.DefaultRouter()
 router.register(r'projects', views.ProjectAPI)
 router.register(r'datasets', views.DatasetAPI)
+# router.register(r'statuses', views.St)
 
+#     path('api/status/', apiviews.BatchStatusListCreateAPIView.as_view(), name='api.status_list'),
 
 app_name = "crunch"
 urlpatterns = [
     path('', views.ProjectListView.as_view(), name='project-list'),
     path('api/', include( (router.urls, 'api') )),
+    path('api/statuses/', views.StatusListCreateAPIView.as_view(), name='status-list'),
+    path('api/next/', views.NextDatasetReference.as_view(), name='next'),
     path('projects/', RedirectView.as_view(url="..", permanent=False)),
     path('projects/<str:slug>/', views.ProjectDetailView.as_view(), name='project-detail'),
     path('projects/<str:project>/datasets/', RedirectView.as_view(url="..", permanent=False)),
