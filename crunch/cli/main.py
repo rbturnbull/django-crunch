@@ -5,11 +5,11 @@ from typing import List
 import typer
 import subprocess
 from rich.console import Console
+
 console = Console()
 
-
-
 from . import connections
+from .diagnostics import get_diagnostics
 
 app = typer.Typer()
 
@@ -31,6 +31,7 @@ def run(
     console.print(f"Processing '{dataset}' from project '{project}' at {url}.")
 
     # Notify site to lock
+    # setup stage
 
     # Create temporary dir
     directory = directory or Path('tmp')
@@ -75,23 +76,31 @@ def run(
 def next(
     url:str = url_arg,
     token:str = token_arg,
+    directory:Path = None,
+    cores:str = "1",
 ):
     """
     Processes the next dataset in a project.
     """
     console.print(f"Processing the next dataset from {url}")
+    next = connections.get_json_response( url, f"/api/next/", token )
+    if 'dataset' in next and 'project' in next:
+        return run(project=next['project'], dataset=next['dataset'], url=url, token=token, directory=directory, cores=cores)
 
 
 @app.command()
 def loop(
     url:str = url_arg,
     token:str = token_arg,
-    project:str = "",
+    directory:Path = None,
+    cores:str = "1",
 ):
     """
     Loops through all the datasets in a project and stops when complete.
     """
     console.print(f"Looping through all the datasets from {url} and will stop when complete.")
+    while True:
+        next(url=url, token=token, directory=directory, cores=cores)
 
 
 @app.command()
@@ -131,8 +140,10 @@ def add_dataset(
     """
     console.print(f"Adding attribute to dataset '{dataset}' to project '{project}' on the hosted site {url}.")
 
-
-
+@app.command()
+def diagnostics():
+    """ Display system diagnostics. """
+    console.print( get_diagnostics() )
 
 
 

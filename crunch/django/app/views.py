@@ -2,6 +2,9 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from rest_framework import viewsets
 from rest_framework import permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 from . import models, serializers
 
 
@@ -43,3 +46,14 @@ class DatasetAPI(viewsets.ModelViewSet):
     lookup_field = 'slug'
 
 
+
+class NextDataset(APIView):
+    """
+    Retuns the study accession ID and the batch index to process next.
+    """
+    def get(self, request, format=None):
+        dataset = Dataset.next_unprocessed()
+
+        dataset_reference = dict(project=dataset.project.slug, dataset=dataset.slug) if dataset else dict(project="", dataset="")
+        serializer = serializers.DatasetReferenceSerializer(dataset_reference)
+        return Response(serializer.data)
