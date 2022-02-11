@@ -48,8 +48,6 @@ def send_status(base_url, dataset_id, token, stage, state, note=""):
         state=state,
         note=note,
     )
-    # data.update( diagnostics.get_diagnostics() )
-
-    print(url)
+    data.update( diagnostics.get_diagnostics() )
     print(data)
     return requests.post(url, headers=get_headers(token), data=data)

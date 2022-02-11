@@ -31,7 +31,6 @@ class DatasetReferenceSerializer(serializers.Serializer):
     dataset = serializers.CharField(max_length=255)
 
     
-
 class StatusSerializer(serializers.ModelSerializer):
     dataset = serializers.PrimaryKeyRelatedField(queryset=models.Dataset.objects.all())
 
@@ -45,6 +44,8 @@ class StatusSerializer(serializers.ModelSerializer):
             "state", 
             "note",
             "agent_user",
+            "version",
+            "revision",
             "system",
             "system_release",
             "system_version",

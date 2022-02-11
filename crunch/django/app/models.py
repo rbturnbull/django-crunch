@@ -76,6 +76,9 @@ class Status(TimeStampedModel):
     class Meta:
         verbose_name_plural = "statuses"
 
+    def __str__(self):
+        return f"{self.dataset}: {self.get_stage_display()} {self.get_state_display()}"
+
 
 class Attribute(TimeStampedModel, PolymorphicModel):
     # project = models.ForeignKey(Project, on_delete=models.CASCADE)
