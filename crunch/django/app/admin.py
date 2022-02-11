@@ -43,6 +43,7 @@ class AttributeParentAdmin(PolymorphicParentModelAdmin):
 
 admin.site.register(models.Project)
 admin.site.register(models.Dataset)
+admin.site.register(models.Status)
 # admin.site.register(models.Attribute)
 
 

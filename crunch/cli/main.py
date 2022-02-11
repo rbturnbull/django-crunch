@@ -11,6 +11,13 @@ console = Console()
 from . import connections
 from .diagnostics import get_diagnostics
 
+from crunch.django.app.enums import Stage, State
+
+class NoDatasets(Exception):
+    """ Raised when there are no more datasets to process on a crunch site. """
+    pass
+
+
 app = typer.Typer()
 
 url_arg = typer.Argument(..., envvar="CRUNCH_URL", help="The URL for the endpoint for the project on the hosted site.")
@@ -28,10 +35,10 @@ def run(
     """
     Processes a dataset.
     """
-    console.print(f"Processing '{dataset}' from project '{project}' at {url}.")
+    if not dataset:
+        return
 
-    # Notify site to lock
-    # setup stage
+    console.print(f"Processing '{dataset}' from project '{project}' at {url}.")
 
     # Create temporary dir
     directory = directory or Path('tmp')
@@ -45,31 +52,57 @@ def run(
     # TODO raise exception
     assert dataset_data['slug'] == dataset
     assert project in dataset_data['project']
-    with open(directory/'project.json', 'w', encoding='utf-8') as f:
-        json.dump(dataset_data, f, ensure_ascii=False, indent=4)
+    dataset_id = dataset_data['id']
 
-    # get project details
-    project_data = connections.get_json_response( url, f"/api/projects/{project}", token )
-    # TODO raise exception
-    assert project_data['slug'] == project
-    with open(directory/'project.json', 'w', encoding='utf-8') as f:
-        json.dump(project_data, f, ensure_ascii=False, indent=4)
+    #############################
+    ##       Setup Stage
+    #############################
+    stage = Stage.SETUP
+    try:
+        connections.send_status( url, dataset_id, token, stage=stage, state=State.START)
+        with open(directory/'project.json', 'w', encoding='utf-8') as f:
+            json.dump(dataset_data, f, ensure_ascii=False, indent=4)
 
-    # pull data
+        # get project details
+        project_data = connections.get_json_response( url, f"/api/projects/{project}", token )
+        # TODO raise exception
+        assert project_data['slug'] == project
+        with open(directory/'project.json', 'w', encoding='utf-8') as f:
+            json.dump(project_data, f, ensure_ascii=False, indent=4)
 
-    # get snakefile
-    with open(directory/'Snakefile', 'w', encoding='utf-8') as f:
-        f.write(project_data['snakefile'])
+        # pull data
 
-    # run workflow
-    result = subprocess.Popen(["snakemake", "--cores", cores], cwd=directory)
-    console.log(f"{result}")
+        # get snakefile
+        with open(directory/'Snakefile', 'w', encoding='utf-8') as f:
+            f.write(project_data['snakefile'])
 
-    # push data 
+        connections.send_status( url, dataset_id, token, stage=stage, state=State.SUCCESS)
+    except Exception as e:
+        connections.send_status( url, dataset_id, token, stage=stage, state=State.FAIL, note=str(e))
+
+    #############################
+    ##       Workflow Stage
+    #############################
+
+    stage = Stage.WORKFLOW
+    try:
+        connections.send_status( url, dataset_id, token, stage=stage, state=State.START)
+        result = subprocess.Popen(["snakemake", "--cores", cores], cwd=directory)
+        if result:
+            raise Exception("Workflow failed")
+        connections.send_status( url, dataset_id, token, stage=stage, state=State.SUCCESS)
+    except Exception as e:
+        connections.send_status( url, dataset_id, token, stage=stage, state=State.FAIL, note=str(e))
+
+    #############################
+    ##       Upload Stage
+    #############################
+    stage = Stage.UPLOAD
 
     # notify
 
     # print(result)
+    return dataset_data
 
 
 @app.command()
@@ -84,8 +117,10 @@ def next(
     """
     console.print(f"Processing the next dataset from {url}")
     next = connections.get_json_response( url, f"api/next/", token )
-    if 'dataset' in next and 'project' in next:
+    if 'dataset' in next and 'project' in next and next['project'] and next['dataset']:
         return run(project=next['project'], dataset=next['dataset'], url=url, token=token, directory=directory, cores=cores)
+    else:
+        console.print("No more datasets to process.")
 
 
 @app.command()
@@ -100,7 +135,10 @@ def loop(
     """
     console.print(f"Looping through all the datasets from {url} and will stop when complete.")
     while True:
-        next(url=url, token=token, directory=directory, cores=cores)
+        result = next(url=url, token=token, directory=directory, cores=cores)
+        if result is None:
+            console.print("Loop concluded.")
+            break
 
 
 @app.command()

@@ -5,13 +5,13 @@ from . import models
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Project
-        fields = ['name', 'slug','snakefile']
+        fields = ['id', 'name', 'slug','snakefile']
 
 
 class AttributeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Attribute
-        fields = ['key', ]
+        fields = ['id', 'key', ]
 
     def to_representation(self, instance):
         return instance.as_dict()
@@ -23,7 +23,7 @@ class DatasetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Dataset
-        fields = ['name', 'slug','project', 'attributes']
+        fields = ['id', 'name', 'slug','project', 'attributes']
 
 
 class DatasetReferenceSerializer(serializers.Serializer):
@@ -33,6 +33,8 @@ class DatasetReferenceSerializer(serializers.Serializer):
     
 
 class StatusSerializer(serializers.ModelSerializer):
+    dataset = serializers.PrimaryKeyRelatedField(queryset=models.Dataset.objects.all())
+
     class Meta:
         model = models.Status
         fields = [
@@ -42,7 +44,6 @@ class StatusSerializer(serializers.ModelSerializer):
             "stage", 
             "state", 
             "note",
-
             "agent_user",
             "system",
             "system_release",
@@ -56,3 +57,4 @@ class StatusSerializer(serializers.ModelSerializer):
             "disk_total",
             "disk_free",
         ]
+

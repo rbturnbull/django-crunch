@@ -1,4 +1,5 @@
 import requests
+import enum
 
 from . import diagnostics
 
@@ -36,12 +37,19 @@ def get_json_response( base_url, extra_url, token ):
 def send_status(base_url, dataset_id, token, stage, state, note=""):
     url = mkurl(base_url, "api/statuses/") 
 
+    if isinstance(stage, enum.Enum):
+        stage = stage.value
+    if isinstance(state, enum.Enum):
+        state = state.value
+
     data = dict(
         dataset=dataset_id,
         stage=stage,
         state=state,
         note=note,
     )
-    data.update( diagnostics.get_diagnostics() )
+    # data.update( diagnostics.get_diagnostics() )
 
+    print(url)
+    print(data)
     return requests.post(url, headers=get_headers(token), data=data)

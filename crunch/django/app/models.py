@@ -7,6 +7,7 @@ User = get_user_model()
 from polymorphic.models import PolymorphicModel
 from django_extensions.db.models import TimeStampedModel
 
+from . import enums
 
 def OptionalCharField(max_length=255, default="", blank=True, **kwargs):
     return models.CharField(max_length=max_length, default=default, blank=blank, **kwargs)
@@ -48,16 +49,13 @@ class Dataset(TimeStampedModel, PolymorphicModel):
         return cls.unprocessed().first()
 
 
-Stage = models.IntegerChoices('Stage', 'SETUP WORKFLOW UPLOAD')
-State = models.IntegerChoices('State', 'START FAIL SUCCESS')
 
 class Status(TimeStampedModel):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='statuses')
-    site_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    stage = models.IntegerField(choices=Stage.choices)
-    state = models.IntegerField(choices=State.choices)
+    site_user = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=None, blank=True, null=True)
+    stage = models.IntegerField(choices=enums.Stage.choices)
+    state = models.IntegerField(choices=enums.State.choices)
     note = models.TextField(default="", blank=True)
-
     # Diagnostic info
     agent_user = OptionalCharField(help_text="The name of the user running the agent (see https://docs.python.org/3/library/getpass.html).")
     version = OptionalCharField(help_text="The django-crunch version number of the agent.")
@@ -74,6 +72,9 @@ class Status(TimeStampedModel):
     memory_free = models.PositiveIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
     disk_total = models.PositiveIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
     disk_free = models.PositiveIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
+
+    class Meta:
+        verbose_name_plural = "statuses"
 
 
 class Attribute(TimeStampedModel, PolymorphicModel):
