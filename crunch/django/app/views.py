@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -7,6 +7,10 @@ from rest_framework.response import Response
 from rest_framework import generics
 from . import models, serializers
 
+
+######################################################
+##  Project Views
+######################################################
 
 class ProjectListView(PermissionRequiredMixin, ListView):
     model = models.Project
@@ -20,6 +24,21 @@ class ProjectDetailView(PermissionRequiredMixin, DetailView):
     # lookup_field = 'slug'
 
 
+class ProjectCreateView(PermissionRequiredMixin, CreateView):
+    model = models.Project
+    permission_required = "crunch.add_project"
+
+
+class ProjectUpdateView(PermissionRequiredMixin, UpdateView):
+    model = models.Project
+    template_name = "crunch/form.html"
+    # form_class = ProjectForm
+    permission_required = "crunch.update_project"
+    extra_context = dict(
+        form_title="Update Project",
+    )
+
+
 class ProjectAPI(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -28,6 +47,11 @@ class ProjectAPI(viewsets.ModelViewSet):
     serializer_class = serializers.ProjectSerializer
     permission_classes = [permissions.DjangoModelPermissions]
     lookup_field = 'slug'
+
+
+######################################################
+##  Dataset Views
+######################################################
 
 
 class DatasetDetailView(PermissionRequiredMixin, DetailView):

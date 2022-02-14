@@ -6,6 +6,7 @@ User = get_user_model()
 
 from polymorphic.models import PolymorphicModel
 from django_extensions.db.models import TimeStampedModel
+from next_prev import next_in_order, prev_in_order
 
 from . import enums
 
@@ -13,7 +14,21 @@ def OptionalCharField(max_length=255, default="", blank=True, **kwargs):
     return models.CharField(max_length=max_length, default=default, blank=blank, **kwargs)
 
 
-class Project(TimeStampedModel, PolymorphicModel):
+class NextPrevMixin(models.Model):
+    class Meta:
+        abstract = True
+
+    def next_in_order(self, **kwargs):
+        return next_in_order( self )
+
+    def prev_in_order(self, **kwargs):
+        return prev_in_order( self )
+
+    def get_admin_url(self):
+        return reverse(f'admin:{self._meta.app_label}_{self._meta.model_name}_change', args=(self.pk,))
+
+
+class Project(NextPrevMixin, TimeStampedModel, PolymorphicModel):
     name = models.CharField(max_length=1023, unique=True)
     description = models.CharField(max_length=1023, default="", blank=True, help_text="A short description in a sentence or more of this project.")
     details = models.TextField(default="", blank=True, help_text="A detailed description of this project (written in Markdown).")    
@@ -28,7 +43,7 @@ class Project(TimeStampedModel, PolymorphicModel):
         return reverse("crunch:project-detail", kwargs={"slug": self.slug})
 
 
-class Dataset(TimeStampedModel, PolymorphicModel):
+class Dataset(NextPrevMixin, TimeStampedModel, PolymorphicModel):
     name = models.CharField(max_length=1023)
     description = models.CharField(max_length=1023, default="", blank=True, help_text="A short description in a sentence or more of this dataset.")
     details = models.TextField(default="", blank=True, help_text="A detailed description of this dataset (written in Markdown).")

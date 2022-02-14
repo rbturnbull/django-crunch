@@ -19,8 +19,13 @@ urlpatterns = [
     path('api/', include( (router.urls, 'api') )),
     path('api/statuses/', views.StatusListCreateAPIView.as_view(), name='status-list'),
     path('api/next/', views.NextDatasetReference.as_view(), name='next'),
+
     path('projects/', RedirectView.as_view(url="..", permanent=False)),
+    path("projects/create/", views.ProjectCreateView.as_view(), name="project-create"),
     path('projects/<str:slug>/', views.ProjectDetailView.as_view(), name='project-detail'),
+    path("projects/<str:slug>/update/", views.ProjectUpdateView.as_view(), name="project-update"),
+
+
     path('projects/<str:project>/datasets/', RedirectView.as_view(url="..", permanent=False)),
     path('projects/<str:project>/datasets/<str:slug>', views.DatasetDetailView.as_view(), name='dataset-detail'),
 ]
