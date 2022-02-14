@@ -70,6 +70,22 @@ class DatasetAPI(viewsets.ModelViewSet):
     lookup_field = 'slug'
 
 
+class DatasetCreateView(PermissionRequiredMixin, CreateView):
+    model = models.Dataset
+    permission_required = "crunch.add_dataset"
+
+
+class DatasetUpdateView(PermissionRequiredMixin, UpdateView):
+    model = models.Dataset
+    template_name = "crunch/form.html"
+    # form_class = DatasetForm
+    permission_required = "crunch.update_dataset"
+    extra_context = dict(
+        form_title="Update Dataset",
+    )
+
+
+
 class NextDatasetReference(APIView):
     """
     Retuns the study accession ID and the batch index to process next.

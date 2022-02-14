@@ -12,6 +12,34 @@
         </ol>
     </nav>
 
+    <div class="float-right">
+        {% if perms.crunch.add_dataset %}
+            <a href="{% url 'crunch:dataset-create'  %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Create Dataset">
+                <i class="fas fa-plus"></i>
+            </a>
+        {% endif %}
+        {% if perms.crunch.update_dataset %}
+            <a href="{% url 'crunch:dataset-update' slug=dataset.slug project=dataset.project.slug %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Update this Dataset">
+                <i class="fas fa-edit"></i>
+            </a>
+        {% endif %}
+        {% if request.user.is_staff %}
+            <a href="{{ dataset.get_admin_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Admin">
+                <i class="fas fa-tools"></i>
+            </a>
+        {% endif %}
+        {% if dataset.prev_in_order %}
+            <a href="{{ dataset.prev_in_order.get_absolute_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="{{ dataset.prev_in_order }}">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        {% endif %}
+        {% if dataset.next_in_order %}
+            <a href="{{ dataset.next_in_order.get_absolute_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="{{ dataset.next_in_order }}">
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        {% endif %}
+    </div> 
+
     <h2>{{dataset}}</h2>
 
     <h3>Project: <a href='{{dataset.project.get_absolute_url}}'>{{dataset.project}}</a></h3>
