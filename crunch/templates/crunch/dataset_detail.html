@@ -1,11 +1,66 @@
+{% extends "base.html" %}
 
-<h2>{{dataset}}</h2>
+{% block content %}
 
-<h3>Project: <a href='{{dataset.project.get_absolute_url}}'>{{dataset.project}}</a></h3>
+<div class="container mt-3">
 
-<h3>Attributes</h3>
-<ul>
-{% for attribute in dataset.attributes.all %}
-    <li>{{attribute.key}} - {{attribute.as_html}}</li>
-{% endfor %}
-</ul>
+    <nav aria-label="breadcrumb ">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../..">Projects</a></li>
+            <li class="breadcrumb-item"><a href="..">{{dataset.project}}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{dataset}}</li>
+        </ol>
+    </nav>
+
+    <h2>{{dataset}}</h2>
+
+    <h3>Project: <a href='{{dataset.project.get_absolute_url}}'>{{dataset.project}}</a></h3>
+
+    <h3>Attributes</h3>
+
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Attribute</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for attribute in dataset.attributes.all %}
+            <tr>
+                <th scope="row">{{attribute.key}}</th>
+                <td>{{attribute.value_html}}</td>
+              </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+      
+
+
+    <h3>History</h3>
+    <ul>
+    </ul>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">User</th>
+            <th scope="col">Stage</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for status in dataset.statuses.all %}
+            <tr>
+                <th scope="row">{{status.created}}</th>
+                <td>{{status.site_user}}</td>
+                <td>{{status.get_stage_display}}</td>
+                <td>{{status.get_state_display}}</td>
+              </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+  
+</div>
+
+{% endblock content %}

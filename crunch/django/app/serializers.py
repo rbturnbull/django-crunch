@@ -14,7 +14,7 @@ class AttributeSerializer(serializers.ModelSerializer):
         fields = ['id', 'key', ]
 
     def to_representation(self, instance):
-        return instance.as_dict()
+        return instance.value_dict()
 
 
 class DatasetSerializer(serializers.HyperlinkedModelSerializer):

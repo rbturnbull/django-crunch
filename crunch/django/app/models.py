@@ -13,11 +13,13 @@ def OptionalCharField(max_length=255, default="", blank=True, **kwargs):
     return models.CharField(max_length=max_length, default=default, blank=blank, **kwargs)
 
 
-
 class Project(TimeStampedModel, PolymorphicModel):
     name = models.CharField(max_length=1023, unique=True)
+    description = models.CharField(max_length=1023, default="", blank=True, help_text="A short description in a sentence or more of this project.")
+    details = models.TextField(default="", blank=True, help_text="A detailed description of this project (written in Markdown).")    
     slug = AutoSlugField(populate_from='name', unique=True)
     snakefile = models.TextField(default="", blank=True)
+    # TODO Add tags
 
     def __str__(self):
         return self.name
@@ -28,8 +30,13 @@ class Project(TimeStampedModel, PolymorphicModel):
 
 class Dataset(TimeStampedModel, PolymorphicModel):
     name = models.CharField(max_length=1023)
+    description = models.CharField(max_length=1023, default="", blank=True, help_text="A short description in a sentence or more of this dataset.")
+    details = models.TextField(default="", blank=True, help_text="A detailed description of this dataset (written in Markdown).")
     slug = AutoSlugField(populate_from='name')
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="datasets")
+    # TODO Add tags
+    # TODO consolidate with Project stuff because much is repeated
+
 
     def __str__(self):
         return self.name
@@ -47,7 +54,6 @@ class Dataset(TimeStampedModel, PolymorphicModel):
     @classmethod
     def next_unprocessed(cls):
         return cls.unprocessed().first()
-
 
 
 class Status(TimeStampedModel):
@@ -85,50 +91,52 @@ class Attribute(TimeStampedModel, PolymorphicModel):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='attributes')
     key = models.CharField(max_length=255)
 
-    def as_dict(self):
+    def value_dict(self):
         return dict(key=self.key)
 
-    def as_html(self):
+    def value_str(self):
         return ""
+
+    def value_html(self):
+        return self.value_str()
+
+    def __str__(self):
+        return f"{self.key}: {self.value_str()}"
 
 
 class CharAttribute(Attribute):
     value = models.CharField(max_length=1023)
     
-    def as_dict(self):
-        d = super().as_dict()
+    def value_dict(self):
+        d = super().value_dict()
         d['value'] = self.value
         return d
 
-    def as_html(self):
+    def value_str(self):
         return self.value
 
 
 class FloatAttribute(Attribute):
     value = models.FloatField()
 
-    def as_dict(self):
-        d = super().as_dict()
+    def value_dict(self):
+        d = super().value_dict()
         d['value'] = self.value
         return d
 
-    def as_html(self):
-        return self.value
+    def value_str(self):
+        return f"{self.value}"
 
 
 class IntegerAttribute(Attribute):
     value = models.IntegerField()
 
-    def as_dict(self):
-        d = super().as_dict()
+    def value_dict(self):
+        d = super().value_dict()
         d['value'] = self.value
         return d
 
-    def as_html(self):
-        return self.value
-
-
-
-
+    def value_str(self):
+        return f"{self.value}"
 
 

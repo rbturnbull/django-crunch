@@ -1,8 +1,30 @@
+{% extends "base.html" %}
 
-<h2>{{project}}</h2>
+{% block content %}
 
-<ul>
-{% for dataset in project.dataset_set.all %}
-    <li><a href='{{dataset.get_absolute_url}}'>{{dataset}}</a></li>
-{% endfor %}
-</ul>
+<div class="container mt-3">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="..">Projects</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{project}}</li>
+        </ol>
+    </nav>
+      
+
+    <h2>{{project}}</h2>
+
+    <p class="font-weight-bold">{{project.description}}</p>
+    <p>{{project.details}}</p>
+
+    <h3>Datasets</h3>
+
+    <ul>
+    {% for dataset in project.datasets.all %}
+        <li><a href='{{dataset.get_absolute_url}}'>{{dataset}}</a></li>
+    {% endfor %}
+    </ul>
+
+</div>
+
+{% endblock content %}

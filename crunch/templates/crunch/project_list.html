@@ -1,10 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Project List</h2>
+  
+  <div class="container mt-3">
+  <h2>Project List</h2>
 
-{% for project in page_obj %}
-    <li><a href='{{project.get_absolute_url}}'>{{project}}</a></li>
-{% endfor %}
+    <div class="row">
+        {% for project in page_obj %}
+          <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body">
+                  <span class="badge badge-pill badge-primary">Project</span>
+                  <a href='{{project.get_absolute_url}}'><h3 class="card-title">{{project}}</h3></a>
+                  <p class="card-text">{{ project.description }}</p>
+                  <p>{{project.datasets.count}} dataset(s).</p>
+                  <a href='{{project.get_absolute_url}}' class="btn btn-primary">View Project</a>
+                </div>
+            </div>
+          </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock content %}
 

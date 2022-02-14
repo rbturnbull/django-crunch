@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'djangocms_admin_style',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +43,47 @@ INSTALLED_APPS = [
     "django_extensions",
     'rest_framework',
     "rest_framework.authtoken",
+    'django.contrib.sites',
+    'easy_thumbnails',
+
+    'filer',
+    'mptt',
+
+    'cms',
+    'sekizai',
+    'menus',
+    'treebeard',
+    'cms_bootstrap',
+    "djangocms_themata",
+
+    'djangocms_text_ckeditor',
+    'djangocms_icon',
+    'djangocms_link',
+    'djangocms_file',
+    'djangocms_picture',
+    'djangocms_video',
+    'djangocms_googlemap',
+    'djangocms_snippet',
+    'djangocms_style',
+    'meta',
+    'djangocms_page_meta',
+
+    'djangocms_bootstrap4',
+    'djangocms_bootstrap4.contrib.bootstrap4_alerts',
+    'djangocms_bootstrap4.contrib.bootstrap4_badge',
+    'djangocms_bootstrap4.contrib.bootstrap4_card',
+    'djangocms_bootstrap4.contrib.bootstrap4_carousel',
+    'djangocms_bootstrap4.contrib.bootstrap4_collapse',
+    'djangocms_bootstrap4.contrib.bootstrap4_content',
+    'djangocms_bootstrap4.contrib.bootstrap4_grid',
+    'djangocms_bootstrap4.contrib.bootstrap4_jumbotron',
+    'djangocms_bootstrap4.contrib.bootstrap4_link',
+    # 'djangocms_bootstrap4.contrib.bootstrap4_listgroup',
+    # 'djangocms_bootstrap4.contrib.bootstrap4_media',
+    # 'djangocms_bootstrap4.contrib.bootstrap4_picture',
+    'djangocms_bootstrap4.contrib.bootstrap4_tabs',
+    # 'djangocms_bootstrap4.contrib.bootstrap4_utilities',
+
     'crunch',
 ]
 
@@ -53,6 +95,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    "django.middleware.locale.LocaleMiddleware",
+
+    'cms.middleware.user.CurrentUserMiddleware',
+    'cms.middleware.page.CurrentPageMiddleware',
+    'cms.middleware.toolbar.ToolbarMiddleware',
+    'cms.middleware.language.LanguageCookieMiddleware',
+
 ]
 
 ROOT_URLCONF = 'crunch.django.proj.urls'
@@ -68,6 +118,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cms.context_processors.cms_settings',
+                'sekizai.context_processors.sekizai',
             ],
         },
     },
@@ -109,7 +161,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+LANGUAGES = [
+    ('en', 'English'),
+]
+
 
 TIME_ZONE = 'UTC'
 
@@ -143,3 +199,14 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
 }
+
+SITE_ID = 1
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+CMSPLUGIN_CASCADE_PLUGINS = []
+CMS_TOOLBAR_ANONYMOUS_ON = False
+
+CMS_PERMISSION = True
+CMS_TEMPLATES = [
+    ('base.html', 'Base Template'),
+]
