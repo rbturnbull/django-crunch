@@ -1,6 +1,11 @@
-Team
+Authors
 ==================
 
 * Robert Turnbull
-* Mar Quiroga
+* Maria del Mar Quiroga
 
+Collaborators
+==================
+* Heroen Verbruggen
+* Bobbie Shaban
+* Edoardo Tescari
