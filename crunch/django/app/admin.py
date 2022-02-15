@@ -34,10 +34,15 @@ class FloatAttributeAdmin(AttributeChildAdmin):
     pass
 
 
+@admin.register(models.URLAttribute)
+class URLAttributeAdmin(AttributeChildAdmin):
+    pass
+
+
 @admin.register(models.Attribute)
 class AttributeParentAdmin(PolymorphicParentModelAdmin):
     base_model = models.Attribute  # Optional, explicitly set here.
-    child_models = (models.IntegerAttribute, models.FloatAttribute, models.CharAttribute,)
+    child_models = (models.IntegerAttribute, models.FloatAttribute, models.CharAttribute,models.URLAttribute)
     list_filter = (PolymorphicChildModelFilter,)  # This is optional.
 
 

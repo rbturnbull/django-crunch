@@ -1,7 +1,9 @@
+import re
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.utils.html import format_html
 User = get_user_model()
 
 from polymorphic.models import PolymorphicModel
@@ -118,6 +120,12 @@ class Attribute(TimeStampedModel, PolymorphicModel):
     def __str__(self):
         return f"{self.key}: {self.value_str()}"
 
+    def type_str(self):
+        class_name = self.__class__.__name__
+        if class_name.endswith("Attribute"):
+            class_name = class_name[:-len("Attribute")]
+        return re.sub(r'((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))', r' \1', class_name)            
+
 
 class CharAttribute(Attribute):
     value = models.CharField(max_length=1023)
@@ -153,5 +161,24 @@ class IntegerAttribute(Attribute):
 
     def value_str(self):
         return f"{self.value}"
+
+
+class URLAttribute(Attribute):
+    value = models.CharField(max_length=1023)
+    
+    def value_dict(self):
+        d = super().value_dict()
+        d['value'] = self.value
+        return d
+
+    def value_str(self):
+        return self.value
+
+    def value_html(self):
+        return format_html(
+            "<a href='{}'>{}</a>",
+            self.value,
+            self.value,
+        )
 
 

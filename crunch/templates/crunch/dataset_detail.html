@@ -50,6 +50,7 @@
         <thead>
           <tr>
             <th scope="col">Attribute</th>
+            <th scope="col">Type</th>
             <th scope="col">Value</th>
           </tr>
         </thead>
@@ -57,6 +58,7 @@
             {% for attribute in dataset.attributes.all %}
             <tr>
                 <th scope="row">{{attribute.key}}</th>
+                <td>{{attribute.type_str}}</td>
                 <td>{{attribute.value_html}}</td>
               </tr>
             {% endfor %}
