@@ -2,9 +2,9 @@
 title: 'django-crunch: A data processing orcestration tool'
 tags:
   - Python
-  - economics
-  - inflation
-  - socio-economic advantage
+  - django
+  - data processing
+  - high performance computing
 authors:
   - name: Robert Turnbull
     orcid: 0000-0003-1274-6750

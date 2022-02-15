@@ -73,7 +73,7 @@ class Dataset(NextPrevMixin, TimeStampedModel, PolymorphicModel):
         return cls.unprocessed().first()
 
 
-class Status(TimeStampedModel):
+class Status(NextPrevMixin, TimeStampedModel):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='statuses')
     site_user = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=None, blank=True, null=True)
     stage = models.IntegerField(choices=enums.Stage.choices)
@@ -103,7 +103,7 @@ class Status(TimeStampedModel):
         return f"{self.dataset}: {self.get_stage_display()} {self.get_state_display()}"
 
 
-class Attribute(TimeStampedModel, PolymorphicModel):
+class Attribute(NextPrevMixin, TimeStampedModel, PolymorphicModel):
     # project = models.ForeignKey(Project, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='attributes')
     key = models.CharField(max_length=255)

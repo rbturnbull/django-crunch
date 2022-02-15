@@ -43,7 +43,17 @@
     <h2>{{dataset}}</h2>
 
     <h3>Project: <a href='{{dataset.project.get_absolute_url}}'>{{dataset.project}}</a></h3>
+    <p class="font-weight-bold">{{dataset.description}}</p>
+    <p>{{dataset.details}}</p>
 
+    <hr>
+    <div class="float-right">
+        {% if request.user.is_staff %}
+            <a href="{% url 'admin:crunch_attribute_add'  %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Create Attribute">
+                <i class="fas fa-plus"></i>
+            </a>
+        {% endif %}
+    </div>
     <h3>Attributes</h3>
 
     <table class="table table-striped">
@@ -52,6 +62,9 @@
             <th scope="col">Attribute</th>
             <th scope="col">Type</th>
             <th scope="col">Value</th>
+            {% if request.user.is_staff %}
+            <th scope="col">Admin</th>
+            {% endif %}        
           </tr>
         </thead>
         <tbody>
@@ -60,16 +73,32 @@
                 <th scope="row">{{attribute.key}}</th>
                 <td>{{attribute.type_str}}</td>
                 <td>{{attribute.value_html}}</td>
+                {% if request.user.is_staff %}
+                <td>
+                    <a href="{{ attribute.get_admin_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Edit Attribute">
+                        <i class="fas fa-tools"></i>
+                    </a>
+                </td>
+                {% endif %}        
+
               </tr>
             {% endfor %}
         </tbody>
       </table>
       
 
+      <hr>
+      <div class="float-right">
+          {% if request.user.is_staff %}
+              <a href="#" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Upload File">
+                  <i class="fas fa-plus"></i>
+              </a>
+          {% endif %}
+      </div>  
       <h3>Files</h3>
       <p><i>File list not yet implemented.</i></p>
-      <a href='#' class="btn btn-primary">Upload</a>
 
+    <hr>
     <h3>History</h3>
     <ul>
     </ul>
@@ -80,6 +109,9 @@
             <th scope="col">User</th>
             <th scope="col">Stage</th>
             <th scope="col">Status</th>
+            {% if request.user.is_staff %}
+            <th scope="col">Admin</th>
+            {% endif %}        
           </tr>
         </thead>
         <tbody>
@@ -89,6 +121,13 @@
                 <td>{{status.site_user}}</td>
                 <td>{{status.get_stage_display}}</td>
                 <td>{{status.get_state_display}}</td>
+                {% if request.user.is_staff %}
+                <td>
+                    <a href="{{ status.get_admin_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Edit Status">
+                        <i class="fas fa-tools"></i>
+                    </a>
+                </td>
+                {% endif %}        
               </tr>
             {% endfor %}
         </tbody>
