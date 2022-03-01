@@ -17,13 +17,54 @@ class AttributeSerializer(serializers.ModelSerializer):
         return instance.value_dict()
 
 
+class CharAttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.CharAttribute
+        fields = [
+            "dataset",
+            "key",
+            "value",
+        ]
+
+
+class FloatAttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.FloatAttribute
+        fields = [
+            "dataset",
+            "key",
+            "value",
+        ]
+
+
+class IntegerAttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.IntegerAttribute
+        fields = [
+            "dataset",
+            "key",
+            "value",
+        ]
+
+
+class URLAttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.URLAttribute
+        fields = [
+            "dataset",
+            "key",
+            "value",
+        ]
+
+
 class DatasetSerializer(serializers.HyperlinkedModelSerializer):
-    project = serializers.HyperlinkedRelatedField(view_name='crunch:api:project-detail', read_only='True', lookup_field='slug')
-    attributes = AttributeSerializer(many=True)
+    # project = serializers.HyperlinkedRelatedField(view_name='crunch:api:project-detail', lookup_field='slug', queryset=models.Project.objects.all())
+    project = serializers.SlugRelatedField(slug_field='slug', queryset=models.Project.objects.all())
+    attributes = AttributeSerializer(many=True, required=False)
 
     class Meta:
         model = models.Dataset
-        fields = ['id', 'name', 'slug','project', 'attributes']
+        fields = ['id', 'name', 'slug','project', 'description', 'details', 'attributes']
 
 
 class DatasetReferenceSerializer(serializers.Serializer):

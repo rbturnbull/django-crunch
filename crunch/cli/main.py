@@ -159,15 +159,20 @@ def add_dataset(
     project:str,
     url:str = url_arg,
     token:str = token_arg,
+    description:str = "",
+    details:str = "",
 ):
     """
     Adds a new dataset to a project on the hosted site.
     """
-    console.print(f"Adding dataset '{dataset}' to project '{project}' on the hosted site {url}.")
+    console.print(f"Adding dataset '{dataset}' to project '{project}' on the hosted site {url}")
+    connection = connections.Connection(url, token)
+    result = connection.add_dataset(project_slug=project, name=dataset, description=description, details=details)
+    console.print(f"Response {result.status_code}: {result.reason}")
 
 
 @app.command()
-def add_dataset(
+def add_char_attribute(
     dataset:str,
     project:str,
     url:str = url_arg,

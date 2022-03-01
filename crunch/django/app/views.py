@@ -85,7 +85,6 @@ class DatasetUpdateView(PermissionRequiredMixin, UpdateView):
     )
 
 
-
 class NextDatasetReference(APIView):
     """
     Retuns the study accession ID and the batch index to process next.
@@ -108,3 +107,52 @@ class StatusListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(
             site_user=self.request.user,
         )
+
+
+######################################################
+##  Attribute Views
+######################################################
+
+class CharAttributeAPI(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = models.CharAttribute.objects.all()
+    serializer_class = serializers.CharAttributeSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+
+
+class FloatAttributeAPI(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = models.FloatAttribute.objects.all()
+    serializer_class = serializers.FloatAttributeSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+
+
+class IntegerAttributeAPI(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = models.IntegerAttribute.objects.all()
+    serializer_class = serializers.IntegerAttributeSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+
+
+class FloatAttributeAPI(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = models.FloatAttribute.objects.all()
+    serializer_class = serializers.FloatAttributeSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+
+
+class URLAttributeAPI(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = models.URLAttribute.objects.all()
+    serializer_class = serializers.URLAttributeSerializer
+    permission_classes = [permissions.DjangoModelPermissions]

@@ -1,6 +1,11 @@
 import logging 
 from pathlib import Path
 
+class Directory:
+    pass
+
+
+
 
 def django_storage_walk(base="/", storage=None, error_handler=None):
     """

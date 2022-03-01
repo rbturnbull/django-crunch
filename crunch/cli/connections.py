@@ -10,7 +10,7 @@ class CrunchAPIException(Exception):
 
 def get_headers(token):
     if not token:
-        raise CrunchAPIException(f"Please give an authentication token for the {base_url} either through a command line argument or the CRUNCH_TOKEN environment variable.")
+        raise CrunchAPIException(f"Please give an authentication token either through a command line argument or the CRUNCH_TOKEN environment variable.")
 
     headers = {"Authorization": f"Token {token}" }
     return headers
@@ -33,7 +33,6 @@ def get_json_response( base_url, extra_url, token ):
 
     return json_response
 
-
 def send_status(base_url, dataset_id, token, stage, state, note=""):
     url = mkurl(base_url, "api/statuses/") 
 
@@ -51,3 +50,26 @@ def send_status(base_url, dataset_id, token, stage, state, note=""):
     data.update( diagnostics.get_diagnostics() )
     print(data)
     return requests.post(url, headers=get_headers(token), data=data)
+
+
+class Connection():
+    def __init__(self, base_url, token):
+        self.base_url = base_url
+        self.token = token
+
+    def post(self, relative_url, data):
+        url = mkurl(self.base_url, relative_url) 
+        return requests.post(url, headers=get_headers(self.token), data=data)
+
+    def add_dataset(self, project_slug:str, name:str, description:str="", details:str=""):
+        data = dict(
+            project=project_slug,
+            name=name,
+            description=description,
+            details=details,
+        )
+        print(data)
+        return self.post(
+            "api/datasets/", 
+            data,
+        )
