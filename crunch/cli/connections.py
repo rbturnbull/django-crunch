@@ -1,6 +1,10 @@
 import requests
 import enum
 
+from rich.console import Console
+
+console = Console()
+
 from . import diagnostics
 
 class CrunchAPIException(Exception):
@@ -57,19 +61,34 @@ class Connection():
         self.base_url = base_url
         self.token = token
 
-    def post(self, relative_url, data):
+    def post(self, relative_url, verbose=False, **kwargs):
         url = mkurl(self.base_url, relative_url) 
-        return requests.post(url, headers=get_headers(self.token), data=data)
+        result = requests.post(url, headers=get_headers(self.token), data=kwargs)
+        if verbose:
+            console.print(f"Response {result.status_code}: {result.reason}")
+        return result
 
-    def add_dataset(self, project_slug:str, name:str, description:str="", details:str=""):
-        data = dict(
-            project=project_slug,
-            name=name,
-            description=description,
-            details=details,
-        )
-        print(data)
+    def add_dataset(self, project:str, dataset:str, description:str="", details:str="", verbose=False):
+        if verbose:
+            console.print(f"Adding dataset '{dataset}' to project '{project}' on the hosted site {self.base_url}")
+
         return self.post(
             "api/datasets/", 
-            data,
+            project=project,
+            name=dataset,
+            description=description,
+            details=details,
+            verbose=verbose,
+        )
+
+    def add_char_attribute(self, project:str, dataset:str, key:str="", value:str="", verbose=False):
+        if verbose:
+            console.print(f"Adding attribute '{key}'->'{value}' to dataset '{dataset}' in project '{project}' on the hosted site {self.base_url}")
+
+        return self.post(
+            "api/attributes/char/", 
+            dataset=dataset,
+            key=key,
+            value=value,
+            verbose=verbose,
         )

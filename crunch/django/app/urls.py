@@ -8,10 +8,10 @@ from . import views
 router = routers.DefaultRouter()
 router.register(r'projects', views.ProjectAPI)
 router.register(r'datasets', views.DatasetAPI)
-router.register(r'attributes/chars', views.CharAttributeAPI)
-router.register(r'attributes/floats', views.FloatAttributeAPI)
-router.register(r'attributes/integers', views.IntegerAttributeAPI)
-router.register(r'attributes/urls', views.URLAttributeAPI)
+router.register(r'attributes/char', views.CharAttributeAPI)
+router.register(r'attributes/float', views.FloatAttributeAPI)
+router.register(r'attributes/int', views.IntegerAttributeAPI)
+router.register(r'attributes/url', views.URLAttributeAPI)
 
 # router.register(r'statuses', views.St)
 

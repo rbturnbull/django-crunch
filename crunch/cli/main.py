@@ -161,27 +161,31 @@ def add_dataset(
     token:str = token_arg,
     description:str = "",
     details:str = "",
+    verbose:bool = True,
 ):
     """
     Adds a new dataset to a project on the hosted site.
     """
-    console.print(f"Adding dataset '{dataset}' to project '{project}' on the hosted site {url}")
     connection = connections.Connection(url, token)
-    result = connection.add_dataset(project_slug=project, name=dataset, description=description, details=details)
-    console.print(f"Response {result.status_code}: {result.reason}")
+    return connection.add_dataset(project=project, dataset=dataset, description=description, details=details, verbose=verbose)
 
 
 @app.command()
 def add_char_attribute(
     dataset:str,
     project:str,
+    key:str,
+    value:str,
     url:str = url_arg,
     token:str = token_arg,
+    verbose:bool = True,
 ):
     """
     Adds a new attribute to a dataset.
     """
-    console.print(f"Adding attribute to dataset '{dataset}' to project '{project}' on the hosted site {url}.")
+    connection = connections.Connection(url, token)
+    return connection.add_char_attribute(project=project, dataset=dataset, key=key, value=value, verbose=verbose)
+
 
 @app.command()
 def diagnostics():

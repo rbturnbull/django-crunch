@@ -18,6 +18,8 @@ class AttributeSerializer(serializers.ModelSerializer):
 
 
 class CharAttributeSerializer(serializers.ModelSerializer):
+    dataset = serializers.SlugRelatedField(slug_field='slug', queryset=models.Dataset.objects.all())
+
     class Meta:
         model = models.CharAttribute
         fields = [
