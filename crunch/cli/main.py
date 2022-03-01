@@ -181,10 +181,61 @@ def add_char_attribute(
     verbose:bool = True,
 ):
     """
-    Adds a new attribute to a dataset.
+    Adds a new char attribute to a dataset.
     """
     connection = connections.Connection(url, token)
     return connection.add_char_attribute(project=project, dataset=dataset, key=key, value=value, verbose=verbose)
+
+
+@app.command()
+def add_char_attribute(
+    dataset:str,
+    project:str,
+    key:str,
+    value:float,
+    url:str = url_arg,
+    token:str = token_arg,
+    verbose:bool = True,
+):
+    """
+    Adds a new float attribute to a dataset.
+    """
+    connection = connections.Connection(url, token)
+    return connection.add_float_attribute(project=project, dataset=dataset, key=key, value=value, verbose=verbose)
+
+
+@app.command()
+def add_integer_attribute(
+    dataset:str,
+    project:str,
+    key:str,
+    value:int,
+    url:str = url_arg,
+    token:str = token_arg,
+    verbose:bool = True,
+):
+    """
+    Adds a new int attribute to a dataset.
+    """
+    connection = connections.Connection(url, token)
+    return connection.add_integer_attribute(project=project, dataset=dataset, key=key, value=value, verbose=verbose)
+
+
+@app.command()
+def add_url_attribute(
+    dataset:str,
+    project:str,
+    key:str,
+    value:str,
+    url:str = url_arg,
+    token:str = token_arg,
+    verbose:bool = True,
+):
+    """
+    Adds a new int attribute to a dataset.
+    """
+    connection = connections.Connection(url, token)
+    return connection.add_url_attribute(project=project, dataset=dataset, key=key, value=value, verbose=verbose)
 
 
 @app.command()

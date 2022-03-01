@@ -81,14 +81,50 @@ class Connection():
             verbose=verbose,
         )
 
-    def add_char_attribute(self, project:str, dataset:str, key:str="", value:str="", verbose=False):
+    def add_key_value_attribute(self, url:str, project:str, dataset:str, key:str, value, verbose=False):
         if verbose:
             console.print(f"Adding attribute '{key}'->'{value}' to dataset '{dataset}' in project '{project}' on the hosted site {self.base_url}")
 
         return self.post(
-            "api/attributes/char/", 
+            url, 
             dataset=dataset,
             key=key,
             value=value,
             verbose=verbose,
         )
+
+    def add_char_attribute(self, project:str, dataset:str, key:str, value:str, verbose=False):
+        return self.add_key_value_attribute(
+            url="api/attributes/char/", 
+            dataset=dataset,
+            key=key,
+            value=value,
+            verbose=verbose,
+        )        
+
+    def add_float_attribute(self, project:str, dataset:str, key:str, value:float, verbose=False):
+        return self.add_key_value_attribute(
+            url="api/attributes/float/", 
+            dataset=dataset,
+            key=key,
+            value=value,
+            verbose=verbose,
+        )                
+
+    def add_integer_attribute(self, project:str, dataset:str, key:str, value:int, verbose=False):
+        return self.add_key_value_attribute(
+            url="api/attributes/int/", 
+            dataset=dataset,
+            key=key,
+            value=value,
+            verbose=verbose,
+        )                        
+
+    def add_url_attribute(self, project:str, dataset:str, key:str, value:str, verbose=False):
+        return self.add_key_value_attribute(
+            url="api/attributes/int/", 
+            dataset=dataset,
+            key=key,
+            value=value,
+            verbose=verbose,
+        )                                

@@ -17,9 +17,11 @@ class AttributeSerializer(serializers.ModelSerializer):
         return instance.value_dict()
 
 
-class CharAttributeSerializer(serializers.ModelSerializer):
+class AbstractAttributeSerializer(serializers.ModelSerializer):
     dataset = serializers.SlugRelatedField(slug_field='slug', queryset=models.Dataset.objects.all())
 
+
+class CharAttributeSerializer(AbstractAttributeSerializer):
     class Meta:
         model = models.CharAttribute
         fields = [
@@ -29,7 +31,7 @@ class CharAttributeSerializer(serializers.ModelSerializer):
         ]
 
 
-class FloatAttributeSerializer(serializers.ModelSerializer):
+class FloatAttributeSerializer(AbstractAttributeSerializer):
     class Meta:
         model = models.FloatAttribute
         fields = [
@@ -39,7 +41,7 @@ class FloatAttributeSerializer(serializers.ModelSerializer):
         ]
 
 
-class IntegerAttributeSerializer(serializers.ModelSerializer):
+class IntegerAttributeSerializer(AbstractAttributeSerializer):
     class Meta:
         model = models.IntegerAttribute
         fields = [
@@ -49,7 +51,7 @@ class IntegerAttributeSerializer(serializers.ModelSerializer):
         ]
 
 
-class URLAttributeSerializer(serializers.ModelSerializer):
+class URLAttributeSerializer(AbstractAttributeSerializer):
     class Meta:
         model = models.URLAttribute
         fields = [
