@@ -68,9 +68,21 @@ class Connection():
             console.print(f"Response {result.status_code}: {result.reason}")
         return result
 
+    def add_project(self, project:str, description:str="", details:str="", verbose=False):
+        if verbose:
+            console.print(f"Adding project '{project}' on the site {self.base_url}")
+
+        return self.post(
+            "api/projects/", 
+            name=project,
+            description=description,
+            details=details,
+            verbose=verbose,
+        )
+
     def add_dataset(self, project:str, dataset:str, description:str="", details:str="", verbose=False):
         if verbose:
-            console.print(f"Adding dataset '{dataset}' to project '{project}' on the hosted site {self.base_url}")
+            console.print(f"Adding dataset '{dataset}' to project '{project}' on the site {self.base_url}")
 
         return self.post(
             "api/datasets/", 

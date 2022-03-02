@@ -154,6 +154,22 @@ def add_project(
 
 
 @app.command()
+def add_project(
+    project:str,
+    url:str = url_arg,
+    token:str = token_arg,
+    description:str = "",
+    details:str = "",
+    verbose:bool = True,
+):
+    """
+    Adds a new project on the hosted site.
+    """
+    connection = connections.Connection(url, token)
+    return connection.add_project(project=project, description=description, details=details, verbose=verbose)
+
+
+@app.command()
 def add_dataset(
     dataset:str,
     project:str,
