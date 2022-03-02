@@ -46,9 +46,10 @@ def run(
     console.print(f"Using temporary directory '{directory}'.")
 
     # TODO Check to see if there is an old dataset.json
+    connection = connections.Connection(url, token)
 
     # get dataset details
-    dataset_data = connections.get_json_response( url, f"/api/datasets/{dataset}", token )
+    dataset_data = connection.get_json_response( f"/api/datasets/{dataset}" )
     # TODO raise exception
     assert dataset_data['slug'] == dataset
     assert project in dataset_data['project']
@@ -59,12 +60,12 @@ def run(
     #############################
     stage = Stage.SETUP
     try:
-        connections.send_status( url, dataset_id, token, stage=stage, state=State.START)
+        connection.send_status( dataset_id, stage=stage, state=State.START)
         with open(directory/'project.json', 'w', encoding='utf-8') as f:
             json.dump(dataset_data, f, ensure_ascii=False, indent=4)
 
         # get project details
-        project_data = connections.get_json_response( url, f"/api/projects/{project}", token )
+        project_data = connection.get_json_response( f"/api/projects/{project}" )
         # TODO raise exception
         assert project_data['slug'] == project
         with open(directory/'project.json', 'w', encoding='utf-8') as f:
@@ -76,9 +77,9 @@ def run(
         with open(directory/'Snakefile', 'w', encoding='utf-8') as f:
             f.write(project_data['snakefile'])
 
-        connections.send_status( url, dataset_id, token, stage=stage, state=State.SUCCESS)
+        connection.send_status( dataset_id, stage=stage, state=State.SUCCESS)
     except Exception as e:
-        connections.send_status( url, dataset_id, token, stage=stage, state=State.FAIL, note=str(e))
+        connection.send_status( dataset_id, stage=stage, state=State.FAIL, note=str(e))
 
     #############################
     ##       Workflow Stage
@@ -86,13 +87,13 @@ def run(
 
     stage = Stage.WORKFLOW
     try:
-        connections.send_status( url, dataset_id, token, stage=stage, state=State.START)
+        connection.send_status( dataset_id, stage=stage, state=State.START)
         result = subprocess.Popen(["snakemake", "--cores", cores], cwd=directory)
         if result:
             raise Exception("Workflow failed")
-        connections.send_status( url, dataset_id, token, stage=stage, state=State.SUCCESS)
+        connection.send_status( dataset_id, stage=stage, state=State.SUCCESS)
     except Exception as e:
-        connections.send_status( url, dataset_id, token, stage=stage, state=State.FAIL, note=str(e))
+        connection.send_status( dataset_id, stage=stage, state=State.FAIL, note=str(e))
 
     #############################
     ##       Upload Stage
@@ -116,7 +117,8 @@ def next(
     Processes the next dataset in a project.
     """
     console.print(f"Processing the next dataset from {url}")
-    next = connections.get_json_response( url, f"api/next/", token )
+    connection = connections.Connection(url, token)
+    next = connection.get_json_response( f"api/next/" )
     if 'dataset' in next and 'project' in next and next['project'] and next['dataset']:
         return run(project=next['project'], dataset=next['dataset'], url=url, token=token, directory=directory, cores=cores)
     else:
