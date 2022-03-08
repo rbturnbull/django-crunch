@@ -133,8 +133,11 @@ class Attribute(NextPrevMixin, TimeStampedModel, PolymorphicModel):
         return re.sub(r'((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))', r' \1', class_name)            
 
 
-class CharAttribute(Attribute):
-    value = models.CharField(max_length=1023)
+class ValueAttribute(Attribute):
+    # Child classes need to give a 'value' field.
+
+    class Meta:
+        abstract = True
     
     def value_dict(self):
         d = super().value_dict()
@@ -145,41 +148,25 @@ class CharAttribute(Attribute):
         return self.value
 
 
-class FloatAttribute(Attribute):
+class CharAttribute(ValueAttribute):
+    value = models.CharField(max_length=1023)
+    
+
+class FloatAttribute(ValueAttribute):
     value = models.FloatField()
 
-    def value_dict(self):
-        d = super().value_dict()
-        d['value'] = self.value
-        return d
 
-    def value_str(self):
-        return f"{self.value}"
-
-
-class IntegerAttribute(Attribute):
+class IntegerAttribute(ValueAttribute):
     value = models.IntegerField()
 
-    def value_dict(self):
-        d = super().value_dict()
-        d['value'] = self.value
-        return d
 
-    def value_str(self):
-        return f"{self.value}"
+class DateTimeAttribute(ValueAttribute):
+    value = models.DateTimeField()
 
 
-class URLAttribute(Attribute):
-    value = models.CharField(max_length=1023)
+class URLAttribute(ValueAttribute):
+    value = models.URLField(max_length=1023)
     
-    def value_dict(self):
-        d = super().value_dict()
-        d['value'] = self.value
-        return d
-
-    def value_str(self):
-        return self.value
-
     def value_html(self):
         return format_html(
             "<a href='{}'>{}</a>",

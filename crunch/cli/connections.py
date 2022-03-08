@@ -80,6 +80,7 @@ class Connection():
     def add_char_attribute(self, project:str, dataset:str, key:str, value:str, verbose=False):
         return self.add_key_value_attribute(
             url="api/attributes/char/", 
+            project=project,
             dataset=dataset,
             key=key,
             value=value,
@@ -89,6 +90,25 @@ class Connection():
     def add_float_attribute(self, project:str, dataset:str, key:str, value:float, verbose=False):
         return self.add_key_value_attribute(
             url="api/attributes/float/", 
+            project=project,
+            dataset=dataset,
+            key=key,
+            value=value,
+            verbose=verbose,
+        )                
+
+    def add_datetime_attribute(self, project:str, dataset:str, key:str, value, format:str="", verbose=False):
+        if isinstance(value, str):
+            if format:
+                from datetime import datetime
+                value = datetime.strptime(value, format)
+            else:
+                from dateutil import parser
+                value = parser.parse(value)  
+
+        return self.add_key_value_attribute(
+            url="api/attributes/datetime/", 
+            project=project,
             dataset=dataset,
             key=key,
             value=value,
@@ -98,6 +118,7 @@ class Connection():
     def add_integer_attribute(self, project:str, dataset:str, key:str, value:int, verbose=False):
         return self.add_key_value_attribute(
             url="api/attributes/int/", 
+            project=project,
             dataset=dataset,
             key=key,
             value=value,
@@ -107,6 +128,7 @@ class Connection():
     def add_url_attribute(self, project:str, dataset:str, key:str, value:str, verbose=False):
         return self.add_key_value_attribute(
             url="api/attributes/int/", 
+            project=project,
             dataset=dataset,
             key=key,
             value=value,

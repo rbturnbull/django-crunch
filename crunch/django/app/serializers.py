@@ -61,6 +61,16 @@ class URLAttributeSerializer(AbstractAttributeSerializer):
         ]
 
 
+class DateTimeAttributeSerializer(AbstractAttributeSerializer):
+    class Meta:
+        model = models.DateTimeAttribute
+        fields = [
+            "dataset",
+            "key",
+            "value",
+        ]
+
+
 class LatLongAttributeSerializer(AbstractAttributeSerializer):
     class Meta:
         model = models.LatLongAttribute

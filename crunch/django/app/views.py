@@ -147,3 +147,9 @@ class LatLongAttributeAPI(viewsets.ModelViewSet):
     queryset = models.LatLongAttribute.objects.all()
     serializer_class = serializers.LatLongAttributeSerializer
     permission_classes = [permissions.DjangoModelPermissions]
+
+
+class DateTimeAttributeAPI(viewsets.ModelViewSet):
+    queryset = models.DateTimeAttribute.objects.all()
+    serializer_class = serializers.DateTimeAttributeSerializer
+    permission_classes = [permissions.DjangoModelPermissions]

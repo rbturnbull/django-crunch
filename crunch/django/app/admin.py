@@ -44,6 +44,11 @@ class LatLongAttributeAdmin(AttributeChildAdmin):
     pass
 
 
+@admin.register(models.DateTimeAttribute)
+class DateTimeAttributeAdmin(AttributeChildAdmin):
+    pass
+
+
 @admin.register(models.Attribute)
 class AttributeParentAdmin(PolymorphicParentModelAdmin):
     base_model = models.Attribute  # Optional, explicitly set here.

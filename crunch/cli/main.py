@@ -224,6 +224,24 @@ def add_float_attribute(
 
 
 @app.command()
+def add_datetime_attribute(
+    dataset:str,
+    project:str,
+    key:str,
+    value:str,
+    format:str="",
+    url:str = url_arg,
+    token:str = token_arg,
+    verbose:bool = True,
+):
+    """
+    Adds a new datetime attribute to a dataset.
+    """
+    connection = connections.Connection(url, token)
+    return connection.add_datetime_attribute(project=project, dataset=dataset, key=key, value=value, format=format, verbose=verbose)
+
+
+@app.command()
 def add_lat_long_attribute(
     dataset:str,
     project:str,

@@ -13,6 +13,7 @@ router.register(r'attributes/float', views.FloatAttributeAPI)
 router.register(r'attributes/int', views.IntegerAttributeAPI)
 router.register(r'attributes/url', views.URLAttributeAPI)
 router.register(r'attributes/lat-long', views.LatLongAttributeAPI)
+router.register(r'attributes/datetime', views.DateTimeAttributeAPI)
 
 app_name = "crunch"
 urlpatterns = [
