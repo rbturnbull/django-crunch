@@ -188,3 +188,25 @@ class URLAttribute(Attribute):
         )
 
 
+class LatLongAttribute(Attribute):
+    latitude = models.DecimalField(max_digits=12, decimal_places=9, help_text="The latitude of this location in decimal degrees.")
+    longitude = models.DecimalField(max_digits=12, decimal_places=9, help_text="The longitude of this location in decimal degrees.")
+    
+    def value_dict(self):
+        d = super().value_dict()
+        d['latitude'] = self.latitude
+        d['longitude'] = self.longitude
+        return d
+
+    def value_str(self):
+        return f"{self.latitude:+}{self.longitude:+}/"
+
+    def value_html(self):
+        return format_html(
+            "<a href='https://www.google.com/maps/place/{},{}'>{}</a>",
+            self.latitude,
+            self.longitude,
+            self.value_str(),
+        )
+
+

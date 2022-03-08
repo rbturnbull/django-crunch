@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from typing import Optional
 from typing import List
+from unicodedata import decimal
 import typer
 import subprocess
 from rich.console import Console
@@ -206,7 +207,7 @@ def add_char_attribute(
 
 
 @app.command()
-def add_char_attribute(
+def add_float_attribute(
     dataset:str,
     project:str,
     key:str,
@@ -220,6 +221,24 @@ def add_char_attribute(
     """
     connection = connections.Connection(url, token)
     return connection.add_float_attribute(project=project, dataset=dataset, key=key, value=value, verbose=verbose)
+
+
+@app.command()
+def add_lat_long_attribute(
+    dataset:str,
+    project:str,
+    key:str,
+    latitude:str,
+    longitude:str,
+    url:str = url_arg,
+    token:str = token_arg,
+    verbose:bool = True,
+):
+    """
+    Adds a new lat-long attribute to a dataset.
+    """
+    connection = connections.Connection(url, token)
+    return connection.add_lat_long_attribute(project=project, dataset=dataset, key=key, latitude=latitude, longitude=longitude, verbose=verbose)
 
 
 @app.command()

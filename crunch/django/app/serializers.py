@@ -61,6 +61,17 @@ class URLAttributeSerializer(AbstractAttributeSerializer):
         ]
 
 
+class LatLongAttributeSerializer(AbstractAttributeSerializer):
+    class Meta:
+        model = models.LatLongAttribute
+        fields = [
+            "dataset",
+            "key",
+            "latitude",
+            "longitude",
+        ]
+
+
 class DatasetSerializer(serializers.HyperlinkedModelSerializer):
     # project = serializers.HyperlinkedRelatedField(view_name='crunch:api:project-detail', lookup_field='slug', queryset=models.Project.objects.all())
     project = serializers.SlugRelatedField(slug_field='slug', queryset=models.Project.objects.all())

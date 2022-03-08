@@ -114,45 +114,36 @@ class StatusListCreateAPIView(generics.ListCreateAPIView):
 ######################################################
 
 class CharAttributeAPI(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
     queryset = models.CharAttribute.objects.all()
     serializer_class = serializers.CharAttributeSerializer
     permission_classes = [permissions.DjangoModelPermissions]
 
 
 class FloatAttributeAPI(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
     queryset = models.FloatAttribute.objects.all()
     serializer_class = serializers.FloatAttributeSerializer
     permission_classes = [permissions.DjangoModelPermissions]
 
 
 class IntegerAttributeAPI(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
     queryset = models.IntegerAttribute.objects.all()
     serializer_class = serializers.IntegerAttributeSerializer
     permission_classes = [permissions.DjangoModelPermissions]
 
 
 class FloatAttributeAPI(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
     queryset = models.FloatAttribute.objects.all()
     serializer_class = serializers.FloatAttributeSerializer
     permission_classes = [permissions.DjangoModelPermissions]
 
 
 class URLAttributeAPI(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
     queryset = models.URLAttribute.objects.all()
     serializer_class = serializers.URLAttributeSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+
+
+class LatLongAttributeAPI(viewsets.ModelViewSet):
+    queryset = models.LatLongAttribute.objects.all()
+    serializer_class = serializers.LatLongAttributeSerializer
     permission_classes = [permissions.DjangoModelPermissions]

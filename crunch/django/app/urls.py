@@ -12,10 +12,7 @@ router.register(r'attributes/char', views.CharAttributeAPI)
 router.register(r'attributes/float', views.FloatAttributeAPI)
 router.register(r'attributes/int', views.IntegerAttributeAPI)
 router.register(r'attributes/url', views.URLAttributeAPI)
-
-# router.register(r'statuses', views.St)
-
-#     path('api/status/', apiviews.BatchStatusListCreateAPIView.as_view(), name='api.status_list'),
+router.register(r'attributes/lat-long', views.LatLongAttributeAPI)
 
 app_name = "crunch"
 urlpatterns = [

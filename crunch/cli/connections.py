@@ -102,7 +102,7 @@ class Connection():
             key=key,
             value=value,
             verbose=verbose,
-        )                        
+        )                  
 
     def add_url_attribute(self, project:str, dataset:str, key:str, value:str, verbose=False):
         return self.add_key_value_attribute(
@@ -111,7 +111,20 @@ class Connection():
             key=key,
             value=value,
             verbose=verbose,
-        )                                
+        )       
+
+    def add_lat_long_attribute(self, project:str, dataset:str, key:str, latitude, longitude, verbose=False):
+        if verbose:
+            console.print(f"Adding attribute '{key}'->'{latitude},{longitude}' to dataset '{dataset}' in project '{project}' on the hosted site {self.base_url}")
+
+        return self.post(
+            relative_url="api/attributes/lat-long/",
+            dataset=dataset,
+            key=key,
+            latitude=latitude,
+            longitude=longitude,
+            verbose=verbose,
+        )
 
     def send_status(self, dataset_id, stage, state, note=""):
         if isinstance(stage, enum.Enum):
