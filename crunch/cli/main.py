@@ -149,20 +149,8 @@ def add_project(
     project:str,
     url:str = url_arg,
     token:str = token_arg,
-):
-    """
-    Adds a new project to the hosted site.
-    """
-    console.print(f"Adding project '{project}' on the hosted site {url}.")
-
-
-@app.command()
-def add_project(
-    project:str,
-    url:str = url_arg,
-    token:str = token_arg,
-    description:str = "",
-    details:str = "",
+    description:str = typer.Option("", help="A brief description of this new project."),
+    details:str = typer.Option("", help="A long description of this project in Markdown format."),
     verbose:bool = True,
 ):
     """
@@ -178,8 +166,8 @@ def add_dataset(
     project:str,
     url:str = url_arg,
     token:str = token_arg,
-    description:str = "",
-    details:str = "",
+    description:str = typer.Option("", help="A brief description of this new dataset."),
+    details:str = typer.Option("", help="A long description of this dataset in Markdown format."),
     verbose:bool = True,
 ):
     """
@@ -270,7 +258,7 @@ def add_integer_attribute(
     verbose:bool = True,
 ):
     """
-    Adds a new int attribute to a dataset.
+    Adds a new integer attribute to a dataset.
     """
     connection = connections.Connection(url, token)
     return connection.add_integer_attribute(project=project, dataset=dataset, key=key, value=value, verbose=verbose)
@@ -287,7 +275,7 @@ def add_url_attribute(
     verbose:bool = True,
 ):
     """
-    Adds a new int attribute to a dataset.
+    Adds a new URL attribute to a dataset.
     """
     connection = connections.Connection(url, token)
     return connection.add_url_attribute(project=project, dataset=dataset, key=key, value=value, verbose=verbose)
@@ -298,7 +286,4 @@ def diagnostics():
     """ Display system diagnostics. """
     console.print( get_diagnostics() )
 
-
-
-
-    
+typer_click_object = typer.main.get_command(app)
