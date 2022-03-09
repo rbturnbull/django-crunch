@@ -21,17 +21,17 @@ class NoDatasets(Exception):
 
 app = typer.Typer()
 
-url_arg = typer.Argument(..., envvar="CRUNCH_URL", help="The URL for the endpoint for the project on the hosted site.")
-token_arg = typer.Argument(..., envvar="CRUNCH_TOKEN", help="An access token for a user on the hosted site.")
+url_arg = typer.Option(..., envvar="CRUNCH_URL", help="The URL for the endpoint for the project on the hosted site.")
+token_arg = typer.Option(..., envvar="CRUNCH_TOKEN", help="An access token for a user on the hosted site.")
 
 @app.command()
 def run(
     project:str,
     dataset:str,
-    url:str = url_arg,
-    token:str = token_arg,
     directory:Path = None,
     cores:str = "1",
+    url:str = url_arg,
+    token:str = token_arg,
 ):
     """
     Processes a dataset.
@@ -109,10 +109,10 @@ def run(
 
 @app.command()
 def next(
-    url:str = url_arg,
-    token:str = token_arg,
     directory:Path = None,
     cores:str = "1",
+    url:str = url_arg,
+    token:str = token_arg,
 ):
     """
     Processes the next dataset in a project.
@@ -128,10 +128,10 @@ def next(
 
 @app.command()
 def loop(
-    url:str = url_arg,
-    token:str = token_arg,
     directory:Path = None,
     cores:str = "1",
+    url:str = url_arg,
+    token:str = token_arg,
 ):
     """
     Loops through all the datasets in a project and stops when complete.
@@ -147,11 +147,11 @@ def loop(
 @app.command()
 def add_project(
     project:str,
-    url:str = url_arg,
-    token:str = token_arg,
     description:str = typer.Option("", help="A brief description of this new project."),
     details:str = typer.Option("", help="A long description of this project in Markdown format."),
     verbose:bool = True,
+    url:str = url_arg,
+    token:str = token_arg,
 ):
     """
     Adds a new project on the hosted site.
@@ -164,11 +164,11 @@ def add_project(
 def add_dataset(
     dataset:str,
     project:str,
-    url:str = url_arg,
-    token:str = token_arg,
     description:str = typer.Option("", help="A brief description of this new dataset."),
     details:str = typer.Option("", help="A long description of this dataset in Markdown format."),
     verbose:bool = True,
+    url:str = url_arg,
+    token:str = token_arg,
 ):
     """
     Adds a new dataset to a project on the hosted site.
@@ -183,9 +183,9 @@ def add_char_attribute(
     project:str,
     key:str,
     value:str,
+    verbose:bool = True,
     url:str = url_arg,
     token:str = token_arg,
-    verbose:bool = True,
 ):
     """
     Adds a new char attribute to a dataset.
@@ -200,9 +200,9 @@ def add_float_attribute(
     project:str,
     key:str,
     value:float,
+    verbose:bool = True,
     url:str = url_arg,
     token:str = token_arg,
-    verbose:bool = True,
 ):
     """
     Adds a new float attribute to a dataset.
@@ -218,9 +218,9 @@ def add_datetime_attribute(
     key:str,
     value:str,
     format:str="",
+    verbose:bool = True,
     url:str = url_arg,
     token:str = token_arg,
-    verbose:bool = True,
 ):
     """
     Adds a new datetime attribute to a dataset.
@@ -236,9 +236,9 @@ def add_lat_long_attribute(
     key:str,
     latitude:str,
     longitude:str,
+    verbose:bool = True,
     url:str = url_arg,
     token:str = token_arg,
-    verbose:bool = True,
 ):
     """
     Adds a new lat-long attribute to a dataset.
@@ -253,9 +253,9 @@ def add_integer_attribute(
     project:str,
     key:str,
     value:int,
+    verbose:bool = True,
     url:str = url_arg,
     token:str = token_arg,
-    verbose:bool = True,
 ):
     """
     Adds a new integer attribute to a dataset.
@@ -270,9 +270,9 @@ def add_url_attribute(
     project:str,
     key:str,
     value:str,
+    verbose:bool = True,
     url:str = url_arg,
     token:str = token_arg,
-    verbose:bool = True,
 ):
     """
     Adds a new URL attribute to a dataset.

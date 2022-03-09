@@ -1,1 +1,1 @@
-poetry run sphinx-build -b html docs docshtml
+poetry run sphinx-build -E -b html docs docshtml
