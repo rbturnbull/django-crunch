@@ -16,11 +16,22 @@ class Connection():
     """
     An object to manage calls to the REST API of a crunch hosted site.
     """
-    def __init__(self, base_url, token):
+    def __init__(self, base_url:str, token:str):
         self.base_url = base_url
         self.token = token
 
-    def get_headers(self):
+    def get_headers(self) -> dict:
+        """
+        Creates the headers needed to API calls to the REST API on a crunch hosted site.
+
+        Used internally when making GET and POST requests using this class.
+
+        Raises:
+            CrunchAPIException: Raised if no valid token is available.
+
+        Returns:
+            dict: The headers for API calls as a Python dictionary.
+        """
         if not self.token:
             raise CrunchAPIException(f"Please give an authentication token either through a command line argument or the CRUNCH_TOKEN environment variable.")
 
@@ -36,7 +47,7 @@ class Connection():
         url = f"{self.base_url}/{relative_url}"
         return url
 
-    def post(self, relative_url, verbose=False, **kwargs) -> requests.Response:
+    def post(self, relative_url:str, verbose:bool=False, **kwargs) -> requests.Response:
         url = self.absolute_url(relative_url) 
         result = requests.post(url, headers=self.get_headers(), data=kwargs)
         if verbose:
@@ -54,7 +65,7 @@ class Connection():
             verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
 
         Returns:
-             requests.Response: The request object from posting to the crunch API.
+            requests.Response: The request object from posting to the crunch API.
         """
         if verbose:
             console.print(f"Adding project '{project}' on the site {self.base_url}")
@@ -68,6 +79,19 @@ class Connection():
         )
 
     def add_dataset(self, project:str, dataset:str, description:str="", details:str="", verbose:bool=False) -> requests.Response:
+        """
+        Creates a new dataset and adds it to a project on a hosted django-crunch site.
+
+        Args:
+            project (str): The slug of the project that this dataset is to be added to.
+            dataset (str): The name of the new dataset.
+            description (str, optional): A brief description of this new dataset. Defaults to "".
+            details (str, optional): A long description of this dataset in Markdown format. Defaults to "".
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
         if verbose:
             console.print(f"Adding dataset '{dataset}' to project '{project}' on the site {self.base_url}")
 
@@ -81,6 +105,22 @@ class Connection():
         )
 
     def add_key_value_attribute(self, url:str, project:str, dataset:str, key:str, value, verbose:bool=False) -> requests.Response:
+        """
+        Adds an attribute as a key/value pair on a dataset. 
+        
+        This is mainly used by other methods on this class to add attributes with specific types.
+
+        Args:
+            url (str): The relative URL for adding this type of attribute on the crunch site. For this, see urls.py in the crunch Django app.
+            project (str): The slug for the project.
+            dataset (str): The slug for the dataset.
+            key (str): The key for this attribute.
+            value: The data to be used for this attribute. The object needs to be serializable.
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
         if verbose:
             console.print(f"Adding attribute '{key}'->'{value}' to dataset '{dataset}' in project '{project}' on the hosted site {self.base_url}")
 
@@ -93,6 +133,19 @@ class Connection():
         )
 
     def add_char_attribute(self, project:str, dataset:str, key:str, value:str, verbose:bool=False) -> requests.Response:
+        """
+        Adds an attribute as a key/value pair on a dataset when the value is a string of characters. 
+
+        Args:
+            project (str): The slug for the project.
+            dataset (str): The slug for the dataset.
+            key (str): The key for this attribute.
+            value (str): The string of characters for this attribute.
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
         return self.add_key_value_attribute(
             url="api/attributes/char/", 
             project=project,
@@ -103,6 +156,19 @@ class Connection():
         )        
 
     def add_float_attribute(self, project:str, dataset:str, key:str, value:float, verbose:bool=False) -> requests.Response:
+        """
+        Adds an attribute as a key/value pair on a dataset when the value is a float. 
+
+        Args:
+            project (str): The slug for the project.
+            dataset (str): The slug for the dataset.
+            key (str): The key for this attribute.
+            value (str): The float value for this attribute.
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
         return self.add_key_value_attribute(
             url="api/attributes/float/", 
             project=project,

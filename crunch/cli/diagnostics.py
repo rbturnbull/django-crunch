@@ -18,13 +18,19 @@ def version() -> str:
 
 
 # Return the git revision as a string
-def git_revision(cwd=None):
+def git_revision(directory:Path=None) -> str:
     """
-    Gets the git revision hash for the working directory of this file.
+    Gets the git revision hash for a directory.
 
     Adapted from https://stackoverflow.com/a/40170206 which was taken from NumPy.
+
+    Args:
+        directory (Path, optional): The directory we are interested in. Defaults to None in which case it uses the directory of the current source file.
+
+    Returns:
+        str: The git hash for the current revision.
     """
-    cwd = cwd or Path(__file__).parent
+    directory = directory or Path(__file__).parent
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
         env = {}
@@ -36,7 +42,7 @@ def git_revision(cwd=None):
         env['LANGUAGE'] = 'C'
         env['LANG'] = 'C'
         env['LC_ALL'] = 'C'
-        out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env, cwd=cwd).communicate()[0]
+        out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env, cwd=directory).communicate()[0]
         return out
 
     try:
@@ -47,7 +53,7 @@ def git_revision(cwd=None):
 
     return GIT_REVISION
 
-def get_diagnostic(diagnostics, key, func, default=""):
+def get_diagnostic(diagnostics:dict, key:str, func, default=""):
     try:
         result = func()
     except Exception:

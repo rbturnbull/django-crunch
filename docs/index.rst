@@ -3,9 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to django-crunch's documentation!
+django-crunch
 =========================================
 
+A data processing orcestration tool.
+Crunch allows you to visualize the datasets, orchestrate and manage the processing online and present the results to the world.
+The main usecase is for crunching a number of datasets that need to be processed with the same workflow which do not fit on disk.
 
 
 .. toctree::
