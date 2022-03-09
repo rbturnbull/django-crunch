@@ -40,6 +40,13 @@ python-dateutil = "^2.8.2"
 pytest = "^6.2.5"
 ipykernel = "^6.6.1"
 Sphinx = "^4.4.0"
+sphinx-click = "^3.1.0"
+nbsphinx = "^0.8.7"
+sphinx-rtd-theme = "^1.0.0"
+sphinx-autobuild = "^2021.3.14"
+sphinx-copybutton = "^0.4.0"
+sphinxcontrib-mermaid = "^0.7.1"
+myst-parser = "^0.17.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

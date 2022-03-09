@@ -5,7 +5,13 @@ import os
 from pathlib import Path
 import subprocess
 
-def version():
+def version() -> str:
+    """
+    Gets the version number of the django-crunch module.
+
+    Returns:
+        str: The current version.
+    """
     import importlib.metadata
     version = importlib.metadata.version("django-crunch")
     return version
@@ -14,9 +20,9 @@ def version():
 # Return the git revision as a string
 def git_revision(cwd=None):
     """
-    Gets the git revision hash for the working directory of this file
+    Gets the git revision hash for the working directory of this file.
 
-    Adapted from https://stackoverflow.com/a/40170206 which was taken from NumPy
+    Adapted from https://stackoverflow.com/a/40170206 which was taken from NumPy.
     """
     cwd = cwd or Path(__file__).parent
     def _minimal_ext_cmd(cmd):
@@ -41,7 +47,6 @@ def git_revision(cwd=None):
 
     return GIT_REVISION
 
-
 def get_diagnostic(diagnostics, key, func, default=""):
     try:
         result = func()
@@ -50,7 +55,15 @@ def get_diagnostic(diagnostics, key, func, default=""):
     diagnostics[key] = result
     return result
 
-def get_diagnostics():
+def get_diagnostics() -> dict:
+    """
+    Gets diagnostic information about the current environment.
+
+    Used when sending status updates to a crunch hosted site.
+
+    Returns:
+        dict: A dictionary with the diagnostic information.
+    """
     diagnostics = dict()
 
     # adapts code from here: https://stackoverflow.com/questions/3103178/how-to-get-the-system-info-with-python

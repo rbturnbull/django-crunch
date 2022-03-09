@@ -13,6 +13,9 @@ class CrunchAPIException(Exception):
 
 
 class Connection():
+    """
+    An object to manage calls to the REST API of a crunch hosted site.
+    """
     def __init__(self, base_url, token):
         self.base_url = base_url
         self.token = token
@@ -33,14 +36,26 @@ class Connection():
         url = f"{self.base_url}/{relative_url}"
         return url
 
-    def post(self, relative_url, verbose=False, **kwargs):
+    def post(self, relative_url, verbose=False, **kwargs) -> requests.Response:
         url = self.absolute_url(relative_url) 
         result = requests.post(url, headers=self.get_headers(), data=kwargs)
         if verbose:
             console.print(f"Response {result.status_code}: {result.reason}")
         return result
 
-    def add_project(self, project:str, description:str="", details:str="", verbose=False):
+    def add_project(self, project:str, description:str="", details:str="", verbose:bool=False) -> requests.Response:
+        """
+        Creates a new project on a hosted django-crunch site.
+
+        Args:
+            project (str): The name of the new crunch project.
+            description (str, optional): A brief description of this new project. Defaults to "".
+            details (str, optional): A long description of this project in Markdown format. Defaults to "".
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+             requests.Response: The request object from posting to the crunch API.
+        """
         if verbose:
             console.print(f"Adding project '{project}' on the site {self.base_url}")
 
@@ -52,7 +67,7 @@ class Connection():
             verbose=verbose,
         )
 
-    def add_dataset(self, project:str, dataset:str, description:str="", details:str="", verbose=False):
+    def add_dataset(self, project:str, dataset:str, description:str="", details:str="", verbose:bool=False) -> requests.Response:
         if verbose:
             console.print(f"Adding dataset '{dataset}' to project '{project}' on the site {self.base_url}")
 
@@ -65,7 +80,7 @@ class Connection():
             verbose=verbose,
         )
 
-    def add_key_value_attribute(self, url:str, project:str, dataset:str, key:str, value, verbose=False):
+    def add_key_value_attribute(self, url:str, project:str, dataset:str, key:str, value, verbose:bool=False) -> requests.Response:
         if verbose:
             console.print(f"Adding attribute '{key}'->'{value}' to dataset '{dataset}' in project '{project}' on the hosted site {self.base_url}")
 
@@ -77,7 +92,7 @@ class Connection():
             verbose=verbose,
         )
 
-    def add_char_attribute(self, project:str, dataset:str, key:str, value:str, verbose=False):
+    def add_char_attribute(self, project:str, dataset:str, key:str, value:str, verbose:bool=False) -> requests.Response:
         return self.add_key_value_attribute(
             url="api/attributes/char/", 
             project=project,
@@ -87,7 +102,7 @@ class Connection():
             verbose=verbose,
         )        
 
-    def add_float_attribute(self, project:str, dataset:str, key:str, value:float, verbose=False):
+    def add_float_attribute(self, project:str, dataset:str, key:str, value:float, verbose:bool=False) -> requests.Response:
         return self.add_key_value_attribute(
             url="api/attributes/float/", 
             project=project,
@@ -97,7 +112,7 @@ class Connection():
             verbose=verbose,
         )                
 
-    def add_datetime_attribute(self, project:str, dataset:str, key:str, value, format:str="", verbose=False):
+    def add_datetime_attribute(self, project:str, dataset:str, key:str, value, format:str="", verbose:bool=False) -> requests.Response:
         if isinstance(value, str):
             if format:
                 from datetime import datetime
@@ -115,7 +130,7 @@ class Connection():
             verbose=verbose,
         )                
 
-    def add_integer_attribute(self, project:str, dataset:str, key:str, value:int, verbose=False):
+    def add_integer_attribute(self, project:str, dataset:str, key:str, value:int, verbose:bool=False) -> requests.Response:
         return self.add_key_value_attribute(
             url="api/attributes/int/", 
             project=project,
@@ -125,7 +140,7 @@ class Connection():
             verbose=verbose,
         )                  
 
-    def add_url_attribute(self, project:str, dataset:str, key:str, value:str, verbose=False):
+    def add_url_attribute(self, project:str, dataset:str, key:str, value:str, verbose:bool=False) -> requests.Response:
         return self.add_key_value_attribute(
             url="api/attributes/int/", 
             project=project,
@@ -135,7 +150,7 @@ class Connection():
             verbose=verbose,
         )       
 
-    def add_lat_long_attribute(self, project:str, dataset:str, key:str, latitude, longitude, verbose=False):
+    def add_lat_long_attribute(self, project:str, dataset:str, key:str, latitude, longitude, verbose:bool=False) -> requests.Response:
         if verbose:
             console.print(f"Adding attribute '{key}'->'{latitude},{longitude}' to dataset '{dataset}' in project '{project}' on the hosted site {self.base_url}")
 
