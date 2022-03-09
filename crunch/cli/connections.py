@@ -1,5 +1,8 @@
+from typing import Union
+from unicodedata import decimal
 import requests
 import enum
+from datetime import datetime
 
 from rich.console import Console
 
@@ -178,10 +181,23 @@ class Connection():
             verbose=verbose,
         )                
 
-    def add_datetime_attribute(self, project:str, dataset:str, key:str, value, format:str="", verbose:bool=False) -> requests.Response:
+    def add_datetime_attribute(self, project:str, dataset:str, key:str, value:Union[datetime,str], format:str="", verbose:bool=False) -> requests.Response:
+        """
+        Adds an attribute as a key/value pair on a dataset when the value is a datetime. 
+
+        Args:
+            project (str): The slug for the project.
+            dataset (str): The slug for the dataset.
+            key (str): The key for this attribute.
+            value (Union[datetime,str]): The value for this attribute as a datetime or a string.
+            format (str): If the `value` is a string then this format string can be used with datetime.strptime to convert to a datetime object. If no format is given then the string is interpreted using dateutil.parser.
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
         if isinstance(value, str):
             if format:
-                from datetime import datetime
                 value = datetime.strptime(value, format)
             else:
                 from dateutil import parser
@@ -197,6 +213,19 @@ class Connection():
         )                
 
     def add_integer_attribute(self, project:str, dataset:str, key:str, value:int, verbose:bool=False) -> requests.Response:
+        """
+        Adds an attribute as a key/value pair on a dataset when the value is an integer. 
+
+        Args:
+            project (str): The slug for the project.
+            dataset (str): The slug for the dataset.
+            key (str): The key for this attribute.
+            value (str): The integer value for this attribute.
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
         return self.add_key_value_attribute(
             url="api/attributes/int/", 
             project=project,
@@ -207,6 +236,19 @@ class Connection():
         )                  
 
     def add_url_attribute(self, project:str, dataset:str, key:str, value:str, verbose:bool=False) -> requests.Response:
+        """
+        Adds an attribute as a key/value pair on a dataset when the value is a URL. 
+
+        Args:
+            project (str): The slug for the project.
+            dataset (str): The slug for the dataset.
+            key (str): The key for this attribute.
+            value (str): The str value for this attribute.
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
         return self.add_key_value_attribute(
             url="api/attributes/int/", 
             project=project,
@@ -216,7 +258,21 @@ class Connection():
             verbose=verbose,
         )       
 
-    def add_lat_long_attribute(self, project:str, dataset:str, key:str, latitude, longitude, verbose:bool=False) -> requests.Response:
+    def add_lat_long_attribute(self, project:str, dataset:str, key:str, latitude:Union[str,float,decimal], longitude:Union[str,float,decimal], verbose:bool=False) -> requests.Response:
+        """
+        Adds an attribute as a key/value pair on a dataset when the value is a coordinate with latitude and longitude. 
+
+        Args:
+            project (str): The slug for the project.
+            dataset (str): The slug for the dataset.
+            key (str): The key for this attribute.
+            latitude (Union[str,float,decimal]): The latitude for this coordinate.
+            longitude (Union[str,float,decimal]): The longitude for this coordinate.
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
         if verbose:
             console.print(f"Adding attribute '{key}'->'{latitude},{longitude}' to dataset '{dataset}' in project '{project}' on the hosted site {self.base_url}")
 
