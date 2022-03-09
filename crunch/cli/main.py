@@ -21,8 +21,13 @@ class NoDatasets(Exception):
 
 app = typer.Typer()
 
-url_arg = typer.Option(..., envvar="CRUNCH_URL", help="The URL for the endpoint for the project on the hosted site.")
-token_arg = typer.Option(..., envvar="CRUNCH_TOKEN", help="An access token for a user on the hosted site.")
+url_arg = typer.Option(..., envvar="CRUNCH_URL", help="The URL for the endpoint for the project on the hosted site.", prompt=True)
+token_arg = typer.Option(..., envvar="CRUNCH_TOKEN", help="An access token for a user on the hosted site.", prompt=True)
+project_slug_arg = typer.Argument(..., help="The slug for the project the dataset is in.")
+dataset_slug_arg = typer.Argument(..., help="The slug for the dataset.")
+key_arg = typer.Argument(..., help="The key for this attribute.")
+value_arg = typer.Argument(..., help="The value of this attribute.")
+
 
 @app.command()
 def run(
@@ -146,7 +151,7 @@ def loop(
 
 @app.command()
 def add_project(
-    project:str,
+    project:str = typer.Argument(..., help="The name of the new crunch project."),
     description:str = typer.Option("", help="A brief description of this new project."),
     details:str = typer.Option("", help="A long description of this project in Markdown format."),
     verbose:bool = True,
@@ -162,8 +167,8 @@ def add_project(
 
 @app.command()
 def add_dataset(
-    dataset:str,
-    project:str,
+    project:str = typer.Argument(..., help="The slug of the project that this dataset is to be added to."),
+    dataset:str = typer.Argument(..., help="The name of the new dataset"),
     description:str = typer.Option("", help="A brief description of this new dataset."),
     details:str = typer.Option("", help="A long description of this dataset in Markdown format."),
     verbose:bool = True,
@@ -176,13 +181,12 @@ def add_dataset(
     connection = connections.Connection(url, token)
     return connection.add_dataset(project=project, dataset=dataset, description=description, details=details, verbose=verbose)
 
-
 @app.command()
 def add_char_attribute(
-    dataset:str,
-    project:str,
-    key:str,
-    value:str,
+    project:str = project_slug_arg,
+    dataset:str = dataset_slug_arg,
+    key:str = key_arg,
+    value:str = value_arg,
     verbose:bool = True,
     url:str = url_arg,
     token:str = token_arg,
@@ -196,10 +200,10 @@ def add_char_attribute(
 
 @app.command()
 def add_float_attribute(
-    dataset:str,
-    project:str,
-    key:str,
-    value:float,
+    project:str = project_slug_arg,
+    dataset:str = dataset_slug_arg,
+    key:str = key_arg,
+    value:float = value_arg,
     verbose:bool = True,
     url:str = url_arg,
     token:str = token_arg,
@@ -213,10 +217,10 @@ def add_float_attribute(
 
 @app.command()
 def add_datetime_attribute(
-    dataset:str,
-    project:str,
-    key:str,
-    value:str,
+    project:str = project_slug_arg,
+    dataset:str = dataset_slug_arg,
+    key:str = key_arg,
+    value:str = value_arg,
     format:str="",
     verbose:bool = True,
     url:str = url_arg,
@@ -231,17 +235,17 @@ def add_datetime_attribute(
 
 @app.command()
 def add_lat_long_attribute(
-    dataset:str,
-    project:str,
-    key:str,
-    latitude:str,
-    longitude:str,
+    project:str = project_slug_arg,
+    dataset:str = dataset_slug_arg,
+    key:str = key_arg,
+    latitude:str = typer.Argument(..., help="The latitude of the coordinate in decimal degrees."),
+    longitude:str = typer.Argument(..., help="The longitude of the coordinate in decimal degrees."),
     verbose:bool = True,
     url:str = url_arg,
     token:str = token_arg,
 ):
     """
-    Adds a new lat-long attribute to a dataset.
+    Adds a new lat-long coorinate as an attribute to a dataset.
     """
     connection = connections.Connection(url, token)
     return connection.add_lat_long_attribute(project=project, dataset=dataset, key=key, latitude=latitude, longitude=longitude, verbose=verbose)
@@ -249,10 +253,10 @@ def add_lat_long_attribute(
 
 @app.command()
 def add_integer_attribute(
-    dataset:str,
-    project:str,
-    key:str,
-    value:int,
+    project:str = project_slug_arg,
+    dataset:str = dataset_slug_arg,
+    key:str = key_arg,
+    value:int = value_arg,
     verbose:bool = True,
     url:str = url_arg,
     token:str = token_arg,
@@ -266,10 +270,10 @@ def add_integer_attribute(
 
 @app.command()
 def add_url_attribute(
-    dataset:str,
-    project:str,
-    key:str,
-    value:str,
+    project:str = project_slug_arg,
+    dataset:str = dataset_slug_arg,
+    key:str = key_arg,
+    value:str = value_arg,
     verbose:bool = True,
     url:str = url_arg,
     token:str = token_arg,
