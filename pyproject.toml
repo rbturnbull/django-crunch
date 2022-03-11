@@ -35,6 +35,7 @@ djangocms-page-meta = "^1.0.1"
 django-next-prev = "^1.1.0"
 python-dateutil = "^2.8.2"
 django-storages = {extras = ["boto3"], version = "^1.12.2"}
+ipykernel = "^6.9.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
