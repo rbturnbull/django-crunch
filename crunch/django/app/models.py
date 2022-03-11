@@ -11,7 +11,7 @@ from polymorphic.models import PolymorphicModel
 from django_extensions.db.models import TimeStampedModel
 from next_prev import next_in_order, prev_in_order
 
-from . import enums, storage
+from . import enums, storages
 
 def OptionalCharField(max_length=255, default="", blank=True, **kwargs):
     return models.CharField(max_length=max_length, default=default, blank=blank, **kwargs)
@@ -76,7 +76,7 @@ class Dataset(NextPrevMixin, TimeStampedModel, PolymorphicModel):
         return Path('crunch', self.project.slug, self.slug)
 
     def files(self):
-        return storage.django_storage_walk(self.base_file_path())
+        return storages.storage_walk(self.base_file_path())
 
 
 class Status(NextPrevMixin, TimeStampedModel):

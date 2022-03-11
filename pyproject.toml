@@ -34,7 +34,7 @@ djangocms-bootstrap4 = "^2.0.0"
 djangocms-page-meta = "^1.0.1"
 django-next-prev = "^1.1.0"
 python-dateutil = "^2.8.2"
-
+django-storages = {extras = ["boto3"], version = "^1.12.2"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
@@ -53,5 +53,5 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-crunch = "crunch.cli.main:app"
+crunch = "crunch.client.main:app"
 crunchsite = "crunch.django.proj.manage:main"

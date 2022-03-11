@@ -9,6 +9,7 @@ from rich.console import Console
 
 console = Console()
 
+from crunch.django.app import storages
 from . import connections
 from .diagnostics import get_diagnostics
 
@@ -78,6 +79,7 @@ def run(
             json.dump(project_data, f, ensure_ascii=False, indent=4)
 
         # pull data
+        storage = 
 
         # get snakefile
         with open(directory/'Snakefile', 'w', encoding='utf-8') as f:
