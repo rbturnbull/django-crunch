@@ -42,7 +42,24 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Command Line Interface Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Command Line Interface Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#crunch">crunch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-add-char-attribute">add-char-attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-add-dataset">add-dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-add-datetime-attribute">add-datetime-attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-add-float-attribute">add-float-attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-add-integer-attribute">add-integer-attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-add-lat-long-attribute">add-lat-long-attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-add-project">add-project</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-add-url-attribute">add-url-attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-diagnostics">diagnostics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-loop">loop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-next">next</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-run">run</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 </ul>
 
@@ -72,6 +89,843 @@
              
   <section id="command-line-interface-reference">
 <h1>Command Line Interface Reference<a class="headerlink" href="#command-line-interface-reference" title="Permalink to this headline"></a></h1>
+<section id="crunch">
+<h2>crunch<a class="headerlink" href="#crunch" title="Permalink to this headline"></a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch <span class="o">[</span>OPTIONS<span class="o">]</span> COMMAND <span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-install-completion">
+<span class="sig-name descname"><span class="pre">--install-completion</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-install-completion" title="Permalink to this definition"></a></dt>
+<dd><p>Install completion for the current shell.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-show-completion">
+<span class="sig-name descname"><span class="pre">--show-completion</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-show-completion" title="Permalink to this definition"></a></dt>
+<dd><p>Show completion for the current shell, to copy it or customize the installation.</p>
+</dd></dl>
+
+<section id="crunch-add-char-attribute">
+<h3>add-char-attribute<a class="headerlink" href="#crunch-add-char-attribute" title="Permalink to this headline"></a></h3>
+<p>Adds a new char attribute to a dataset.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-char-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> PROJECT DATASET KEY VALUE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-char-attribute-verbose">
+<span id="cmdoption-crunch-add-char-attribute-no-verbose"></span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-char-attribute-verbose" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-char-attribute-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-char-attribute-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-char-attribute-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-char-attribute-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-char-attribute-arg-PROJECT">
+<span id="cmdoption-crunch-add-char-attribute-arg-project"></span><span class="sig-name descname"><span class="pre">PROJECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-char-attribute-arg-PROJECT" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the project the dataset is in.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-char-attribute-arg-DATASET">
+<span id="cmdoption-crunch-add-char-attribute-arg-dataset"></span><span class="sig-name descname"><span class="pre">DATASET</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-char-attribute-arg-DATASET" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the dataset.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-char-attribute-arg-KEY">
+<span id="cmdoption-crunch-add-char-attribute-arg-key"></span><span class="sig-name descname"><span class="pre">KEY</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-char-attribute-arg-KEY" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The key for this attribute.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-char-attribute-arg-VALUE">
+<span id="cmdoption-crunch-add-char-attribute-arg-value"></span><span class="sig-name descname"><span class="pre">VALUE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-char-attribute-arg-VALUE" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The value of this attribute.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-add-char-attribute-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-char-attribute-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-add-char-attribute-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-char-attribute-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="crunch-add-dataset">
+<h3>add-dataset<a class="headerlink" href="#crunch-add-dataset" title="Permalink to this headline"></a></h3>
+<p>Adds a new dataset to a project on the hosted site.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-dataset <span class="o">[</span>OPTIONS<span class="o">]</span> PROJECT DATASET
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-dataset-description">
+<span class="sig-name descname"><span class="pre">--description</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;description&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-dataset-description" title="Permalink to this definition"></a></dt>
+<dd><p>A brief description of this new dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-dataset-details">
+<span class="sig-name descname"><span class="pre">--details</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;details&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-dataset-details" title="Permalink to this definition"></a></dt>
+<dd><p>A long description of this dataset in Markdown format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-dataset-verbose">
+<span id="cmdoption-crunch-add-dataset-no-verbose"></span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-dataset-verbose" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-dataset-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-dataset-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-dataset-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-dataset-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-dataset-arg-PROJECT">
+<span id="cmdoption-crunch-add-dataset-arg-project"></span><span class="sig-name descname"><span class="pre">PROJECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-dataset-arg-PROJECT" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug of the project that this dataset is to be added to.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-dataset-arg-DATASET">
+<span id="cmdoption-crunch-add-dataset-arg-dataset"></span><span class="sig-name descname"><span class="pre">DATASET</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-dataset-arg-DATASET" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The name of the new dataset</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-add-dataset-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-dataset-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-add-dataset-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-dataset-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="crunch-add-datetime-attribute">
+<h3>add-datetime-attribute<a class="headerlink" href="#crunch-add-datetime-attribute" title="Permalink to this headline"></a></h3>
+<p>Adds a new datetime attribute to a dataset.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-datetime-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> PROJECT DATASET KEY VALUE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-datetime-attribute-format">
+<span class="sig-name descname"><span class="pre">--format</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-datetime-attribute-format" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-datetime-attribute-verbose">
+<span id="cmdoption-crunch-add-datetime-attribute-no-verbose"></span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-datetime-attribute-verbose" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-datetime-attribute-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-datetime-attribute-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-datetime-attribute-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-datetime-attribute-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-datetime-attribute-arg-PROJECT">
+<span id="cmdoption-crunch-add-datetime-attribute-arg-project"></span><span class="sig-name descname"><span class="pre">PROJECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-datetime-attribute-arg-PROJECT" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the project the dataset is in.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-datetime-attribute-arg-DATASET">
+<span id="cmdoption-crunch-add-datetime-attribute-arg-dataset"></span><span class="sig-name descname"><span class="pre">DATASET</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-datetime-attribute-arg-DATASET" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the dataset.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-datetime-attribute-arg-KEY">
+<span id="cmdoption-crunch-add-datetime-attribute-arg-key"></span><span class="sig-name descname"><span class="pre">KEY</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-datetime-attribute-arg-KEY" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The key for this attribute.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-datetime-attribute-arg-VALUE">
+<span id="cmdoption-crunch-add-datetime-attribute-arg-value"></span><span class="sig-name descname"><span class="pre">VALUE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-datetime-attribute-arg-VALUE" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The value of this attribute.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-add-datetime-attribute-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-datetime-attribute-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-add-datetime-attribute-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-datetime-attribute-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="crunch-add-float-attribute">
+<h3>add-float-attribute<a class="headerlink" href="#crunch-add-float-attribute" title="Permalink to this headline"></a></h3>
+<p>Adds a new float attribute to a dataset.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-float-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> PROJECT DATASET KEY VALUE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-float-attribute-verbose">
+<span id="cmdoption-crunch-add-float-attribute-no-verbose"></span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-float-attribute-verbose" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-float-attribute-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-float-attribute-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-float-attribute-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-float-attribute-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-float-attribute-arg-PROJECT">
+<span id="cmdoption-crunch-add-float-attribute-arg-project"></span><span class="sig-name descname"><span class="pre">PROJECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-float-attribute-arg-PROJECT" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the project the dataset is in.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-float-attribute-arg-DATASET">
+<span id="cmdoption-crunch-add-float-attribute-arg-dataset"></span><span class="sig-name descname"><span class="pre">DATASET</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-float-attribute-arg-DATASET" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the dataset.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-float-attribute-arg-KEY">
+<span id="cmdoption-crunch-add-float-attribute-arg-key"></span><span class="sig-name descname"><span class="pre">KEY</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-float-attribute-arg-KEY" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The key for this attribute.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-float-attribute-arg-VALUE">
+<span id="cmdoption-crunch-add-float-attribute-arg-value"></span><span class="sig-name descname"><span class="pre">VALUE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-float-attribute-arg-VALUE" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The value of this attribute.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-add-float-attribute-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-float-attribute-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-add-float-attribute-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-float-attribute-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="crunch-add-integer-attribute">
+<h3>add-integer-attribute<a class="headerlink" href="#crunch-add-integer-attribute" title="Permalink to this headline"></a></h3>
+<p>Adds a new integer attribute to a dataset.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-integer-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> PROJECT DATASET KEY VALUE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-integer-attribute-verbose">
+<span id="cmdoption-crunch-add-integer-attribute-no-verbose"></span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-integer-attribute-verbose" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-integer-attribute-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-integer-attribute-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-integer-attribute-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-integer-attribute-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-integer-attribute-arg-PROJECT">
+<span id="cmdoption-crunch-add-integer-attribute-arg-project"></span><span class="sig-name descname"><span class="pre">PROJECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-integer-attribute-arg-PROJECT" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the project the dataset is in.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-integer-attribute-arg-DATASET">
+<span id="cmdoption-crunch-add-integer-attribute-arg-dataset"></span><span class="sig-name descname"><span class="pre">DATASET</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-integer-attribute-arg-DATASET" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the dataset.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-integer-attribute-arg-KEY">
+<span id="cmdoption-crunch-add-integer-attribute-arg-key"></span><span class="sig-name descname"><span class="pre">KEY</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-integer-attribute-arg-KEY" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The key for this attribute.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-integer-attribute-arg-VALUE">
+<span id="cmdoption-crunch-add-integer-attribute-arg-value"></span><span class="sig-name descname"><span class="pre">VALUE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-integer-attribute-arg-VALUE" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The value of this attribute.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-add-integer-attribute-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-integer-attribute-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-add-integer-attribute-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-integer-attribute-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="crunch-add-lat-long-attribute">
+<h3>add-lat-long-attribute<a class="headerlink" href="#crunch-add-lat-long-attribute" title="Permalink to this headline"></a></h3>
+<p>Adds a new lat-long coorinate as an attribute to a dataset.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-lat-long-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> PROJECT DATASET KEY LATITUDE LONGITUDE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-lat-long-attribute-verbose">
+<span id="cmdoption-crunch-add-lat-long-attribute-no-verbose"></span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-lat-long-attribute-verbose" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-lat-long-attribute-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-lat-long-attribute-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-lat-long-attribute-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-lat-long-attribute-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-lat-long-attribute-arg-PROJECT">
+<span id="cmdoption-crunch-add-lat-long-attribute-arg-project"></span><span class="sig-name descname"><span class="pre">PROJECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-lat-long-attribute-arg-PROJECT" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the project the dataset is in.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-lat-long-attribute-arg-DATASET">
+<span id="cmdoption-crunch-add-lat-long-attribute-arg-dataset"></span><span class="sig-name descname"><span class="pre">DATASET</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-lat-long-attribute-arg-DATASET" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the dataset.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-lat-long-attribute-arg-KEY">
+<span id="cmdoption-crunch-add-lat-long-attribute-arg-key"></span><span class="sig-name descname"><span class="pre">KEY</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-lat-long-attribute-arg-KEY" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The key for this attribute.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-lat-long-attribute-arg-LATITUDE">
+<span id="cmdoption-crunch-add-lat-long-attribute-arg-latitude"></span><span class="sig-name descname"><span class="pre">LATITUDE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-lat-long-attribute-arg-LATITUDE" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The latitude of the coordinate in decimal degrees.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-lat-long-attribute-arg-LONGITUDE">
+<span id="cmdoption-crunch-add-lat-long-attribute-arg-longitude"></span><span class="sig-name descname"><span class="pre">LONGITUDE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-lat-long-attribute-arg-LONGITUDE" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The longitude of the coordinate in decimal degrees.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-add-lat-long-attribute-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-lat-long-attribute-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-add-lat-long-attribute-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-lat-long-attribute-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="crunch-add-project">
+<h3>add-project<a class="headerlink" href="#crunch-add-project" title="Permalink to this headline"></a></h3>
+<p>Adds a new project on the hosted site.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-project <span class="o">[</span>OPTIONS<span class="o">]</span> PROJECT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-project-description">
+<span class="sig-name descname"><span class="pre">--description</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;description&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-project-description" title="Permalink to this definition"></a></dt>
+<dd><p>A brief description of this new project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-project-details">
+<span class="sig-name descname"><span class="pre">--details</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;details&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-project-details" title="Permalink to this definition"></a></dt>
+<dd><p>A long description of this project in Markdown format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-project-verbose">
+<span id="cmdoption-crunch-add-project-no-verbose"></span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-project-verbose" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-project-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-project-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-project-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-project-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-project-arg-PROJECT">
+<span id="cmdoption-crunch-add-project-arg-project"></span><span class="sig-name descname"><span class="pre">PROJECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-project-arg-PROJECT" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The name of the new crunch project.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-add-project-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-project-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-add-project-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-project-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="crunch-add-url-attribute">
+<h3>add-url-attribute<a class="headerlink" href="#crunch-add-url-attribute" title="Permalink to this headline"></a></h3>
+<p>Adds a new URL attribute to a dataset.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-url-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> PROJECT DATASET KEY VALUE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-url-attribute-verbose">
+<span id="cmdoption-crunch-add-url-attribute-no-verbose"></span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-url-attribute-verbose" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-url-attribute-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-url-attribute-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-url-attribute-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-url-attribute-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-url-attribute-arg-PROJECT">
+<span id="cmdoption-crunch-add-url-attribute-arg-project"></span><span class="sig-name descname"><span class="pre">PROJECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-url-attribute-arg-PROJECT" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the project the dataset is in.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-url-attribute-arg-DATASET">
+<span id="cmdoption-crunch-add-url-attribute-arg-dataset"></span><span class="sig-name descname"><span class="pre">DATASET</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-url-attribute-arg-DATASET" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the dataset.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-url-attribute-arg-KEY">
+<span id="cmdoption-crunch-add-url-attribute-arg-key"></span><span class="sig-name descname"><span class="pre">KEY</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-url-attribute-arg-KEY" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The key for this attribute.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-url-attribute-arg-VALUE">
+<span id="cmdoption-crunch-add-url-attribute-arg-value"></span><span class="sig-name descname"><span class="pre">VALUE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-url-attribute-arg-VALUE" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The value of this attribute.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-add-url-attribute-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-url-attribute-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-add-url-attribute-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-url-attribute-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="crunch-diagnostics">
+<h3>diagnostics<a class="headerlink" href="#crunch-diagnostics" title="Permalink to this headline"></a></h3>
+<p>Display system diagnostics.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch diagnostics <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="crunch-loop">
+<h3>loop<a class="headerlink" href="#crunch-loop" title="Permalink to this headline"></a></h3>
+<p>Loops through all the datasets in a project and stops when complete.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch loop <span class="o">[</span>OPTIONS<span class="o">]</span> STORAGE_SETTINGS
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-loop-directory">
+<span class="sig-name descname"><span class="pre">--directory</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;directory&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-loop-directory" title="Permalink to this definition"></a></dt>
+<dd><p>The path to a directory to store the temporary files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>./tmp</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-loop-cores">
+<span class="sig-name descname"><span class="pre">--cores</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cores&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-loop-cores" title="Permalink to this definition"></a></dt>
+<dd><p>The maximum number of cores/jobs to use to run the workflow. If ‘all’ then it uses all available cores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-loop-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-loop-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-loop-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-loop-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-loop-arg-STORAGE_SETTINGS">
+<span id="cmdoption-crunch-loop-arg-storage-settings"></span><span class="sig-name descname"><span class="pre">STORAGE_SETTINGS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-loop-arg-STORAGE_SETTINGS" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-loop-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-loop-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-loop-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-loop-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="crunch-next">
+<h3>next<a class="headerlink" href="#crunch-next" title="Permalink to this headline"></a></h3>
+<p>Processes the next dataset in a project.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch next <span class="o">[</span>OPTIONS<span class="o">]</span> STORAGE_SETTINGS
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-next-directory">
+<span class="sig-name descname"><span class="pre">--directory</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;directory&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-next-directory" title="Permalink to this definition"></a></dt>
+<dd><p>The path to a directory to store the temporary files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>./tmp</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-next-cores">
+<span class="sig-name descname"><span class="pre">--cores</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cores&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-next-cores" title="Permalink to this definition"></a></dt>
+<dd><p>The maximum number of cores/jobs to use to run the workflow. If ‘all’ then it uses all available cores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-next-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-next-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-next-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-next-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-next-arg-STORAGE_SETTINGS">
+<span id="cmdoption-crunch-next-arg-storage-settings"></span><span class="sig-name descname"><span class="pre">STORAGE_SETTINGS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-next-arg-STORAGE_SETTINGS" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-next-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-next-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-next-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-next-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="crunch-run">
+<h3>run<a class="headerlink" href="#crunch-run" title="Permalink to this headline"></a></h3>
+<p>Processes a dataset.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch run <span class="o">[</span>OPTIONS<span class="o">]</span> PROJECT DATASET STORAGE_SETTINGS
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-run-directory">
+<span class="sig-name descname"><span class="pre">--directory</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;directory&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-run-directory" title="Permalink to this definition"></a></dt>
+<dd><p>The path to a directory to store the temporary files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>./tmp</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-run-cores">
+<span class="sig-name descname"><span class="pre">--cores</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cores&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-run-cores" title="Permalink to this definition"></a></dt>
+<dd><p>The maximum number of cores/jobs to use to run the workflow. If ‘all’ then it uses all available cores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-run-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-run-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-run-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-run-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-run-arg-PROJECT">
+<span id="cmdoption-crunch-run-arg-project"></span><span class="sig-name descname"><span class="pre">PROJECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-run-arg-PROJECT" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the project the dataset is in.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-run-arg-DATASET">
+<span id="cmdoption-crunch-run-arg-dataset"></span><span class="sig-name descname"><span class="pre">DATASET</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-run-arg-DATASET" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the dataset.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-run-arg-STORAGE_SETTINGS">
+<span id="cmdoption-crunch-run-arg-storage-settings"></span><span class="sig-name descname"><span class="pre">STORAGE_SETTINGS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-run-arg-STORAGE_SETTINGS" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage.</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-run-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-run-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-run-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-run-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+</section>
 </section>
 
 

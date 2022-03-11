@@ -5,13 +5,13 @@ API Reference
 Connections 
 =======================
 
-.. automodule:: crunch.cli.connections
+.. automodule:: crunch.client.connections
    :members:
 
 
 Diagnostics 
 =======================
 
-.. automodule:: crunch.cli.diagnostics
+.. automodule:: crunch.client.diagnostics
    :members:
 
