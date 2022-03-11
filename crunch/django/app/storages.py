@@ -52,6 +52,10 @@ def storage_walk(base="/", storage=None, error_handler=None):
     yield str(base), folders, files
 
 
+def dataset_path(project_slug, dataset_slug):
+    return Path('crunch', project_slug, dataset_slug)
+
+
 def copy_recursive_from_storage(base="/", local_dir=".", storage=None):
     base = Path(base)
     local_dir = Path(local_dir)

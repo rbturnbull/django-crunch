@@ -26,19 +26,22 @@ url_arg = typer.Option(..., envvar="CRUNCH_URL", help="The URL for the endpoint 
 token_arg = typer.Option(..., envvar="CRUNCH_TOKEN", help="An access token for a user on the hosted site.", prompt=True)
 project_slug_arg = typer.Argument(..., help="The slug for the project the dataset is in.")
 dataset_slug_arg = typer.Argument(..., help="The slug for the dataset.")
+storage_settings_arg = typer.Argument(..., help="The path to a JSON file with the Django settings for the storage.")
 key_arg = typer.Argument(..., help="The key for this attribute.")
 value_arg = typer.Argument(..., help="The value of this attribute.")
+directory_arg = typer.Option("./tmp", help="The path to a directory to store the temporary files.")
+cores_arg = typer.Option("1", help="The maximum number of cores/jobs to use to run the workflow. If 'all' then it uses all available cores.")
 
 
 @app.command()
 def run(
-    project:str,
-    dataset:str,
-    directory:Path = None,
-    cores:str = "1",
+    project:str = project_slug_arg,
+    dataset:str = dataset_slug_arg,
+    storage_settings:Path = storage_settings_arg,
+    directory:Path = directory_arg,
+    cores:str = cores_arg,
     url:str = url_arg,
     token:str = token_arg,
-    settings_kwargs:Path = None,
 ):
     """
     Processes a dataset.
@@ -49,7 +52,7 @@ def run(
     console.print(f"Processing '{dataset}' from project '{project}' at {url}.")
 
     # Create temporary dir
-    directory = directory or Path('tmp')
+    directory = Path(directory)
     directory.mkdir(exist_ok=True, parents=True)
     console.print(f"Using temporary directory '{directory}'.")
 
@@ -80,10 +83,10 @@ def run(
             json.dump(project_data, f, ensure_ascii=False, indent=4)
 
         # Setup Storage
-        if isinstance(settings_kwargs, Path):
-            with open(settings_kwargs) as json_file:
-                settings_kwargs = json.load(json_file)
-        storage = storages.get_storage_with_settings(settings_kwargs)            
+        if isinstance(storage_settings, Path):
+            with open(storage_settings) as json_file:
+                storage_settings = json.load(json_file)
+        storage = storages.get_storage_with_settings(storage_settings)            
 
         # Pull data from storage
         storage_path = storages.dataset_path( project, dataset )        
@@ -124,8 +127,9 @@ def run(
 
 @app.command()
 def next(
-    directory:Path = None,
-    cores:str = "1",
+    storage_settings:Path = storage_settings_arg,
+    directory:Path = directory_arg,
+    cores:str = cores_arg,
     url:str = url_arg,
     token:str = token_arg,
 ):
@@ -136,15 +140,24 @@ def next(
     connection = connections.Connection(url, token)
     next = connection.get_json_response( f"api/next/" )
     if 'dataset' in next and 'project' in next and next['project'] and next['dataset']:
-        return run(project=next['project'], dataset=next['dataset'], url=url, token=token, directory=directory, cores=cores)
+        return run(
+            project=next['project'], 
+            dataset=next['dataset'], 
+            storage_settings=storage_settings, 
+            url=url, 
+            token=token, 
+            directory=directory, 
+            cores=cores,
+        )
     else:
         console.print("No more datasets to process.")
 
 
 @app.command()
 def loop(
-    directory:Path = None,
-    cores:str = "1",
+    storage_settings:Path = storage_settings_arg,
+    directory:Path = directory_arg,
+    cores:str = cores_arg,
     url:str = url_arg,
     token:str = token_arg,
 ):
@@ -153,7 +166,7 @@ def loop(
     """
     console.print(f"Looping through all the datasets from {url} and will stop when complete.")
     while True:
-        result = next(url=url, token=token, directory=directory, cores=cores)
+        result = next(url=url, token=token, storage_settings=storage_settings, directory=directory, cores=cores)
         if result is None:
             console.print("Loop concluded.")
             break
