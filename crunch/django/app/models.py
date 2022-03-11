@@ -73,7 +73,7 @@ class Dataset(NextPrevMixin, TimeStampedModel, PolymorphicModel):
         return cls.unprocessed().first()
 
     def base_file_path(self):
-        return Path('crunch', self.project.slug, self.slug)
+        return storages.dataset_path( self.project.slug, self.slug )
 
     def files(self):
         return storages.storage_walk(self.base_file_path())

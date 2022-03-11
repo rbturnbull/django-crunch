@@ -38,6 +38,7 @@ def run(
     cores:str = "1",
     url:str = url_arg,
     token:str = token_arg,
+    settings_kwargs:Path = None,
 ):
     """
     Processes a dataset.
@@ -78,8 +79,15 @@ def run(
         with open(directory/'project.json', 'w', encoding='utf-8') as f:
             json.dump(project_data, f, ensure_ascii=False, indent=4)
 
-        # pull data
-        storage = 
+        # Setup Storage
+        if isinstance(settings_kwargs, Path):
+            with open(settings_kwargs) as json_file:
+                settings_kwargs = json.load(json_file)
+        storage = storages.get_storage_with_settings(settings_kwargs)            
+
+        # Pull data from storage
+        storage_path = storages.dataset_path( project, dataset )        
+        storages.copy_recursive_from_storage(storage_path, directory, storage=storage)
 
         # get snakefile
         with open(directory/'Snakefile', 'w', encoding='utf-8') as f:
