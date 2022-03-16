@@ -1,3 +1,4 @@
+from os import getenv
 from typing import Union
 from unicodedata import decimal
 import requests
@@ -10,6 +11,9 @@ console = Console()
 
 from . import diagnostics
 
+CRUNCH_URL_KEY = "CRUNCH_URL"
+CRUNCH_TOKEN_KEY = "CRUNCH_TOKEN"
+
 class CrunchAPIException(Exception):
     """ Raised when there is an error getting information from the API of a crunch site. """
     pass
@@ -19,9 +23,25 @@ class Connection():
     """
     An object to manage calls to the REST API of a crunch hosted site.
     """
-    def __init__(self, base_url:str, token:str):
-        self.base_url = base_url
-        self.token = token
+    def __init__(self, base_url:str = None, token:str = None):
+        """
+        An object to manage calls to the REST API of a crunch hosted site.
+
+        Args:
+            base_url (str, optional): The URL for the endpoint for the project on the crunch hosted site. If not provided then it attempts to use the 'CRUNCH_URL' environment variable.
+            token (str, optional): An access token for a user on the crunch hosted site. If not provided then it attempts to use the 'CRUNCH_TOKEN' environment variable.
+
+        Raises:
+            CrunchAPIException: If the `base_url` is not provided and it is not available using the 'CRUNCH_URL' environment variable.
+            CrunchAPIException: If the `token` is not provided and it is not available using the 'CRUNCH_TOKEN' environment variable.
+        """
+        self.base_url = base_url or getenv(CRUNCH_URL_KEY, None)
+        if not self.base_url:
+            raise CrunchAPIException(f"Please provide a base URL to a crunch hosted site. This can be set using the '{CRUNCH_URL_KEY}' environment variable.")
+
+        self.token = token or getenv(CRUNCH_TOKEN_KEY, None)
+        if not self.token:
+            raise CrunchAPIException(f"Please provide an authentication token. This can be set using the '{CRUNCH_TOKEN_KEY}' environment variable.")
 
     def get_headers(self) -> dict:
         """
@@ -35,9 +55,6 @@ class Connection():
         Returns:
             dict: The headers for API calls as a Python dictionary.
         """
-        if not self.token:
-            raise CrunchAPIException(f"Please give an authentication token either through a command line argument or the CRUNCH_TOKEN environment variable.")
-
         headers = {"Authorization": f"Token {self.token}" }
         return headers
 
@@ -156,7 +173,19 @@ class Connection():
             key=key,
             value=value,
             verbose=verbose,
-        )        
+        ) 
+
+    def add_char_attributes(self, project:str, dataset:str, **kwargs):
+        """
+        Adds multiple attributes as a key/value pairs on a dataset when each value is a string of characters. 
+
+        Args:
+            project (str): The slug for the project.
+            dataset (str): The slug for the dataset.
+            **kwargs: key/value pairs to add as char attributes.
+        """
+        for key, value in kwargs.items():
+            self.add_char_attribute(project=project, dataset=dataset, key=key, value=value)
 
     def add_float_attribute(self, project:str, dataset:str, key:str, value:float, verbose:bool=False) -> requests.Response:
         """

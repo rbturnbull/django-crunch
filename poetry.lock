@@ -1550,7 +1550,7 @@ test = ["pytest", "pytest-cov"]
 
 [[package]]
 name = "sphinx-click"
-version = "3.1.1.dev2"
+version = "3.1.1.dev4"
 description = "Sphinx extension that automatically documents click applications"
 category = "dev"
 optional = false
@@ -1561,12 +1561,13 @@ develop = false
 click = ">=7.0"
 docutils = "*"
 sphinx = ">=2.0"
+typer = ">=0.4.0"
 
 [package.source]
 type = "git"
 url = "https://github.com/rbturnbull/sphinx-click.git"
 reference = "master"
-resolved_reference = "6969c86b905fa4355e6978a1d7725998a59e954f"
+resolved_reference = "ec700fc5864f42cfb71f143f0ec077c89e1102eb"
 
 [[package]]
 name = "sphinx-copybutton"

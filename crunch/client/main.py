@@ -22,7 +22,7 @@ class NoDatasets(Exception):
 
 app = typer.Typer()
 
-url_arg = typer.Option(..., envvar="CRUNCH_URL", help="The URL for the endpoint for the project on the hosted site.", prompt=True)
+url_arg = typer.Option(..., envvar="CRUNCH_URL", help="The URL for the endpoint for the project on the crunch hosted site.", prompt=True)
 token_arg = typer.Option(..., envvar="CRUNCH_TOKEN", help="An access token for a user on the hosted site.", prompt=True)
 project_slug_arg = typer.Argument(..., help="The slug for the project the dataset is in.")
 dataset_slug_arg = typer.Argument(..., help="The slug for the dataset.")
@@ -313,4 +313,3 @@ def diagnostics():
     """ Display system diagnostics. """
     console.print( get_diagnostics() )
 
-typer_click_object = typer.main.get_command(app)
