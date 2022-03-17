@@ -4,7 +4,8 @@ from unicodedata import decimal
 import requests
 import enum
 from datetime import datetime
-
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 from rich.console import Console
 
 console = Console()
@@ -175,17 +176,35 @@ class Connection():
             verbose=verbose,
         ) 
 
-    def add_char_attributes(self, project:str, dataset:str, **kwargs):
+    def add_attributes(self, project:str, dataset:str, **kwargs):
         """
-        Adds multiple attributes as a key/value pairs on a dataset when each value is a string of characters. 
+        Adds multiple attributes as a key/value pairs on a dataset. 
+
+        Each type is inferred from the type of the value.
 
         Args:
             project (str): The slug for the project.
             dataset (str): The slug for the dataset.
             **kwargs: key/value pairs to add as char attributes.
         """
+        url_validator = URLValidator()
         for key, value in kwargs.items():
-            self.add_char_attribute(project=project, dataset=dataset, key=key, value=value)
+            if isinstance(value, str):
+                try: 
+                    url_validator(value)
+                    self.add_url_attribute(project=project, dataset=dataset, key=key, value=value)
+                except ValidationError:
+                    self.add_char_attribute(project=project, dataset=dataset, key=key, value=value)
+            elif isinstance(value, float):
+                self.add_float_attribute(project=project, dataset=dataset, key=key, value=value)
+            elif isinstance(value, int):
+                self.add_integer_attribute(project=project, dataset=dataset, key=key, value=value)
+            elif isinstance(value, int):
+                self.add_integer_attribute(project=project, dataset=dataset, key=key, value=value)
+            elif isinstance(value, datetime):
+                self.add_datetime_attribute(project=project, dataset=dataset, key=key, value=value)
+            else:
+                raise CrunchAPIException(f"Cannot infer type of '{value}' ({type(value)}).")
 
     def add_float_attribute(self, project:str, dataset:str, key:str, value:float, verbose:bool=False) -> requests.Response:
         """
