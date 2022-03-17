@@ -102,6 +102,22 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="crunch.client.connections.Connection.add_attributes">
+<span class="sig-name descname"><span class="pre">add_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#crunch.client.connections.Connection.add_attributes" title="Permalink to this definition"></a></dt>
+<dd><p>Adds multiple attributes as a key/value pairs on a dataset.</p>
+<p>Each type is inferred from the type of the value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project</strong> (<em>str</em>) – The slug for the project.</p></li>
+<li><p><strong>dataset</strong> (<em>str</em>) – The slug for the dataset.</p></li>
+<li><p><strong>**kwargs</strong> – key/value pairs to add as char attributes.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="crunch.client.connections.Connection.add_char_attribute">
 <span class="sig-name descname"><span class="pre">add_char_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">requests.models.Response</span></span></span><a class="headerlink" href="#crunch.client.connections.Connection.add_char_attribute" title="Permalink to this definition"></a></dt>
 <dd><p>Adds an attribute as a key/value pair on a dataset when the value is a string of characters.</p>
@@ -120,21 +136,6 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>requests.Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="crunch.client.connections.Connection.add_char_attributes">
-<span class="sig-name descname"><span class="pre">add_char_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#crunch.client.connections.Connection.add_char_attributes" title="Permalink to this definition"></a></dt>
-<dd><p>Adds multiple attributes as a key/value pairs on a dataset when each value is a string of characters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>project</strong> (<em>str</em>) – The slug for the project.</p></li>
-<li><p><strong>dataset</strong> (<em>str</em>) – The slug for the dataset.</p></li>
-<li><p><strong>**kwargs</strong> – key/value pairs to add as char attributes.</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
