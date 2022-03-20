@@ -41,7 +41,7 @@ class ProjectUpdateView(PermissionRequiredMixin, UpdateView):
 
 class ProjectAPI(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows projects to be viewed or edited.
     """
     queryset = models.Project.objects.all()
     serializer_class = serializers.ProjectSerializer
@@ -62,7 +62,7 @@ class DatasetDetailView(PermissionRequiredMixin, DetailView):
 
 class DatasetAPI(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows datasets to be viewed or edited.
     """
     queryset = models.Dataset.objects.all()
     serializer_class = serializers.DatasetSerializer
@@ -107,6 +107,20 @@ class StatusListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(
             site_user=self.request.user,
         )
+
+
+######################################################
+##  Item Views
+######################################################
+
+class ItemAPI(viewsets.ModelViewSet):
+    """
+    API endpoint that allows items to be viewed or edited.
+    """
+    queryset = models.Item.objects.all()
+    serializer_class = serializers.ItemSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+    lookup_field = 'slug'
 
 
 ######################################################
@@ -158,4 +172,10 @@ class LatLongAttributeAPI(viewsets.ModelViewSet):
 class DateTimeAttributeAPI(viewsets.ModelViewSet):
     queryset = models.DateTimeAttribute.objects.all()
     serializer_class = serializers.DateTimeAttributeSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+
+
+class DateAttributeAPI(viewsets.ModelViewSet):
+    queryset = models.DateAttribute.objects.all()
+    serializer_class = serializers.DateAttributeSerializer
     permission_classes = [permissions.DjangoModelPermissions]

@@ -57,6 +57,11 @@ class DateTimeAttributeSerializer(AbstractAttributeSerializer):
         model = models.DateTimeAttribute
 
 
+class DateAttributeSerializer(AbstractAttributeSerializer):
+    class Meta(AbstractAttributeSerializer.Meta):
+        model = models.DateAttribute
+
+
 class LatLongAttributeSerializer(AbstractAttributeSerializer):
     class Meta(AbstractAttributeSerializer.Meta):
         model = models.LatLongAttribute
@@ -69,12 +74,20 @@ class LatLongAttributeSerializer(AbstractAttributeSerializer):
 
 
 class DatasetSerializer(serializers.HyperlinkedModelSerializer):
-    # project = serializers.HyperlinkedRelatedField(view_name='crunch:api:project-detail', lookup_field='slug', queryset=models.Project.objects.all())
     parent = serializers.SlugRelatedField(slug_field='slug', queryset=models.Project.objects.all())
     attributes = AttributeSerializer(many=True, required=False)
 
     class Meta:
         model = models.Dataset
+        fields = ['id', 'name', 'slug','parent', 'description', 'details', 'attributes']
+
+
+class ItemSerializer(serializers.HyperlinkedModelSerializer):
+    parent = serializers.SlugRelatedField(slug_field='slug', queryset=models.Item.objects.all())
+    attributes = AttributeSerializer(many=True, required=False)
+
+    class Meta:
+        model = models.Item
         fields = ['id', 'name', 'slug','parent', 'description', 'details', 'attributes']
 
 

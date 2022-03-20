@@ -45,10 +45,10 @@
     <p class="font-weight-bold">{{project.description}}</p>
     <p>{{project.details}}</p>
 
-    <h3>{{project.datasets.count}} Datasets</h3>
+    <h3>{{project.children.count}} Datasets</h3>
 
     <ul>
-    {% for dataset in project.datasets.all %}
+    {% for dataset in project.children.all %}
         <li>
             <a href='{{dataset.get_absolute_url}}' 
             {% if dataset.description %}

@@ -3,7 +3,7 @@ from typing import Union
 from unicodedata import decimal
 import requests
 import enum
-from datetime import datetime
+from datetime import datetime, date
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from rich.console import Console
@@ -125,6 +125,32 @@ class Connection():
             verbose=verbose,
         )
 
+    def add_item(self, parent:str, item:str, description:str="", details:str="", verbose:bool=False) -> requests.Response:
+        """
+        Creates a new item on a hosted django-crunch site.
+
+        Args:
+            parent (str): The slug of the parent item that this item is to be added to.
+            item (str): The name of the new item.
+            description (str, optional): A brief description of this new dataset. Defaults to "".
+            details (str, optional): A long description of this dataset in Markdown format. Defaults to "".
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
+        if verbose:
+            console.print(f"Adding item '{item}' to parent '{parent}' on the site {self.base_url}")
+
+        return self.post(
+            "api/items/", 
+            parent=parent,
+            name=item,
+            description=description,
+            details=details,
+            verbose=verbose,
+        )
+
     def add_key_value_attribute(self, url:str, item:str, key:str, value, verbose:bool=False) -> requests.Response:
         """
         Adds an attribute as a key/value pair on an item. 
@@ -200,8 +226,10 @@ class Connection():
                 self.add_boolean_attribute(item=item, key=key, value=value)
             elif isinstance(value, datetime):
                 self.add_datetime_attribute(item=item, key=key, value=value)
+            elif isinstance(value, date):
+                self.add_date_attribute(item=item, key=key, value=value)
             else:
-                raise CrunchAPIException(f"Cannot infer type of '{value}' ({type(value)}).")
+                raise CrunchAPIException(f"Cannot infer type of value '{value}' ({type(value)}). (The key was '{key}')")
 
     def add_float_attribute(self, item:str, key:str, value:float, verbose:bool=False) -> requests.Response:
         """
@@ -247,6 +275,38 @@ class Connection():
 
         return self.add_key_value_attribute(
             url="api/attributes/datetime/", 
+            item=item,
+            key=key,
+            value=value,
+            verbose=verbose,
+        )                
+
+    def add_date_attribute(self, item:str, key:str, value:Union[date,str], format:str="", verbose:bool=False) -> requests.Response:
+        """
+        Adds an attribute as a key/value pair on a dataset when the value is a datetime. 
+
+        Args:
+            item (str): The slug for the item.
+            key (str): The key for this attribute.
+            value (Union[date,str]): The value for this attribute as a date or a string.
+            format (str): If the `value` is a string then this format string can be used with datetime.strptime to convert to a date object. If no format is given then the string is interpreted using dateutil.parser.
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
+        if isinstance(value, str):
+            if format:
+                value = datetime.strptime(value, format)
+            else:
+                from dateutil import parser
+                value = parser.parse(value)  
+
+        if isinstance(value, datetime):
+            value = value.date()
+
+        return self.add_key_value_attribute(
+            url="api/attributes/date/", 
             item=item,
             key=key,
             value=value,

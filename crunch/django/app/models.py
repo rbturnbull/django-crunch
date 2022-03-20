@@ -85,7 +85,7 @@ class Dataset(Item):
     # TODO assert parent is Project
 
     def get_absolute_url(self):
-        return f"{self.project.get_absolute_url()}datasets/{self.slug}"
+        return f"{self.parent.get_absolute_url()}datasets/{self.slug}"
 
     @classmethod
     def unprocessed(cls):
@@ -96,7 +96,7 @@ class Dataset(Item):
         return cls.unprocessed().first()
 
     def base_file_path(self):
-        return storages.dataset_path( self.project.slug, self.slug )
+        return storages.dataset_path( self.parent.slug, self.slug )
 
     def files(self):
         return storages.storage_walk(self.base_file_path())
@@ -197,6 +197,10 @@ class BooleanAttribute(ValueAttribute):
 
 class DateTimeAttribute(ValueAttribute):
     value = models.DateTimeField()
+
+
+class DateAttribute(ValueAttribute):
+    value = models.DateField()
 
 
 class URLAttribute(ValueAttribute):

@@ -8,6 +8,7 @@ from . import views
 router = routers.DefaultRouter()
 router.register(r'projects', views.ProjectAPI)
 router.register(r'datasets', views.DatasetAPI)
+router.register(r'items', views.ItemAPI)
 router.register(r'attributes/char', views.CharAttributeAPI)
 router.register(r'attributes/float', views.FloatAttributeAPI)
 router.register(r'attributes/int', views.IntegerAttributeAPI)
@@ -15,6 +16,7 @@ router.register(r'attributes/bool', views.BooleanAttributeAPI)
 router.register(r'attributes/url', views.URLAttributeAPI)
 router.register(r'attributes/lat-long', views.LatLongAttributeAPI)
 router.register(r'attributes/datetime', views.DateTimeAttributeAPI)
+router.register(r'attributes/date', views.DateAttributeAPI)
 
 app_name = "crunch"
 urlpatterns = [
@@ -32,5 +34,4 @@ urlpatterns = [
     path('projects/<str:project>/datasets/', RedirectView.as_view(url="..", permanent=False)),
     path('projects/<str:project>/datasets/<str:slug>', views.DatasetDetailView.as_view(), name='dataset-detail'),
     path("projects/<str:project>/datasets/<str:slug>/update/", views.DatasetUpdateView.as_view(), name="dataset-update"),
-
 ]

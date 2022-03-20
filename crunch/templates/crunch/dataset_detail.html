@@ -19,7 +19,7 @@
             </a>
         {% endif %}
         {% if perms.crunch.update_dataset %}
-            <a href="{% url 'crunch:dataset-update' slug=dataset.slug project=dataset.project.slug %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Update this Dataset">
+            <a href="{% url 'crunch:dataset-update' slug=dataset.slug project=dataset.parent.slug %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Update this Dataset">
                 <i class="fas fa-edit"></i>
             </a>
         {% endif %}
@@ -54,6 +54,22 @@
             </a>
         {% endif %}
     </div>
+
+    <h3>{{dataset.children.count}} Datasets</h3>
+    <ul>
+    {% for item in dataset.children.all %}
+        <li>
+            <a href='{{item.get_absolute_url}}' 
+            {% if item.description %}
+                data-toggle="tooltip" data-placement="bottom" title="{{item.description}}"
+            {% endif %}
+            >
+                {{item}}
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+
     <h3>Attributes</h3>
 
     <table class="table table-striped">

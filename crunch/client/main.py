@@ -205,6 +205,24 @@ def add_dataset(
     connection = connections.Connection(url, token)
     return connection.add_dataset(project=project, dataset=dataset, description=description, details=details, verbose=verbose)
 
+
+@app.command()
+def add_item(
+    parent:str = typer.Argument(..., help="The slug of the item that this item is to be added to."),
+    item:str = typer.Argument(..., help="The name of the new item"),
+    description:str = typer.Option("", help="A brief description of this new item."),
+    details:str = typer.Option("", help="A long description of this item in Markdown format."),
+    verbose:bool = True,
+    url:str = url_arg,
+    token:str = token_arg,
+):
+    """
+    Adds a new item to an item on the hosted site.
+    """
+    connection = connections.Connection(url, token)
+    return connection.add_item(parent=parent, item=item, description=description, details=details, verbose=verbose)
+
+
 @app.command()
 def add_char_attribute(
     item:str = item_slug_arg,
@@ -252,6 +270,23 @@ def add_datetime_attribute(
     """
     connection = connections.Connection(url, token)
     return connection.add_datetime_attribute(item=item, key=key, value=value, format=format, verbose=verbose)
+
+
+@app.command()
+def add_date_attribute(
+    item:str = item_slug_arg,
+    key:str = key_arg,
+    value:str = value_arg,
+    format:str="",
+    verbose:bool = True,
+    url:str = url_arg,
+    token:str = token_arg,
+):
+    """
+    Adds a new date attribute to a dataset.
+    """
+    connection = connections.Connection(url, token)
+    return connection.add_date_attribute(item=item, key=key, value=value, format=format, verbose=verbose)
 
 
 @app.command()
