@@ -131,6 +131,12 @@ class IntegerAttributeAPI(viewsets.ModelViewSet):
     permission_classes = [permissions.DjangoModelPermissions]
 
 
+class BooleanAttributeAPI(viewsets.ModelViewSet):
+    queryset = models.BooleanAttribute.objects.all()
+    serializer_class = serializers.BooleanAttributeSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+
+
 class FloatAttributeAPI(viewsets.ModelViewSet):
     queryset = models.FloatAttribute.objects.all()
     serializer_class = serializers.FloatAttributeSerializer

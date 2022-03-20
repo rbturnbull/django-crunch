@@ -42,6 +42,11 @@ class IntegerAttributeSerializer(AbstractAttributeSerializer):
         model = models.IntegerAttribute
 
 
+class BooleanAttributeSerializer(AbstractAttributeSerializer):
+    class Meta(AbstractAttributeSerializer.Meta):
+        model = models.BooleanAttribute
+
+
 class URLAttributeSerializer(AbstractAttributeSerializer):
     class Meta(AbstractAttributeSerializer.Meta):
         model = models.URLAttribute

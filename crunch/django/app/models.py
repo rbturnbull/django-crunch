@@ -191,6 +191,10 @@ class IntegerAttribute(ValueAttribute):
     value = models.IntegerField()
 
 
+class BooleanAttribute(ValueAttribute):
+    value = models.BooleanField()
+
+
 class DateTimeAttribute(ValueAttribute):
     value = models.DateTimeField()
 

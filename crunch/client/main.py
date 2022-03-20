@@ -288,6 +288,22 @@ def add_integer_attribute(
 
 
 @app.command()
+def add_boolean_attribute(
+    item:str = item_slug_arg,
+    key:str = key_arg,
+    value:bool = value_arg,
+    verbose:bool = True,
+    url:str = url_arg,
+    token:str = token_arg,
+):
+    """
+    Adds a new boolean attribute to a dataset.
+    """
+    connection = connections.Connection(url, token)
+    return connection.add_boolean_attribute(item=item, key=key, value=value, verbose=verbose)
+
+
+@app.command()
 def add_url_attribute(
     item:str = item_slug_arg,
     key:str = key_arg,

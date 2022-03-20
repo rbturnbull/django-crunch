@@ -99,7 +99,7 @@ class Connection():
             verbose=verbose,
         )
 
-    def add_dataset(self, item:str, description:str="", details:str="", verbose:bool=False) -> requests.Response:
+    def add_dataset(self, project:str, dataset:str, description:str="", details:str="", verbose:bool=False) -> requests.Response:
         """
         Creates a new dataset and adds it to a project on a hosted django-crunch site.
 
@@ -196,8 +196,8 @@ class Connection():
                 self.add_float_attribute(item=item, key=key, value=value)
             elif isinstance(value, int):
                 self.add_integer_attribute(item=item, key=key, value=value)
-            elif isinstance(value, int):
-                self.add_integer_attribute(item=item, key=key, value=value)
+            elif isinstance(value, bool):
+                self.add_boolean_attribute(item=item, key=key, value=value)
             elif isinstance(value, datetime):
                 self.add_datetime_attribute(item=item, key=key, value=value)
             else:
@@ -268,6 +268,27 @@ class Connection():
         """
         return self.add_key_value_attribute(
             url="api/attributes/int/", 
+            item=item,
+            key=key,
+            value=value,
+            verbose=verbose,
+        )               
+        
+    def add_boolean_attribute(self, item:str, key:str, value:bool, verbose:bool=False) -> requests.Response:
+        """
+        Adds an attribute as a key/value pair on a dataset when the value is a boolean. 
+
+        Args:
+            item (str): The slug for the item.
+            key (str): The key for this attribute.
+            value (bool): The integer value for this attribute.
+            verbose (bool, optional): Whether or not to print debugging information of the API request. Defaults to False.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
+        return self.add_key_value_attribute(
+            url="api/attributes/bool/", 
             item=item,
             key=key,
             value=value,
