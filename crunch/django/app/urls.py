@@ -34,4 +34,8 @@ urlpatterns = [
     path('projects/<str:project>/datasets/', RedirectView.as_view(url="..", permanent=False)),
     path('projects/<str:project>/datasets/<str:slug>', views.DatasetDetailView.as_view(), name='dataset-detail'),
     path("projects/<str:project>/datasets/<str:slug>/update/", views.DatasetUpdateView.as_view(), name="dataset-update"),
+
+    path("items/create/", views.ItemCreateView.as_view(), name="item-create"),
+    path('items/<str:slug>/', views.ItemDetailView.as_view(), name='item-detail'),
+    path('items/<str:slug>/update/', views.ItemUpdateView.as_view(), name='item-update'),
 ]

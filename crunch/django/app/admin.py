@@ -49,6 +49,11 @@ class DateTimeAttributeAdmin(AttributeChildAdmin):
     pass
 
 
+@admin.register(models.DateAttribute)
+class DateAttributeAdmin(AttributeChildAdmin):
+    pass
+
+
 @admin.register(models.Attribute)
 class AttributeParentAdmin(PolymorphicParentModelAdmin):
     base_model = models.Attribute  # Optional, explicitly set here.
@@ -58,6 +63,7 @@ class AttributeParentAdmin(PolymorphicParentModelAdmin):
 
 admin.site.register(models.Project)
 admin.site.register(models.Dataset)
+admin.site.register(models.Item)
 admin.site.register(models.Status)
 # admin.site.register(models.Attribute)
 

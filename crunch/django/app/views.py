@@ -113,6 +113,27 @@ class StatusListCreateAPIView(generics.ListCreateAPIView):
 ##  Item Views
 ######################################################
 
+class ItemDetailView(PermissionRequiredMixin, DetailView):
+    model = models.Item
+    permission_required = "crunch.view_item"
+    lookup_field = 'slug'
+
+
+class ItemCreateView(PermissionRequiredMixin, CreateView):
+    model = models.Item
+    permission_required = "crunch.add_item"
+
+
+class ItemUpdateView(PermissionRequiredMixin, UpdateView):
+    model = models.Item
+    template_name = "crunch/form.html"
+    # form_class = ItemForm
+    permission_required = "crunch.update_item"
+    extra_context = dict(
+        form_title="Update Item",
+    )
+
+
 class ItemAPI(viewsets.ModelViewSet):
     """
     API endpoint that allows items to be viewed or edited.

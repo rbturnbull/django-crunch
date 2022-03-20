@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-3">
+
+
+    <div class="float-right">
+        {% if perms.crunch.add_dataset %}
+            <a href="{% url 'crunch:item-create'  %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Create item">
+                <i class="fas fa-plus"></i>
+            </a>
+        {% endif %}
+        {% if perms.crunch.update_item %}
+            <a href="{% url 'crunch:item-update' slug=item.slug %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Update this item">
+                <i class="fas fa-edit"></i>
+            </a>
+        {% endif %}
+        {% if request.user.is_staff %}
+            <a href="{{ item.get_admin_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Admin">
+                <i class="fas fa-tools"></i>
+            </a>
+        {% endif %}
+        {% if item.prev_in_order %}
+            <a href="{{ item.prev_in_order.get_absolute_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="{{ item.prev_in_order }}">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        {% endif %}
+        {% if item.next_in_order %}
+            <a href="{{ item.next_in_order.get_absolute_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="{{ item.next_in_order }}">
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        {% endif %}
+    </div> 
+
+    <h2>{{item}}</h2>
+
+    <h3>Parent: <a href='{{item.parent.get_absolute_url}}'>{{item.parent}}</a></h3>
+    <p class="font-weight-bold">{{item.description}}</p>
+    <p>{{item.details}}</p>
+
+    <hr>
+    <div class="float-right">
+        {% if request.user.is_staff %}
+            <a href="{% url 'admin:crunch_attribute_add'  %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Create Attribute">
+                <i class="fas fa-plus"></i>
+            </a>
+        {% endif %}
+    </div>
+
+    {% if item.children.count %}
+    <h3>{{item.children.count}} Children</h3>
+    <ul>
+    {% for i in i.children.all %}
+        <li>
+            <a href='{{i.get_absolute_url}}' 
+            {% if i.description %}
+                data-toggle="tooltip" data-placement="bottom" title="{{i.description}}"
+            {% endif %}
+            >
+                {{i}}
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h3>Attributes</h3>
+
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Attribute</th>
+            <th scope="col">Type</th>
+            <th scope="col">Value</th>
+            {% if request.user.is_staff %}
+            <th scope="col">Admin</th>
+            {% endif %}        
+          </tr>
+        </thead>
+        <tbody>
+            {% for attribute in item.attributes.all %}
+            <tr>
+                <th scope="row">{{attribute.key}}</th>
+                <td>{{attribute.type_str}}</td>
+                <td>{{attribute.value_html}}</td>
+                {% if request.user.is_staff %}
+                <td>
+                    <a href="{{ attribute.get_admin_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Edit Attribute">
+                        <i class="fas fa-tools"></i>
+                    </a>
+                </td>
+                {% endif %}        
+
+              </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+      
+
+      <hr>
+      <div class="float-right">
+          {% if request.user.is_staff %}
+              <a href="#" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Upload File">
+                  <i class="fas fa-plus"></i>
+              </a>
+          {% endif %}
+      </div>  
+
+  
+</div>
+
+{% endblock content %}

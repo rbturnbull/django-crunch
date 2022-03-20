@@ -7,7 +7,7 @@
     <nav aria-label="breadcrumb ">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="../..">Projects</a></li>
-            <li class="breadcrumb-item"><a href="..">{{dataset.project}}</a></li>
+            <li class="breadcrumb-item"><a href="..">{{dataset.parent}}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{dataset}}</li>
         </ol>
     </nav>
@@ -42,7 +42,7 @@
 
     <h2>{{dataset}}</h2>
 
-    <h3>Project: <a href='{{dataset.project.get_absolute_url}}'>{{dataset.project}}</a></h3>
+    <h3>Project: <a href='{{dataset.parent.get_absolute_url}}'>{{dataset.parent}}</a></h3>
     <p class="font-weight-bold">{{dataset.description}}</p>
     <p>{{dataset.details}}</p>
 
@@ -55,7 +55,7 @@
         {% endif %}
     </div>
 
-    <h3>{{dataset.children.count}} Datasets</h3>
+    <h3>{{dataset.children.count}} Items</h3>
     <ul>
     {% for item in dataset.children.all %}
         <li>
@@ -70,6 +70,7 @@
     {% endfor %}
     </ul>
 
+    {% if dataset.attributes.count %}
     <h3>Attributes</h3>
 
     <table class="table table-striped">
@@ -101,9 +102,9 @@
             {% endfor %}
         </tbody>
       </table>
-      
-
       <hr>
+      {% endif %}
+
       <div class="float-right">
           {% if request.user.is_staff %}
               <a href="#" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Upload File">
@@ -115,6 +116,8 @@
       <p><i>File list not yet implemented.</i></p>
 
     <hr>
+
+    {% if dataset.statuses.count %}
     <h3>History</h3>
     <ul>
     </ul>
@@ -148,6 +151,7 @@
             {% endfor %}
         </tbody>
       </table>
+      {% endif %}
   
 </div>
 
