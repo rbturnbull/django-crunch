@@ -76,6 +76,7 @@
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
  | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -145,6 +146,8 @@
     --no-verbose
 
       <ul>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-verbose">crunch-add-boolean-attribute command line option</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-add-char-attribute-verbose">crunch-add-char-attribute command line option</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-dataset-verbose">crunch-add-dataset command line option</a>
@@ -173,6 +176,8 @@
     --token
 
       <ul>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-token">crunch-add-boolean-attribute command line option</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-add-char-attribute-token">crunch-add-char-attribute command line option</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-dataset-token">crunch-add-dataset command line option</a>
@@ -202,6 +207,8 @@
     --url
 
       <ul>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-url">crunch-add-boolean-attribute command line option</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-add-char-attribute-url">crunch-add-char-attribute command line option</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-dataset-url">crunch-add-dataset command line option</a>
@@ -229,6 +236,8 @@
     --verbose
 
       <ul>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-verbose">crunch-add-boolean-attribute command line option</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-add-char-attribute-verbose">crunch-add-char-attribute command line option</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-dataset-verbose">crunch-add-dataset command line option</a>
@@ -262,16 +271,18 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#crunch.client.connections.Connection.add_attributes">add_attributes() (crunch.client.connections.Connection method)</a>
 </li>
+      <li><a href="api.html#crunch.client.connections.Connection.add_boolean_attribute">add_boolean_attribute() (crunch.client.connections.Connection method)</a>
+</li>
       <li><a href="api.html#crunch.client.connections.Connection.add_char_attribute">add_char_attribute() (crunch.client.connections.Connection method)</a>
 </li>
       <li><a href="api.html#crunch.client.connections.Connection.add_dataset">add_dataset() (crunch.client.connections.Connection method)</a>
 </li>
       <li><a href="api.html#crunch.client.connections.Connection.add_datetime_attribute">add_datetime_attribute() (crunch.client.connections.Connection method)</a>
 </li>
-      <li><a href="api.html#crunch.client.connections.Connection.add_float_attribute">add_float_attribute() (crunch.client.connections.Connection method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#crunch.client.connections.Connection.add_float_attribute">add_float_attribute() (crunch.client.connections.Connection method)</a>
+</li>
       <li><a href="api.html#crunch.client.connections.Connection.add_integer_attribute">add_integer_attribute() (crunch.client.connections.Connection method)</a>
 </li>
       <li><a href="api.html#crunch.client.connections.Connection.add_key_value_attribute">add_key_value_attribute() (crunch.client.connections.Connection method)</a>
@@ -300,6 +311,25 @@
 </li>
       </ul></li>
       <li>
+    crunch-add-boolean-attribute command line option
+
+      <ul>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-verbose">--no-verbose</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-token">--token</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-url">--url</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-verbose">--verbose</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-arg-ITEM">ITEM</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-arg-KEY">KEY</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-arg-VALUE">VALUE</a>
+</li>
+      </ul></li>
+      <li>
     crunch-add-char-attribute command line option
 
       <ul>
@@ -311,11 +341,9 @@
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-char-attribute-verbose">--verbose</a>
 </li>
-        <li><a href="cli.html#cmdoption-crunch-add-char-attribute-arg-DATASET">DATASET</a>
+        <li><a href="cli.html#cmdoption-crunch-add-char-attribute-arg-ITEM">ITEM</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-char-attribute-arg-KEY">KEY</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-char-attribute-arg-PROJECT">PROJECT</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-char-attribute-arg-VALUE">VALUE</a>
 </li>
@@ -355,11 +383,9 @@
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-datetime-attribute-verbose">--verbose</a>
 </li>
-        <li><a href="cli.html#cmdoption-crunch-add-datetime-attribute-arg-DATASET">DATASET</a>
+        <li><a href="cli.html#cmdoption-crunch-add-datetime-attribute-arg-ITEM">ITEM</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-datetime-attribute-arg-KEY">KEY</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-datetime-attribute-arg-PROJECT">PROJECT</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-datetime-attribute-arg-VALUE">VALUE</a>
 </li>
@@ -376,11 +402,9 @@
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-float-attribute-verbose">--verbose</a>
 </li>
-        <li><a href="cli.html#cmdoption-crunch-add-float-attribute-arg-DATASET">DATASET</a>
+        <li><a href="cli.html#cmdoption-crunch-add-float-attribute-arg-ITEM">ITEM</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-float-attribute-arg-KEY">KEY</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-float-attribute-arg-PROJECT">PROJECT</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-float-attribute-arg-VALUE">VALUE</a>
 </li>
@@ -397,15 +421,15 @@
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-integer-attribute-verbose">--verbose</a>
 </li>
-        <li><a href="cli.html#cmdoption-crunch-add-integer-attribute-arg-DATASET">DATASET</a>
+        <li><a href="cli.html#cmdoption-crunch-add-integer-attribute-arg-ITEM">ITEM</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-integer-attribute-arg-KEY">KEY</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-integer-attribute-arg-PROJECT">PROJECT</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-integer-attribute-arg-VALUE">VALUE</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     crunch-add-lat-long-attribute command line option
 
@@ -418,7 +442,7 @@
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-lat-long-attribute-verbose">--verbose</a>
 </li>
-        <li><a href="cli.html#cmdoption-crunch-add-lat-long-attribute-arg-DATASET">DATASET</a>
+        <li><a href="cli.html#cmdoption-crunch-add-lat-long-attribute-arg-ITEM">ITEM</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-lat-long-attribute-arg-KEY">KEY</a>
 </li>
@@ -426,11 +450,7 @@
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-lat-long-attribute-arg-LONGITUDE">LONGITUDE</a>
 </li>
-        <li><a href="cli.html#cmdoption-crunch-add-lat-long-attribute-arg-PROJECT">PROJECT</a>
-</li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     crunch-add-project command line option
 
@@ -462,11 +482,9 @@
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-url-attribute-verbose">--verbose</a>
 </li>
-        <li><a href="cli.html#cmdoption-crunch-add-url-attribute-arg-DATASET">DATASET</a>
+        <li><a href="cli.html#cmdoption-crunch-add-url-attribute-arg-ITEM">ITEM</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-url-attribute-arg-KEY">KEY</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-url-attribute-arg-PROJECT">PROJECT</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-url-attribute-arg-VALUE">VALUE</a>
 </li>
@@ -546,19 +564,7 @@
     DATASET
 
       <ul>
-        <li><a href="cli.html#cmdoption-crunch-add-char-attribute-arg-DATASET">crunch-add-char-attribute command line option</a>
-</li>
         <li><a href="cli.html#cmdoption-crunch-add-dataset-arg-DATASET">crunch-add-dataset command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-datetime-attribute-arg-DATASET">crunch-add-datetime-attribute command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-float-attribute-arg-DATASET">crunch-add-float-attribute command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-integer-attribute-arg-DATASET">crunch-add-integer-attribute command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-lat-long-attribute-arg-DATASET">crunch-add-lat-long-attribute command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-url-attribute-arg-DATASET">crunch-add-url-attribute command line option</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-run-arg-DATASET">crunch-run command line option</a>
 </li>
@@ -580,6 +586,31 @@
   </ul></td>
 </tr></table>
 
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    ITEM
+
+      <ul>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-arg-ITEM">crunch-add-boolean-attribute command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-char-attribute-arg-ITEM">crunch-add-char-attribute command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-datetime-attribute-arg-ITEM">crunch-add-datetime-attribute command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-float-attribute-arg-ITEM">crunch-add-float-attribute command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-integer-attribute-arg-ITEM">crunch-add-integer-attribute command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-lat-long-attribute-arg-ITEM">crunch-add-lat-long-attribute command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-add-url-attribute-arg-ITEM">crunch-add-url-attribute command line option</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -587,6 +618,8 @@
     KEY
 
       <ul>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-arg-KEY">crunch-add-boolean-attribute command line option</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-add-char-attribute-arg-KEY">crunch-add-char-attribute command line option</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-datetime-attribute-arg-KEY">crunch-add-datetime-attribute command line option</a>
@@ -647,21 +680,9 @@
     PROJECT
 
       <ul>
-        <li><a href="cli.html#cmdoption-crunch-add-char-attribute-arg-PROJECT">crunch-add-char-attribute command line option</a>
-</li>
         <li><a href="cli.html#cmdoption-crunch-add-dataset-arg-PROJECT">crunch-add-dataset command line option</a>
 </li>
-        <li><a href="cli.html#cmdoption-crunch-add-datetime-attribute-arg-PROJECT">crunch-add-datetime-attribute command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-float-attribute-arg-PROJECT">crunch-add-float-attribute command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-integer-attribute-arg-PROJECT">crunch-add-integer-attribute command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-lat-long-attribute-arg-PROJECT">crunch-add-lat-long-attribute command line option</a>
-</li>
         <li><a href="cli.html#cmdoption-crunch-add-project-arg-PROJECT">crunch-add-project command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-add-url-attribute-arg-PROJECT">crunch-add-url-attribute command line option</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-run-arg-PROJECT">crunch-run command line option</a>
 </li>
@@ -693,6 +714,8 @@
     VALUE
 
       <ul>
+        <li><a href="cli.html#cmdoption-crunch-add-boolean-attribute-arg-VALUE">crunch-add-boolean-attribute command line option</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-add-char-attribute-arg-VALUE">crunch-add-char-attribute command line option</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-add-datetime-attribute-arg-VALUE">crunch-add-datetime-attribute command line option</a>
