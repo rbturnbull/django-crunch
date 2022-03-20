@@ -1,17 +1,20 @@
-from pathlib import Path
+from operator import mod
 import re
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
+from django.utils.text import slugify
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.utils.html import format_html
-User = get_user_model()
-
+from mptt.models import MPTTModel, TreeForeignKey
 from polymorphic.models import PolymorphicModel
 from django_extensions.db.models import TimeStampedModel
 from next_prev import next_in_order, prev_in_order
+from polymorphic_tree.models import PolymorphicMPTTModel, PolymorphicTreeForeignKey
 
 from . import enums, storages
+
+User = get_user_model()
 
 def OptionalCharField(max_length=255, default="", blank=True, **kwargs):
     return models.CharField(max_length=max_length, default=default, blank=blank, **kwargs)
@@ -31,35 +34,55 @@ class NextPrevMixin(models.Model):
         return reverse(f'admin:{self._meta.app_label}_{self._meta.model_name}_change', args=(self.pk,))
 
 
-class Project(NextPrevMixin, TimeStampedModel, PolymorphicModel):
+class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
+    parent = PolymorphicTreeForeignKey('self', blank=True, null=True, default=None, related_name='children', on_delete=models.SET_DEFAULT)
     name = models.CharField(max_length=1023, unique=True)
-    description = models.CharField(max_length=1023, default="", blank=True, help_text="A short description in a sentence or more of this project.")
-    details = models.TextField(default="", blank=True, help_text="A detailed description of this project (written in Markdown).")    
+    description = models.CharField(max_length=1023, default="", blank=True, help_text="A short description in a sentence or more of this item.")
+    details = models.TextField(default="", blank=True, help_text="A detailed description of this item (written in Markdown).")    
     slug = AutoSlugField(populate_from='name', unique=True)
-    snakefile = models.TextField(default="", blank=True)
     # TODO Add tags
+
+    def slugify_function(self, content):
+        slug = slugify(content)
+        if self.parent:
+            return f"{self.parent.slug}.{slug}"
+        return slug
+
+    class Meta(PolymorphicMPTTModel.Meta):
+        unique_together = ('parent', 'slug')
 
     def __str__(self):
         return self.name
 
+    # def cid(self):
+    #     return "/".join([ancestor.slug for ancestor in self.get_ancestors(include_self=True)])
+
+    # @classmethod
+    # def get_by_cid(cls, cid:str):
+    #     slugs = cid.split("/")
+    #     queryset = Item.objects.all()
+    #     item = None
+    #     for slug in slugs:
+    #         item = queryset.filter(slug=slug).first()
+    #         if not item:
+    #             raise Exception(f"Item '{cid}' not found.")
+    #         queryset = item.get_children()
+
+    #     return item
+
+
+class Project(Item):
+    workflow = models.TextField(default="", blank=True, help_text="URL to snakemake repository or text of snakefile.")
+    # More workflow languages need to be supported.
+    
     def get_absolute_url(self):
         return reverse("crunch:project-detail", kwargs={"slug": self.slug})
 
+    # TODO assert parent is none
 
-class Dataset(NextPrevMixin, TimeStampedModel, PolymorphicModel):
-    name = models.CharField(max_length=1023)
-    description = models.CharField(max_length=1023, default="", blank=True, help_text="A short description in a sentence or more of this dataset.")
-    details = models.TextField(default="", blank=True, help_text="A detailed description of this dataset (written in Markdown).")
-    slug = AutoSlugField(populate_from='name')
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="datasets")
-    # TODO Add tags
-    # TODO consolidate with Project stuff because much is repeated
 
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        unique_together = ('project', 'name',)
+class Dataset(Item):
+    # TODO assert parent is Project
 
     def get_absolute_url(self):
         return f"{self.project.get_absolute_url()}datasets/{self.slug}"
@@ -77,7 +100,7 @@ class Dataset(NextPrevMixin, TimeStampedModel, PolymorphicModel):
 
     def files(self):
         return storages.storage_walk(self.base_file_path())
-
+        
 
 class Status(NextPrevMixin, TimeStampedModel):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='statuses')
@@ -110,8 +133,7 @@ class Status(NextPrevMixin, TimeStampedModel):
 
 
 class Attribute(NextPrevMixin, TimeStampedModel, PolymorphicModel):
-    # project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='attributes')
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='attributes')
     key = models.CharField(max_length=255)
 
     def value_dict(self):
@@ -126,11 +148,20 @@ class Attribute(NextPrevMixin, TimeStampedModel, PolymorphicModel):
     def __str__(self):
         return f"{self.key}: {self.value_str()}"
 
-    def type_str(self):
+    def type_str(self) -> str:
+        """
+        Returns a string describing this type of attribute.
+
+        By default it returns the class name with spaces added where implied by camel case.
+
+        Returns:
+            str: The type of this attribute as a string.
+        """
         class_name = self.__class__.__name__
         if class_name.endswith("Attribute"):
             class_name = class_name[:-len("Attribute")]
-        return re.sub(r'((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))', r' \1', class_name)            
+        
+        return re.sub(r'((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))', r' \1', class_name) 
 
 
 class ValueAttribute(Attribute):

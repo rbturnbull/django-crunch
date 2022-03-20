@@ -397,6 +397,19 @@ python-versions = "*"
 Django = ">=2.1"
 
 [[package]]
+name = "django-polymorphic-tree"
+version = "2.1"
+description = "A polymorphic mptt structure to display content in a tree."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+django-mptt = ">=0.9.1"
+django-polymorphic = ">=3"
+django-tag-parser = ">=2.1"
+
+[[package]]
 name = "django-sekizai"
 version = "3.0.1"
 description = "Django Sekizai"
@@ -427,6 +440,14 @@ dropbox = ["dropbox (>=7.2.1)"]
 google = ["google-cloud-storage (>=1.27.0)"]
 libcloud = ["apache-libcloud"]
 sftp = ["paramiko"]
+
+[[package]]
+name = "django-tag-parser"
+version = "3.2"
+description = "Micro-library to easily write custom Django template tags"
+category = "main"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "django-treebeard"
@@ -1867,7 +1888,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1,<3.10"
-content-hash = "a7ff63f0366d767a90f4ad1d84a01cd3b9419824d12aa84259fc0940e3f1b5c9"
+content-hash = "f9b59639a1dd3fb4dc1a3d2fffb6ea52296d3525c5722b0f19965ad6ed991d90"
 
 [metadata.files]
 alabaster = [
@@ -2097,6 +2118,10 @@ django-polymorphic = [
     {file = "django-polymorphic-3.0.0.tar.gz", hash = "sha256:9d886f19f031d26bb1391c055ed9be06fb226a04a4cec1842b372c58873b3caa"},
     {file = "django_polymorphic-3.0.0-py2.py3-none-any.whl", hash = "sha256:73b75eb44ea302bd32820f8661e469509d245ce7f7ff09cd2ad149e5c42034ff"},
 ]
+django-polymorphic-tree = [
+    {file = "django-polymorphic-tree-2.1.tar.gz", hash = "sha256:a6d40c2ef350c5a50bd83727ca8cba85088890a7a08a106caeb3c5dc5ae072aa"},
+    {file = "django_polymorphic_tree-2.1-py3-none-any.whl", hash = "sha256:6e2994ea0d96b0c9e4191e57998e54fcbfafd4362ed2afc877ef61a2548d39f0"},
+]
 django-sekizai = [
     {file = "django-sekizai-3.0.1.tar.gz", hash = "sha256:c7d69af7601ae42b15abb6fdaf3ec0ca309305afa0638544a6119ebdaa7bcf81"},
     {file = "django_sekizai-3.0.1-py3-none-any.whl", hash = "sha256:92c2a82e62d839dcb2ea77728559c9abcb8d135f51e1d592c37c362fddbeeda1"},
@@ -2104,6 +2129,10 @@ django-sekizai = [
 django-storages = [
     {file = "django-storages-1.12.3.tar.gz", hash = "sha256:a475edb2f0f04c4f7e548919a751ecd50117270833956ed5bd585c0575d2a5e7"},
     {file = "django_storages-1.12.3-py3-none-any.whl", hash = "sha256:204a99f218b747c46edbfeeb1310d357f83f90fa6a6024d8d0a3f422570cee84"},
+]
+django-tag-parser = [
+    {file = "django-tag-parser-3.2.tar.gz", hash = "sha256:903cd4bf3692c8c060770ca2b9d6e74e4ee52d6078308852acffe1ef4a49e0f7"},
+    {file = "django_tag_parser-3.2-py2.py3-none-any.whl", hash = "sha256:92e5da35d8774a6ab4e0ac0b3b2229b8a0b78a61c5a3b0fd159255f0a66c08d7"},
 ]
 django-treebeard = [
     {file = "django-treebeard-4.5.1.tar.gz", hash = "sha256:80150017725239702054e5fa64dc66e383dc13ac262c8d47ee5a82cb005969da"},

@@ -5,7 +5,7 @@ from . import models
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Project
-        fields = ['id', 'name', 'slug','snakefile']
+        fields = ['id', 'name', 'slug', 'workflow']
 
 
 class AttributeSerializer(serializers.ModelSerializer):
@@ -18,64 +18,45 @@ class AttributeSerializer(serializers.ModelSerializer):
 
 
 class AbstractAttributeSerializer(serializers.ModelSerializer):
-    dataset = serializers.SlugRelatedField(slug_field='slug', queryset=models.Dataset.objects.all())
+    item = serializers.SlugRelatedField(slug_field='slug', queryset=models.Item.objects.all())
+    class Meta:
+        fields = [
+            "item",
+            "key",
+            "value",
+        ]
 
 
 class CharAttributeSerializer(AbstractAttributeSerializer):
-    class Meta:
+    class Meta(AbstractAttributeSerializer.Meta):
         model = models.CharAttribute
-        fields = [
-            "dataset",
-            "key",
-            "value",
-        ]
 
 
 class FloatAttributeSerializer(AbstractAttributeSerializer):
-    class Meta:
+    class Meta(AbstractAttributeSerializer.Meta):
         model = models.FloatAttribute
-        fields = [
-            "dataset",
-            "key",
-            "value",
-        ]
 
 
 class IntegerAttributeSerializer(AbstractAttributeSerializer):
-    class Meta:
+    class Meta(AbstractAttributeSerializer.Meta):
         model = models.IntegerAttribute
-        fields = [
-            "dataset",
-            "key",
-            "value",
-        ]
 
 
 class URLAttributeSerializer(AbstractAttributeSerializer):
-    class Meta:
+    class Meta(AbstractAttributeSerializer.Meta):
         model = models.URLAttribute
-        fields = [
-            "dataset",
-            "key",
-            "value",
-        ]
 
 
 class DateTimeAttributeSerializer(AbstractAttributeSerializer):
-    class Meta:
+    class Meta(AbstractAttributeSerializer.Meta):
         model = models.DateTimeAttribute
-        fields = [
-            "dataset",
-            "key",
-            "value",
-        ]
 
 
 class LatLongAttributeSerializer(AbstractAttributeSerializer):
-    class Meta:
+    class Meta(AbstractAttributeSerializer.Meta):
         model = models.LatLongAttribute
         fields = [
-            "dataset",
+            "item",
             "key",
             "latitude",
             "longitude",
@@ -84,12 +65,12 @@ class LatLongAttributeSerializer(AbstractAttributeSerializer):
 
 class DatasetSerializer(serializers.HyperlinkedModelSerializer):
     # project = serializers.HyperlinkedRelatedField(view_name='crunch:api:project-detail', lookup_field='slug', queryset=models.Project.objects.all())
-    project = serializers.SlugRelatedField(slug_field='slug', queryset=models.Project.objects.all())
+    parent = serializers.SlugRelatedField(slug_field='slug', queryset=models.Project.objects.all())
     attributes = AttributeSerializer(many=True, required=False)
 
     class Meta:
         model = models.Dataset
-        fields = ['id', 'name', 'slug','project', 'description', 'details', 'attributes']
+        fields = ['id', 'name', 'slug','parent', 'description', 'details', 'attributes']
 
 
 class DatasetReferenceSerializer(serializers.Serializer):
