@@ -39,7 +39,7 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
     name = models.CharField(max_length=1023, unique=True)
     description = models.CharField(max_length=1023, default="", blank=True, help_text="A short description in a sentence or more of this item.")
     details = models.TextField(default="", blank=True, help_text="A detailed description of this item (written in Markdown).")    
-    slug = AutoSlugField(populate_from='name', unique=True)
+    slug = AutoSlugField(populate_from='name', unique=True, max_length=255)
     # TODO Add tags
 
     def slugify_function(self, content):

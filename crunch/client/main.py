@@ -185,8 +185,8 @@ def add_project(
     """
     Adds a new project on the hosted site.
     """
-    connection = connections.Connection(url, token)
-    return connection.add_project(project=project, description=description, details=details, verbose=verbose)
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_project(project=project, description=description, details=details)
 
 
 @app.command()
@@ -202,8 +202,8 @@ def add_dataset(
     """
     Adds a new dataset to a project on the hosted site.
     """
-    connection = connections.Connection(url, token)
-    return connection.add_dataset(project=project, dataset=dataset, description=description, details=details, verbose=verbose)
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_dataset(project=project, dataset=dataset, description=description, details=details)
 
 
 @app.command()
@@ -219,8 +219,8 @@ def add_item(
     """
     Adds a new item to an item on the hosted site.
     """
-    connection = connections.Connection(url, token)
-    return connection.add_item(parent=parent, item=item, description=description, details=details, verbose=verbose)
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_item(parent=parent, item=item, description=description, details=details)
 
 
 @app.command()
@@ -235,8 +235,8 @@ def add_char_attribute(
     """
     Adds a new char attribute to a dataset.
     """
-    connection = connections.Connection(url, token)
-    return connection.add_char_attribute(item=item, key=key, value=value, verbose=verbose)
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_char_attribute(item=item, key=key, value=value)
 
 
 @app.command()
@@ -251,8 +251,8 @@ def add_float_attribute(
     """
     Adds a new float attribute to a dataset.
     """
-    connection = connections.Connection(url, token)
-    return connection.add_float_attribute(item=item, key=key, value=value, verbose=verbose)
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_float_attribute(item=item, key=key, value=value)
 
 
 @app.command()
@@ -268,8 +268,8 @@ def add_datetime_attribute(
     """
     Adds a new datetime attribute to a dataset.
     """
-    connection = connections.Connection(url, token)
-    return connection.add_datetime_attribute(item=item, key=key, value=value, format=format, verbose=verbose)
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_datetime_attribute(item=item, key=key, value=value, format=format)
 
 
 @app.command()
@@ -285,8 +285,8 @@ def add_date_attribute(
     """
     Adds a new date attribute to a dataset.
     """
-    connection = connections.Connection(url, token)
-    return connection.add_date_attribute(item=item, key=key, value=value, format=format, verbose=verbose)
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_date_attribute(item=item, key=key, value=value, format=format)
 
 
 @app.command()
@@ -302,8 +302,8 @@ def add_lat_long_attribute(
     """
     Adds a new lat-long coorinate as an attribute to a dataset.
     """
-    connection = connections.Connection(url, token)
-    return connection.add_lat_long_attribute(item=item, key=key, latitude=latitude, longitude=longitude, verbose=verbose)
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_lat_long_attribute(item=item, key=key, latitude=latitude, longitude=longitude)
 
 
 @app.command()
@@ -318,8 +318,8 @@ def add_integer_attribute(
     """
     Adds a new integer attribute to a dataset.
     """
-    connection = connections.Connection(url, token)
-    return connection.add_integer_attribute(item=item, key=key, value=value, verbose=verbose)
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_integer_attribute(item=item, key=key, value=value)
 
 
 @app.command()
@@ -334,8 +334,8 @@ def add_boolean_attribute(
     """
     Adds a new boolean attribute to a dataset.
     """
-    connection = connections.Connection(url, token)
-    return connection.add_boolean_attribute(item=item, key=key, value=value, verbose=verbose)
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_boolean_attribute(item=item, key=key, value=value)
 
 
 @app.command()
@@ -350,8 +350,8 @@ def add_url_attribute(
     """
     Adds a new URL attribute to a dataset.
     """
-    connection = connections.Connection(url, token)
-    return connection.add_url_attribute(item=item, key=key, value=value, verbose=verbose)
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_url_attribute(item=item, key=key, value=value)
 
 
 @app.command()
