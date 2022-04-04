@@ -166,6 +166,12 @@ class IntegerAttributeAPI(viewsets.ModelViewSet):
     permission_classes = [permissions.DjangoModelPermissions]
 
 
+class FilesizeAttributeAPI(viewsets.ModelViewSet):
+    queryset = models.FilesizeAttribute.objects.all()
+    serializer_class = serializers.FilesizeAttributeSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+
+
 class BooleanAttributeAPI(viewsets.ModelViewSet):
     queryset = models.BooleanAttribute.objects.all()
     serializer_class = serializers.BooleanAttributeSerializer

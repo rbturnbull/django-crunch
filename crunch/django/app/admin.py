@@ -29,6 +29,11 @@ class IntegerAttributeAdmin(AttributeChildAdmin):
     pass
 
 
+@admin.register(models.FilesizeAttribute)
+class FilesizeAttributeAdmin(AttributeChildAdmin):
+    pass
+
+
 @admin.register(models.FloatAttribute)
 class FloatAttributeAdmin(AttributeChildAdmin):
     pass
@@ -62,7 +67,16 @@ class BooleanAttributeAdmin(AttributeChildAdmin):
 @admin.register(models.Attribute)
 class AttributeParentAdmin(PolymorphicParentModelAdmin):
     base_model = models.Attribute  # Optional, explicitly set here.
-    child_models = (models.IntegerAttribute, models.FloatAttribute, models.CharAttribute,models.URLAttribute)
+    child_models = (
+        models.IntegerAttribute, 
+        models.FilesizeAttribute, 
+        models.FloatAttribute, 
+        models.CharAttribute,
+        models.URLAttribute,
+        models.BooleanAttribute,
+        models.DateAttribute,
+        models.DateTimeAttribute,
+    ) # This should be automatic
     list_filter = (PolymorphicChildModelFilter,)  # This is optional.
 
 

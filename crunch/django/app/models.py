@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.utils.html import format_html
 from mptt.models import MPTTModel, TreeForeignKey
+import humanize
 from polymorphic.models import PolymorphicModel
 from django_extensions.db.models import TimeStampedModel
 from next_prev import next_in_order, prev_in_order
@@ -192,6 +193,13 @@ class FloatAttribute(ValueAttribute):
 
 class IntegerAttribute(ValueAttribute):
     value = models.IntegerField()
+
+
+class FilesizeAttribute(ValueAttribute):
+    value = models.PositiveBigIntegerField(help_text="The filesize of this item in bytes.")
+
+    def value_str(self):
+        return humanize.naturalsize(self.value)
 
 
 class BooleanAttribute(ValueAttribute):

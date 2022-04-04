@@ -42,6 +42,11 @@ class IntegerAttributeSerializer(AbstractAttributeSerializer):
         model = models.IntegerAttribute
 
 
+class FilesizeAttributeSerializer(AbstractAttributeSerializer):
+    class Meta(AbstractAttributeSerializer.Meta):
+        model = models.FilesizeAttribute
+
+
 class BooleanAttributeSerializer(AbstractAttributeSerializer):
     class Meta(AbstractAttributeSerializer.Meta):
         model = models.BooleanAttribute

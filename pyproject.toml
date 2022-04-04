@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-crunch"
-version = "0.1.4"
+version = "0.1.5"
 description = "A data processing orcestration tool."
 authors = ["Robert Turnbull <robert.turnbull@unimelb.edu.au>"]
 license = "Apache-2.0"
@@ -38,6 +38,7 @@ django-storages = {extras = ["boto3"], version = "^1.12.2"}
 ipykernel = "^6.9.1"
 django-mptt = "^0.13.4"
 django-polymorphic-tree = "^2.1"
+humanize = "^4.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

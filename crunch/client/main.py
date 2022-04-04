@@ -233,7 +233,7 @@ def add_char_attribute(
     token:str = token_arg,
 ):
     """
-    Adds a new char attribute to a dataset.
+    Adds a new char attribute to an item.
     """
     connection = connections.Connection(url, token, verbose=verbose)
     return connection.add_char_attribute(item=item, key=key, value=value)
@@ -249,7 +249,7 @@ def add_float_attribute(
     token:str = token_arg,
 ):
     """
-    Adds a new float attribute to a dataset.
+    Adds a new float attribute to an item.
     """
     connection = connections.Connection(url, token, verbose=verbose)
     return connection.add_float_attribute(item=item, key=key, value=value)
@@ -266,7 +266,7 @@ def add_datetime_attribute(
     token:str = token_arg,
 ):
     """
-    Adds a new datetime attribute to a dataset.
+    Adds a new datetime attribute to an item.
     """
     connection = connections.Connection(url, token, verbose=verbose)
     return connection.add_datetime_attribute(item=item, key=key, value=value, format=format)
@@ -283,7 +283,7 @@ def add_date_attribute(
     token:str = token_arg,
 ):
     """
-    Adds a new date attribute to a dataset.
+    Adds a new date attribute to an item.
     """
     connection = connections.Connection(url, token, verbose=verbose)
     return connection.add_date_attribute(item=item, key=key, value=value, format=format)
@@ -300,7 +300,7 @@ def add_lat_long_attribute(
     token:str = token_arg,
 ):
     """
-    Adds a new lat-long coorinate as an attribute to a dataset.
+    Adds a new lat-long coorinate as an attribute to an item.
     """
     connection = connections.Connection(url, token, verbose=verbose)
     return connection.add_lat_long_attribute(item=item, key=key, latitude=latitude, longitude=longitude)
@@ -316,10 +316,26 @@ def add_integer_attribute(
     token:str = token_arg,
 ):
     """
-    Adds a new integer attribute to a dataset.
+    Adds a new integer attribute to an item.
     """
     connection = connections.Connection(url, token, verbose=verbose)
     return connection.add_integer_attribute(item=item, key=key, value=value)
+
+
+@app.command()
+def add_filesize_attribute(
+    item:str = item_slug_arg,
+    key:str = key_arg,
+    value:int = value_arg,
+    verbose:bool = True,
+    url:str = url_arg,
+    token:str = token_arg,
+):
+    """
+    Adds a new filesize attribute to an item.
+    """
+    connection = connections.Connection(url, token, verbose=verbose)
+    return connection.add_filesize_attribute(item=item, key=key, value=value)
 
 
 @app.command()
@@ -332,7 +348,7 @@ def add_boolean_attribute(
     token:str = token_arg,
 ):
     """
-    Adds a new boolean attribute to a dataset.
+    Adds a new boolean attribute to an item.
     """
     connection = connections.Connection(url, token, verbose=verbose)
     return connection.add_boolean_attribute(item=item, key=key, value=value)
@@ -348,7 +364,7 @@ def add_url_attribute(
     token:str = token_arg,
 ):
     """
-    Adds a new URL attribute to a dataset.
+    Adds a new URL attribute to an item.
     """
     connection = connections.Connection(url, token, verbose=verbose)
     return connection.add_url_attribute(item=item, key=key, value=value)

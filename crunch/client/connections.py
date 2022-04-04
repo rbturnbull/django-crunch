@@ -311,7 +311,7 @@ class Connection():
         Args:
             item (str): The slug for the item.
             key (str): The key for this attribute.
-            value (str): The integer value for this attribute.
+            value (int): The integer value for this attribute.
 
         Returns:
             requests.Response: The request object from posting to the crunch API.
@@ -323,6 +323,25 @@ class Connection():
             value=value,
         )               
         
+    def add_filesize_attribute(self, item:str, key:str, value:int) -> requests.Response:
+        """
+        Adds an attribute as a key/value pair on a dataset when the value is an filesize. 
+
+        Args:
+            item (str): The slug for the item.
+            key (str): The key for this attribute.
+            value (int): The size of the file in bytes.
+
+        Returns:
+            requests.Response: The request object from posting to the crunch API.
+        """
+        return self.add_key_value_attribute(
+            url="api/attributes/filesize/", 
+            item=item,
+            key=key,
+            value=value,
+        )               
+                
     def add_boolean_attribute(self, item:str, key:str, value:bool) -> requests.Response:
         """
         Adds an attribute as a key/value pair on a dataset when the value is a boolean. 
