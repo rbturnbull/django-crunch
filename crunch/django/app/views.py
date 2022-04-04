@@ -67,7 +67,7 @@ class DatasetAPI(viewsets.ModelViewSet):
     queryset = models.Dataset.objects.all()
     serializer_class = serializers.DatasetSerializer
     permission_classes = [permissions.DjangoModelPermissions]
-    lookup_field = 'slug'
+    # lookup_field = 'slug'
 
 
 class DatasetCreateView(PermissionRequiredMixin, CreateView):

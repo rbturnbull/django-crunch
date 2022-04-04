@@ -78,15 +78,6 @@ class LatLongAttributeSerializer(AbstractAttributeSerializer):
         ]
 
 
-class DatasetSerializer(serializers.HyperlinkedModelSerializer):
-    parent = serializers.SlugRelatedField(slug_field='slug', queryset=models.Project.objects.all())
-    attributes = AttributeSerializer(many=True, required=False)
-
-    class Meta:
-        model = models.Dataset
-        fields = ['id', 'name', 'slug','parent', 'description', 'details', 'attributes']
-
-
 class ItemSerializer(serializers.HyperlinkedModelSerializer):
     parent = serializers.SlugRelatedField(slug_field='slug', queryset=models.Item.objects.all())
     attributes = AttributeSerializer(many=True, required=False)
@@ -94,6 +85,16 @@ class ItemSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Item
         fields = ['id', 'name', 'slug','parent', 'description', 'details', 'attributes']
+
+
+class DatasetSerializer(serializers.HyperlinkedModelSerializer):
+    parent = serializers.SlugRelatedField(slug_field='slug', queryset=models.Project.objects.all())
+    attributes = AttributeSerializer(many=True, required=False)
+    items = ItemSerializer(many=True, required=False)
+
+    class Meta:
+        model = models.Dataset
+        fields = ['id', 'name', 'slug','parent', 'description', 'details', 'attributes', 'items']
 
 
 class DatasetReferenceSerializer(serializers.Serializer):

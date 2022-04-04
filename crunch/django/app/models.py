@@ -58,6 +58,9 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
     def get_absolute_url(self):
         return reverse("crunch:item-detail", kwargs={"slug": self.slug})
 
+    def items(self):
+        return self.get_children()
+
     # def cid(self):
     #     return "/".join([ancestor.slug for ancestor in self.get_ancestors(include_self=True)])
 
