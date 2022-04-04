@@ -49,6 +49,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#crunch-add-dataset">add-dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crunch-add-date-attribute">add-date-attribute</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crunch-add-datetime-attribute">add-datetime-attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-add-filesize-attribute">add-filesize-attribute</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crunch-add-float-attribute">add-float-attribute</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crunch-add-integer-attribute">add-integer-attribute</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crunch-add-item">add-item</a></li>
@@ -112,7 +113,7 @@
 
 <section id="crunch-add-boolean-attribute">
 <h3>add-boolean-attribute<a class="headerlink" href="#crunch-add-boolean-attribute" title="Permalink to this headline"></a></h3>
-<p>Adds a new boolean attribute to a dataset.</p>
+<p>Adds a new boolean attribute to an item.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-boolean-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> ITEM KEY VALUE
 </pre></div>
 </div>
@@ -178,7 +179,7 @@
 </section>
 <section id="crunch-add-char-attribute">
 <h3>add-char-attribute<a class="headerlink" href="#crunch-add-char-attribute" title="Permalink to this headline"></a></h3>
-<p>Adds a new char attribute to a dataset.</p>
+<p>Adds a new char attribute to an item.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-char-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> ITEM KEY VALUE
 </pre></div>
 </div>
@@ -324,7 +325,7 @@
 </section>
 <section id="crunch-add-date-attribute">
 <h3>add-date-attribute<a class="headerlink" href="#crunch-add-date-attribute" title="Permalink to this headline"></a></h3>
-<p>Adds a new date attribute to a dataset.</p>
+<p>Adds a new date attribute to an item.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-date-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> ITEM KEY VALUE
 </pre></div>
 </div>
@@ -399,7 +400,7 @@
 </section>
 <section id="crunch-add-datetime-attribute">
 <h3>add-datetime-attribute<a class="headerlink" href="#crunch-add-datetime-attribute" title="Permalink to this headline"></a></h3>
-<p>Adds a new datetime attribute to a dataset.</p>
+<p>Adds a new datetime attribute to an item.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-datetime-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> ITEM KEY VALUE
 </pre></div>
 </div>
@@ -472,9 +473,75 @@
 </dd></dl>
 
 </section>
+<section id="crunch-add-filesize-attribute">
+<h3>add-filesize-attribute<a class="headerlink" href="#crunch-add-filesize-attribute" title="Permalink to this headline"></a></h3>
+<p>Adds a new filesize attribute to an item.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-filesize-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> ITEM KEY VALUE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-filesize-attribute-verbose">
+<span id="cmdoption-crunch-add-filesize-attribute-no-verbose"></span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--no-verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-filesize-attribute-verbose" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Default</dt>
+<dd class="field-odd"><p>True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-filesize-attribute-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-filesize-attribute-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the crunch hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-filesize-attribute-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-add-filesize-attribute-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-filesize-attribute-arg-ITEM">
+<span id="cmdoption-crunch-add-filesize-attribute-arg-item"></span><span class="sig-name descname"><span class="pre">ITEM</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-filesize-attribute-arg-ITEM" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the item. STRING</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-filesize-attribute-arg-KEY">
+<span id="cmdoption-crunch-add-filesize-attribute-arg-key"></span><span class="sig-name descname"><span class="pre">KEY</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-filesize-attribute-arg-KEY" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The key for this attribute. STRING</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-add-filesize-attribute-arg-VALUE">
+<span id="cmdoption-crunch-add-filesize-attribute-arg-value"></span><span class="sig-name descname"><span class="pre">VALUE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-add-filesize-attribute-arg-VALUE" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The value of this attribute. INT</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-add-filesize-attribute-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-filesize-attribute-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-add-filesize-attribute-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-add-filesize-attribute-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
 <section id="crunch-add-float-attribute">
 <h3>add-float-attribute<a class="headerlink" href="#crunch-add-float-attribute" title="Permalink to this headline"></a></h3>
-<p>Adds a new float attribute to a dataset.</p>
+<p>Adds a new float attribute to an item.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-float-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> ITEM KEY VALUE
 </pre></div>
 </div>
@@ -540,7 +607,7 @@
 </section>
 <section id="crunch-add-integer-attribute">
 <h3>add-integer-attribute<a class="headerlink" href="#crunch-add-integer-attribute" title="Permalink to this headline"></a></h3>
-<p>Adds a new integer attribute to a dataset.</p>
+<p>Adds a new integer attribute to an item.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-integer-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> ITEM KEY VALUE
 </pre></div>
 </div>
@@ -686,7 +753,7 @@
 </section>
 <section id="crunch-add-lat-long-attribute">
 <h3>add-lat-long-attribute<a class="headerlink" href="#crunch-add-lat-long-attribute" title="Permalink to this headline"></a></h3>
-<p>Adds a new lat-long coorinate as an attribute to a dataset.</p>
+<p>Adds a new lat-long coorinate as an attribute to an item.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-lat-long-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> ITEM KEY LATITUDE LONGITUDE
 </pre></div>
 </div>
@@ -832,7 +899,7 @@
 </section>
 <section id="crunch-add-url-attribute">
 <h3>add-url-attribute<a class="headerlink" href="#crunch-add-url-attribute" title="Permalink to this headline"></a></h3>
-<p>Adds a new URL attribute to a dataset.</p>
+<p>Adds a new URL attribute to an item.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch add-url-attribute <span class="o">[</span>OPTIONS<span class="o">]</span> ITEM KEY VALUE
 </pre></div>
 </div>
@@ -948,7 +1015,7 @@
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-crunch-loop-arg-STORAGE_SETTINGS">
 <span id="cmdoption-crunch-loop-arg-storage-settings"></span><span class="sig-name descname"><span class="pre">STORAGE_SETTINGS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-loop-arg-STORAGE_SETTINGS" title="Permalink to this definition"></a></dt>
-<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7f13a471d9d0&gt;</p>
+<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7f0bc993cc70&gt;</p>
 </dd></dl>
 
 <p class="rubric">Environment variables</p>
@@ -1014,7 +1081,7 @@
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-crunch-next-arg-STORAGE_SETTINGS">
 <span id="cmdoption-crunch-next-arg-storage-settings"></span><span class="sig-name descname"><span class="pre">STORAGE_SETTINGS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-next-arg-STORAGE_SETTINGS" title="Permalink to this definition"></a></dt>
-<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7f13a471d850&gt;</p>
+<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7f0bc993caf0&gt;</p>
 </dd></dl>
 
 <p class="rubric">Environment variables</p>
@@ -1092,7 +1159,7 @@
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-crunch-run-arg-STORAGE_SETTINGS">
 <span id="cmdoption-crunch-run-arg-storage-settings"></span><span class="sig-name descname"><span class="pre">STORAGE_SETTINGS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-run-arg-STORAGE_SETTINGS" title="Permalink to this definition"></a></dt>
-<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7f13a471d730&gt;</p>
+<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7f0bc993c9d0&gt;</p>
 </dd></dl>
 
 <p class="rubric">Environment variables</p>

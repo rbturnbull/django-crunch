@@ -226,6 +226,27 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="crunch.client.connections.Connection.add_filesize_attribute">
+<span class="sig-name descname"><span class="pre">add_filesize_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">requests.models.Response</span></span></span><a class="headerlink" href="#crunch.client.connections.Connection.add_filesize_attribute" title="Permalink to this definition"></a></dt>
+<dd><p>Adds an attribute as a key/value pair on a dataset when the value is an filesize.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item</strong> (<em>str</em>) – The slug for the item.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – The key for this attribute.</p></li>
+<li><p><strong>value</strong> (<em>int</em>) – The size of the file in bytes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The request object from posting to the crunch API.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>requests.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="crunch.client.connections.Connection.add_float_attribute">
 <span class="sig-name descname"><span class="pre">add_float_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">requests.models.Response</span></span></span><a class="headerlink" href="#crunch.client.connections.Connection.add_float_attribute" title="Permalink to this definition"></a></dt>
 <dd><p>Adds an attribute as a key/value pair on a dataset when the value is a float.</p>
@@ -255,7 +276,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>item</strong> (<em>str</em>) – The slug for the item.</p></li>
 <li><p><strong>key</strong> (<em>str</em>) – The key for this attribute.</p></li>
-<li><p><strong>value</strong> (<em>str</em>) – The integer value for this attribute.</p></li>
+<li><p><strong>value</strong> (<em>int</em>) – The integer value for this attribute.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
