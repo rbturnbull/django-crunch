@@ -98,10 +98,21 @@
                 </td>
                 {% endif %}        
 
-              </tr>
+            </tr>
             {% endfor %}
+            <tr>
+                <th scope="row">Total Filesize</th>
+                <td>Filesize</td>
+                <td>{{ dataset.descendant_total_filesize_readable }}</td>
+                {% if request.user.is_staff %}
+                <td>
+                </td>
+                {% endif %}        
+            </tr>
         </tbody>
       </table>
+
+      
       <hr>
       {% endif %}
 

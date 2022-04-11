@@ -1,5 +1,6 @@
 from operator import mod
 import re
+from typing import Type
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
 from django.utils.text import slugify
@@ -61,21 +62,34 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
     def items(self):
         return self.get_children()
 
-    # def cid(self):
-    #     return "/".join([ancestor.slug for ancestor in self.get_ancestors(include_self=True)])
+    def descendant_attributes(self, attribute_type:Type=None, include_self:bool=True) -> models.QuerySet:
+        """Returns a queryset with all the attributes of the descendants of this item.
 
-    # @classmethod
-    # def get_by_cid(cls, cid:str):
-    #     slugs = cid.split("/")
-    #     queryset = Item.objects.all()
-    #     item = None
-    #     for slug in slugs:
-    #         item = queryset.filter(slug=slug).first()
-    #         if not item:
-    #             raise Exception(f"Item '{cid}' not found.")
-    #         queryset = item.get_children()
+        Args:
+            attribute_type (Type, optional): The type of the attribute to filter for. If `None` then it uses the `Attribute` class.
+            include_self (bool, optional): Whether or not to include attributes of this item. Defaults to True.
 
-    #     return item
+        Returns:
+            models.QuerySet: A queryset of attributes of items descended from this item.
+        """
+        attribute_type = attribute_type or Attribute
+        return attribute_type.objects.filter(item__in=self.get_descendants(include_self=include_self))
+
+    def descendant_total_filesize(self):
+        filesize_attributes = self.descendant_attributes(attribute_type=FilesizeAttribute, include_self=True)
+
+        if not filesize_attributes:
+            return None
+
+        return filesize_attributes.aggregate(models.Sum('value'))['value__sum']
+
+    def descendant_total_filesize_readable(self) -> str:
+        descendant_total_filesize = self.descendant_total_filesize()
+
+        if descendant_total_filesize:
+            return humanize.naturalsize(descendant_total_filesize)
+        
+        return "None"
 
 
 class Project(Item):

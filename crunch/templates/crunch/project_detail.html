@@ -60,6 +60,47 @@
         </li>
     {% endfor %}
     </ul>
+
+    <h3>Attributes</h3>
+
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Attribute</th>
+            <th scope="col">Type</th>
+            <th scope="col">Value</th>
+            {% if request.user.is_staff %}
+            <th scope="col">Admin</th>
+            {% endif %}        
+          </tr>
+        </thead>
+        <tbody>
+            {% for attribute in project.attributes.all %}
+            <tr>
+                <th scope="row">{{attribute.key}}</th>
+                <td>{{attribute.type_str}}</td>
+                <td>{{attribute.value_html}}</td>
+                {% if request.user.is_staff %}
+                <td>
+                    <a href="{{ attribute.get_admin_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Edit Attribute">
+                        <i class="fas fa-tools"></i>
+                    </a>
+                </td>
+                {% endif %}        
+
+            </tr>
+            {% endfor %}
+            <tr>
+                <th scope="row">Total Filesize</th>
+                <td>Filesize</td>
+                <td>{{ project.descendant_total_filesize_readable }}</td>
+                {% if request.user.is_staff %}
+                <td>
+                </td>
+                {% endif %}        
+            </tr>
+        </tbody>
+      </table>    
       
 </div>
 
