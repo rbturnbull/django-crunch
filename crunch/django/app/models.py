@@ -91,6 +91,10 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
         
         return "None"
 
+    def map(self):
+        from .mapping import item_map
+        return item_map(self)
+
 
 class Project(Item):
     workflow = models.TextField(default="", blank=True, help_text="URL to snakemake repository or text of snakefile.")

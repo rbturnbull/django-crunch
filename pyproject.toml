@@ -39,6 +39,7 @@ ipykernel = "^6.9.1"
 django-mptt = "^0.13.4"
 django-polymorphic-tree = "^2.1"
 humanize = "^4.0.0"
+pydeck = "^0.7.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

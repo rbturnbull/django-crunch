@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from rest_framework import viewsets
@@ -132,6 +133,14 @@ class ItemUpdateView(PermissionRequiredMixin, UpdateView):
     extra_context = dict(
         form_title="Update Item",
     )
+
+
+class ItemMapView(ItemDetailView):
+    def get(self, request, slug) -> HttpResponse:
+        item = self.get_object()
+        map = item.map()
+        html = map.to_html(as_string=True) if map else "<p>No map available</p>"
+        return HttpResponse(html)
 
 
 class ItemAPI(viewsets.ModelViewSet):

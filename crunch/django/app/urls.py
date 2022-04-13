@@ -38,5 +38,6 @@ urlpatterns = [
 
     path("items/create/", views.ItemCreateView.as_view(), name="item-create"),
     path('items/<str:slug>/', views.ItemDetailView.as_view(), name='item-detail'),
+    path('items/<str:slug>/map/', views.ItemMapView.as_view(), name='item-map'),
     path('items/<str:slug>/update/', views.ItemUpdateView.as_view(), name='item-update'),
 ]
