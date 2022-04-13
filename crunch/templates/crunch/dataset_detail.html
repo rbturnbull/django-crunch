@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crunch %}
 
 {% block content %}
 
@@ -111,10 +112,13 @@
             </tr>
         </tbody>
       </table>
+      <hr>
+
 
       
-      <hr>
       {% endif %}
+      {% item_map dataset %}
+
 
       <div class="float-right">
           {% if request.user.is_staff %}
@@ -123,6 +127,7 @@
               </a>
           {% endif %}
       </div>  
+
       <h3>Files</h3>
       <p><i>File list not yet implemented.</i></p>
 

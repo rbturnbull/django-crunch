@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crunch %}
 
 {% block content %}
 
@@ -102,11 +103,7 @@
         </tbody>
       </table>    
       
-      {% if project.has_descendant_latlongattributes %}
-        <div class="embed-responsive embed-responsive-16by9">
-            <iframe class="embed-responsive-item" src="{% url 'crunch:item-map' slug=project.slug %}" allowfullscreen></iframe>
-        </div>        
-      {% endif %}
+      {% item_map project %}
 
 </div>
 
