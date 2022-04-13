@@ -95,6 +95,11 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
         from .mapping import item_map
         return item_map(self)
 
+    def descendant_latlongattributes(self):
+        return self.descendant_attributes(attribute_type=LatLongAttribute, include_self=True)
+
+    def has_descendant_latlongattributes(self):
+        return self.descendant_latlongattributes().count() > 0
 
 class Project(Item):
     workflow = models.TextField(default="", blank=True, help_text="URL to snakemake repository or text of snakefile.")

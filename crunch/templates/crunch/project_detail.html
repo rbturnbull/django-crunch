@@ -102,6 +102,12 @@
         </tbody>
       </table>    
       
+      {% if project.has_descendant_latlongattributes %}
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" src="{% url 'crunch:item-map' slug=project.slug %}" allowfullscreen></iframe>
+        </div>        
+      {% endif %}
+
 </div>
 
 {% endblock content %}

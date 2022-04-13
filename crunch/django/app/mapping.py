@@ -5,22 +5,32 @@ from django.db import models
 from .models import LatLongAttribute
 
 def item_map(item):
-    geo_attributes = item.descendant_attributes(attribute_type=LatLongAttribute, include_self=True)
+    geo_attributes = item.descendant_latlongattributes()
 
     plot_data = [
         dict(
             latitude=float(attribute.latitude),
             longitude=float(attribute.longitude),
+            item=str(attribute.item),
+            url=str(attribute.item.get_absolute_url()),
         )
         for attribute in geo_attributes    
     ]        
     df = pd.DataFrame(plot_data)
 
+    ICON_URL = "https://upload.wikimedia.org/wikipedia/commons/9/92/Ic_location_on_48px.svg"
+    ICON_WIDTH = 48
+    ICON_HEIGHT = 48
+
+    ICON_URL = "https://upload.wikimedia.org/wikipedia/commons/6/65/OOjs_UI_icon_mapPin-progressive.svg"
+    ICON_WIDTH = 20
+    ICON_HEIGHT = 20
+
     icon_data = {
-        "url": "https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/images/marker-icon.png",
-        "width": 12,
-        "height": 20,
-        "anchorY": 20,
+        "url": ICON_URL,
+        "width": ICON_WIDTH,
+        "height": ICON_HEIGHT,
+        "anchorY": ICON_HEIGHT,
     }
     df["icon_data"] = None
     for i in df.index:
@@ -31,8 +41,7 @@ def item_map(item):
         df,
         pickable=True,
         get_icon="icon_data",
-        get_size=4,
-        size_scale=4,
+        get_size=20,
         get_position=['longitude', 'latitude'],
     )
 
