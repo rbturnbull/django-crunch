@@ -101,6 +101,7 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
     def has_descendant_latlongattributes(self):
         return self.descendant_latlongattributes().count() > 0
 
+
 class Project(Item):
     workflow = models.TextField(default="", blank=True, help_text="URL to snakemake repository or text of snakefile.")
     # More workflow languages need to be supported.
@@ -112,7 +113,14 @@ class Project(Item):
 
 
 class Dataset(Item):
-    # TODO assert parent is Project
+    base_file_path = models.CharField(max_length=4096)
+    
+    def save(self, *args, **kwargs):
+        assert isinstance(self.parent, Project)
+
+        if not self.base_file_path:
+            self.base_file_path = storages.dataset_path( self.parent.slug, self.slug )
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return f"{self.parent.get_absolute_url()}datasets/{self.slug}"
@@ -125,11 +133,8 @@ class Dataset(Item):
     def next_unprocessed(cls):
         return cls.unprocessed().first()
 
-    def base_file_path(self):
-        return storages.dataset_path( self.parent.slug, self.slug )
-
     def files(self):
-        return storages.storage_walk(self.base_file_path())
+        return storages.storage_walk(self.base_file_path)
         
 
 class Status(NextPrevMixin, TimeStampedModel):
