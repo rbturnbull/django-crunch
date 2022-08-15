@@ -105,15 +105,20 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
 class Project(Item):
     workflow = models.TextField(default="", blank=True, help_text="URL to snakemake repository or text of snakefile.")
     # More workflow languages need to be supported.
+    # TODO assert parent is none    
     
     def get_absolute_url(self):
         return reverse("crunch:project-detail", kwargs={"slug": self.slug})
 
-    # TODO assert parent is none
+    def unprocessed_datasets(self):
+        return self.items.filter(statuses=None)
+
+    def next_unprocessed_datasets(self):
+        return self.unprocessed().first()
 
 
 class Dataset(Item):
-    base_file_path = models.CharField(max_length=4096)
+    base_file_path = models.CharField(max_length=4096, default="", blank=True)
     
     def save(self, *args, **kwargs):
         assert isinstance(self.parent, Project)

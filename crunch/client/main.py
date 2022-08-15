@@ -1,4 +1,5 @@
 import json
+import toml
 from pathlib import Path
 from typing import Optional
 from typing import List
@@ -84,9 +85,17 @@ def run(
             json.dump(project_data, f, ensure_ascii=False, indent=4)
 
         # Setup Storage
+        breakpoint()
         if isinstance(storage_settings, Path):
-            with open(storage_settings) as json_file:
-                storage_settings = json.load(json_file)
+            with open(storage_settings) as storage_settings_file:
+                suffix = storage_settings.suffix.lower()
+                if suffix == "toml":
+                    storage_settings = toml.load(storage_settings_file)
+                elif suffix == "json":
+                    storage_settings = json.load(storage_settings_file)
+                else:
+                    raise Exception(f"Cannot find interpreter for {storage_settings}")
+
         storage = storages.get_storage_with_settings(storage_settings)            
 
         # Pull data from storage
