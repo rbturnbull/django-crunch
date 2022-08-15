@@ -95,7 +95,7 @@ class NextDatasetReference(APIView):
     def get(self, request, format=None):
         dataset = models.Dataset.next_unprocessed()
 
-        dataset_reference = dict(project=dataset.project.slug, dataset=dataset.slug) if dataset else dict(project="", dataset="")
+        dataset_reference = dict(project=dataset.parent.slug, dataset=dataset.slug) if dataset else dict(project="", dataset="")
         serializer = serializers.DatasetReferenceSerializer(dataset_reference)
         return Response(serializer.data)
 
