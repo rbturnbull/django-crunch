@@ -65,16 +65,19 @@ def run(
     dataset_data = connection.get_json_response( f"/api/datasets/{dataset}" )
     # TODO raise exception
     assert dataset_data['slug'] == dataset
-    assert project in dataset_data['project']
+    assert project in dataset_data['parent']
     dataset_id = dataset_data['id']
+
+    stage_style = "bold red"
 
     #############################
     ##       Setup Stage
     #############################
+    console.print(f"Setup stage {dataset}", style=stage_style)
     stage = Stage.SETUP
     try:
         connection.send_status( dataset_id, stage=stage, state=State.START)
-        with open(directory/'project.json', 'w', encoding='utf-8') as f:
+        with open(directory/'dataset.json', 'w', encoding='utf-8') as f:
             json.dump(dataset_data, f, ensure_ascii=False, indent=4)
 
         # get project details
@@ -85,7 +88,6 @@ def run(
             json.dump(project_data, f, ensure_ascii=False, indent=4)
 
         # Setup Storage
-        breakpoint()
         if isinstance(storage_settings, Path):
             with open(storage_settings) as storage_settings_file:
                 suffix = storage_settings.suffix.lower()
@@ -113,7 +115,7 @@ def run(
     #############################
     ##       Workflow Stage
     #############################
-
+    console.print(f"Workflow stage {dataset}", style=stage_style)
     stage = Stage.WORKFLOW
     try:
         connection.send_status( dataset_id, stage=stage, state=State.START)
@@ -127,6 +129,7 @@ def run(
     #############################
     ##       Upload Stage
     #############################
+    console.print(f"Upload stage {dataset}", style=stage_style)
     stage = Stage.UPLOAD
 
     # notify
@@ -142,13 +145,15 @@ def next(
     cores:str = cores_arg,
     url:str = url_arg,
     token:str = token_arg,
+    project:str = typer.Option("", help="The slug for a project the dataset is in. If not given, then it chooses any project.")
 ):
     """
     Processes the next dataset in a project.
     """
     console.print(f"Processing the next dataset from {url}")
     connection = connections.Connection(url, token)
-    next = connection.get_json_response( f"api/next/" )
+    next = connection.get_json_response( f"api/projects/{project}/next/" ) if project else connection.get_json_response( f"api/next/" )
+
     if 'dataset' in next and 'project' in next and next['project'] and next['dataset']:
         return run(
             project=next['project'], 

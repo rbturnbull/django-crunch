@@ -26,10 +26,12 @@ urlpatterns = [
     path('api/statuses/', views.StatusListCreateAPIView.as_view(), name='status-list'),
     path('api/next/', views.NextDatasetReference.as_view(), name='next'),
 
+
     path('projects/', RedirectView.as_view(url="..", permanent=False)),
     path("projects/create/", views.ProjectCreateView.as_view(), name="project-create"),
     path('projects/<str:slug>/', views.ProjectDetailView.as_view(), name='project-detail'),
     path("projects/<str:slug>/update/", views.ProjectUpdateView.as_view(), name="project-update"),
+    path("api/projects/<str:slug>/next/", views.ProjectNextDatasetReference.as_view(), name="project-api-next"),
     
     path("datasets/create/", views.DatasetCreateView.as_view(), name="dataset-create"),
     path('projects/<str:project>/datasets/', RedirectView.as_view(url="..", permanent=False)),

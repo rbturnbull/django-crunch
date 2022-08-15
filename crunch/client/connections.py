@@ -421,8 +421,9 @@ class Connection():
 
     def get_json_response( self, relative_url ):
         url = self.absolute_url(relative_url)
+        response = requests.get(url, headers=self.get_headers())
 
-        json_response = requests.get(url, headers=self.get_headers()).json()
+        json_response = response.json()
         
         if len(json_response.keys()) == 1 and "detail" in json_response:
             raise CrunchAPIException(json_response["detail"])

@@ -68,7 +68,7 @@ class DatasetAPI(viewsets.ModelViewSet):
     queryset = models.Dataset.objects.all()
     serializer_class = serializers.DatasetSerializer
     permission_classes = [permissions.DjangoModelPermissions]
-    # lookup_field = 'slug'
+    lookup_field = 'slug'
 
 
 class DatasetCreateView(PermissionRequiredMixin, CreateView):
@@ -84,6 +84,22 @@ class DatasetUpdateView(PermissionRequiredMixin, UpdateView):
     extra_context = dict(
         form_title="Update Dataset",
     )
+
+
+class ProjectNextDatasetReference(APIView):
+    """
+    Retuns the study accession ID and the batch index to process next for a particular project.
+    """
+    permission_classes = [permissions.IsAuthenticated] # should be 'view_dataset'
+        
+    def get(self, request, format=None, slug=None):
+        assert slug is not None
+        project = models.Project.objects.get(slug=slug)
+        dataset = project.next_unprocessed_dataset()
+
+        dataset_reference = dict(project=dataset.parent.slug, dataset=dataset.slug) if dataset else dict(project="", dataset="")
+        serializer = serializers.DatasetReferenceSerializer(dataset_reference)
+        return Response(serializer.data)
 
 
 class NextDatasetReference(APIView):

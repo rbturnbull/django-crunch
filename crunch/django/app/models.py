@@ -47,7 +47,7 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
     def slugify_function(self, content):
         slug = slugify(content)
         if self.parent:
-            return f"{self.parent.slug}.{slug}"
+            return f"{self.parent.slug}:{slug}"
         return slug
 
     class Meta(PolymorphicMPTTModel.Meta):
@@ -101,6 +101,11 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
     def has_descendant_latlongattributes(self):
         return self.descendant_latlongattributes().count() > 0
 
+    def reslugify_descendants(self):
+        for item in self.get_descendants(include_self=True):
+            item.slug = item.slugify_function(item.name)
+            item.save()
+
 
 class Project(Item):
     workflow = models.TextField(default="", blank=True, help_text="URL to snakemake repository or text of snakefile.")
@@ -111,10 +116,10 @@ class Project(Item):
         return reverse("crunch:project-detail", kwargs={"slug": self.slug})
 
     def unprocessed_datasets(self):
-        return self.items.filter(statuses=None)
+        return Dataset.objects.filter(id__in=self.items())
 
-    def next_unprocessed_datasets(self):
-        return self.unprocessed().first()
+    def next_unprocessed_dataset(self):
+        return self.unprocessed_datasets().first()
 
 
 class Dataset(Item):
