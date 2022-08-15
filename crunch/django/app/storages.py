@@ -72,7 +72,7 @@ def copy_recursive_from_storage(base="/", local_dir=".", storage=None):
 
         filenames = listing[2]
         for filename in filenames:
-            print(f"Copying {filename} in {listing_path} on storage to {local_path}")
+            print(f"Copying '{filename}' in '{listing_path}' from storage to '{local_path}'")
             with storage.open(str(listing_path/filename),'rb') as source:
                 with open(local_path/filename,'wb') as target:
                     shutil.copyfileobj(source, target, length=1024)

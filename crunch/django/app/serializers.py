@@ -94,7 +94,7 @@ class DatasetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Dataset
-        fields = ['id', 'name', 'slug','parent', 'description', 'details', 'attributes', 'items']
+        fields = ['id', 'name', 'slug','parent', 'description', 'details', 'attributes', 'items', 'base_file_path']
 
 
 class DatasetReferenceSerializer(serializers.Serializer):

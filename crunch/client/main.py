@@ -44,6 +44,7 @@ def run(
     cores:str = cores_arg,
     url:str = url_arg,
     token:str = token_arg,
+    snakefile:Path = typer.Option(..., help="The path to the snakemake file.")
 ):
     """
     Processes a dataset.
@@ -91,18 +92,17 @@ def run(
         if isinstance(storage_settings, Path):
             with open(storage_settings) as storage_settings_file:
                 suffix = storage_settings.suffix.lower()
-                if suffix == "toml":
+                if suffix == ".toml":
                     storage_settings = toml.load(storage_settings_file)
-                elif suffix == "json":
+                elif suffix == ".json":
                     storage_settings = json.load(storage_settings_file)
                 else:
                     raise Exception(f"Cannot find interpreter for {storage_settings}")
 
-        storage = storages.get_storage_with_settings(storage_settings)            
+        storage = storages.get_storage_with_settings(**storage_settings)            
 
         # Pull data from storage
-        storage_path = storages.dataset_path( project, dataset )        
-        storages.copy_recursive_from_storage(storage_path, directory, storage=storage)
+        storages.copy_recursive_from_storage(dataset_data['base_file_path'], directory, storage=storage)
 
         # get snakefile
         with open(directory/'Snakefile', 'w', encoding='utf-8') as f:
@@ -110,7 +110,9 @@ def run(
 
         connection.send_status( dataset_id, stage=stage, state=State.SUCCESS)
     except Exception as e:
+        console.print(f"Setup failed {dataset}: {e}", style=stage_style)
         connection.send_status( dataset_id, stage=stage, state=State.FAIL, note=str(e))
+        return
 
     #############################
     ##       Workflow Stage
@@ -119,6 +121,7 @@ def run(
     stage = Stage.WORKFLOW
     try:
         connection.send_status( dataset_id, stage=stage, state=State.START)
+        import snakemake
         result = subprocess.Popen(["snakemake", "--cores", cores], cwd=directory)
         if result:
             raise Exception("Workflow failed")
