@@ -24,6 +24,9 @@
                 <i class="fas fa-edit"></i>
             </a>
         {% endif %}
+        <a href="{% url 'crunch:api:dataset-detail' slug=dataset.slug %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="JSON">
+          <i class="fas fa-code"></i>
+        </a>
         {% if request.user.is_staff %}
             <a href="{{ dataset.get_admin_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Admin">
                 <i class="fas fa-tools"></i>

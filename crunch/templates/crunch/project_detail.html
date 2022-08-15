@@ -13,16 +13,19 @@
     </nav>
       
     <div class="float-right">
-        {% if perms.reflections.add_project %}
+        {% if perms.crunch.add_project %}
             <a href="{% url 'crunch:project-create'  %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Create Project">
                 <i class="fas fa-plus"></i>
             </a>
         {% endif %}
-        {% if perms.reflections.update_project %}
+        {% if perms.crunch.update_project %}
             <a href="{% url 'crunch:project-update' slug=project.slug %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Update this Project">
                 <i class="fas fa-edit"></i>
             </a>
         {% endif %}
+        <a href="{% url 'crunch:api:project-detail' slug=project.slug %}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="JSON">
+          <i class="fas fa-code"></i>
+        </a>  
         {% if request.user.is_staff %}
             <a href="{{ project.get_admin_url }}" class="btn btn-outline-primary btn-sm chk-saved" data-toggle="tooltip" data-placement="bottom" title="Admin">
                 <i class="fas fa-tools"></i>
