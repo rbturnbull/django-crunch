@@ -65,7 +65,7 @@ def copy_recursive_to_storage(local_dir=".", base="/", storage=None):
     for local_path in local_dir.rglob("*"):
         local_relative_path = local_path.relative_to(local_dir)
         remote_path = base/local_relative_path
-
+        print(f"Copying '{local_path}' from local directory '{local_dir}' to storage at '{remote_path}'")
         storage.save(str(local_path), str(remote_path))
 
 

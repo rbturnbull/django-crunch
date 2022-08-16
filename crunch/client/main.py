@@ -2,6 +2,7 @@ import json
 import toml
 from pathlib import Path
 from typing import Optional
+import traceback
 from typing import List
 from unicodedata import decimal
 import typer
@@ -33,7 +34,7 @@ key_arg = typer.Argument(..., help="The key for this attribute.")
 value_arg = typer.Argument(..., help="The value of this attribute.")
 directory_arg = typer.Option("./tmp", help="The path to a directory to store the temporary files.")
 cores_arg = typer.Option("1", help="The maximum number of cores/jobs to use to run the workflow. If 'all' then it uses all available cores.")
-
+snakefile_arg = typer.Option(None, help="The path to the snakemake file.")
 
 @app.command()
 def run(
@@ -44,7 +45,7 @@ def run(
     cores:str = cores_arg,
     url:str = url_arg,
     token:str = token_arg,
-    snakefile:Path = typer.Option(..., help="The path to the snakemake file.")
+    snakefile:Path = typer.Option(None, help="The path to the snakemake file."),
 ):
     """
     Processes a dataset.
@@ -106,6 +107,7 @@ def run(
 
         # get snakefile
         if not snakefile:
+            assert project_data['snakefile']
             snakefile = directory/'Snakefile'
             with open(snakefile, 'w', encoding='utf-8') as f:
                 f.write(project_data['snakefile'])
@@ -140,11 +142,14 @@ def run(
         if not mamba_found:
             args.append("--conda-frontend=conda")
 
-        result = snakemake.main(args)
-        if result:
-            raise Exception("Workflow failed")
+        try:
+            snakemake.main(args)
+        except SystemExit as result:
+            print(f"result {result}")
+
         connection.send_status( dataset_id, stage=stage, state=State.SUCCESS)
     except Exception as e:
+        console.print(f"Workflow failed {dataset}: {e}", style=stage_style)
         connection.send_status( dataset_id, stage=stage, state=State.FAIL, note=str(e))
 
     #############################
@@ -157,6 +162,8 @@ def run(
         storages.copy_recursive_to_storage(directory, dataset_data['base_file_path'], storage=storage)
         connection.send_status( dataset_id, stage=stage, state=State.SUCCESS)
     except Exception as e:
+        console.print(f"Upload failed {dataset}: {e}", style=stage_style)
+        traceback.print_exc()
         connection.send_status( dataset_id, stage=stage, state=State.FAIL, note=str(e))
 
     return dataset_data
@@ -169,7 +176,8 @@ def next(
     cores:str = cores_arg,
     url:str = url_arg,
     token:str = token_arg,
-    project:str = typer.Option("", help="The slug for a project the dataset is in. If not given, then it chooses any project.")
+    project:str = typer.Option("", help="The slug for a project the dataset is in. If not given, then it chooses any project."),
+    snakefile:Path = snakefile_arg,
 ):
     """
     Processes the next dataset in a project.
@@ -187,6 +195,7 @@ def next(
             token=token, 
             directory=directory, 
             cores=cores,
+            snakefile=snakefile,
         )
     else:
         console.print("No more datasets to process.")
@@ -199,13 +208,14 @@ def loop(
     cores:str = cores_arg,
     url:str = url_arg,
     token:str = token_arg,
+    snakefile:Path = snakefile_arg,
 ):
     """
     Loops through all the datasets in a project and stops when complete.
     """
     console.print(f"Looping through all the datasets from {url} and will stop when complete.")
     while True:
-        result = next(url=url, token=token, storage_settings=storage_settings, directory=directory, cores=cores)
+        result = next(url=url, token=token, storage_settings=storage_settings, directory=directory, cores=cores, snakefile=snakefile)
         if result is None:
             console.print("Loop concluded.")
             break
