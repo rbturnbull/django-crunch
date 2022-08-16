@@ -105,8 +105,10 @@ def run(
         storages.copy_recursive_from_storage(dataset_data['base_file_path'], directory, storage=storage)
 
         # get snakefile
-        with open(directory/'Snakefile', 'w', encoding='utf-8') as f:
-            f.write(project_data['snakefile'])
+        if not snakefile:
+            snakefile = directory/'Snakefile'
+            with open(snakefile, 'w', encoding='utf-8') as f:
+                f.write(project_data['snakefile'])
 
         connection.send_status( dataset_id, stage=stage, state=State.SUCCESS)
     except Exception as e:
@@ -119,10 +121,26 @@ def run(
     #############################
     console.print(f"Workflow stage {dataset}", style=stage_style)
     stage = Stage.WORKFLOW
+
     try:
         connection.send_status( dataset_id, stage=stage, state=State.START)
         import snakemake
-        result = subprocess.Popen(["snakemake", "--cores", cores], cwd=directory)
+
+        args = [
+            f"--snakefile={snakefile}",
+            "--use-conda",
+            f"--cores={cores}",
+            f"--directory={directory}",
+        ]
+        mamba_found = True
+        try:
+            subprocess.run(["mamba", "--version"], capture_output=True, check=True)
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            mamba_found = False
+        if not mamba_found:
+            args.append("--conda-frontend=conda")
+
+        result = snakemake.main(args)
         if result:
             raise Exception("Workflow failed")
         connection.send_status( dataset_id, stage=stage, state=State.SUCCESS)
@@ -135,9 +153,12 @@ def run(
     console.print(f"Upload stage {dataset}", style=stage_style)
     stage = Stage.UPLOAD
 
-    # notify
+    try:
+        storages.copy_recursive_to_storage(directory, dataset_data['base_file_path'], storage=storage)
+        connection.send_status( dataset_id, stage=stage, state=State.SUCCESS)
+    except Exception as e:
+        connection.send_status( dataset_id, stage=stage, state=State.FAIL, note=str(e))
 
-    # print(result)
     return dataset_data
 
 

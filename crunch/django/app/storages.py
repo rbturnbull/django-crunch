@@ -56,6 +56,19 @@ def dataset_path(project_slug, dataset_slug):
     return Path('crunch', project_slug, dataset_slug)
 
 
+def copy_recursive_to_storage(local_dir=".", base="/", storage=None):
+    base = Path(base)
+    local_dir = Path(local_dir)
+    if storage is None:
+        storage = default_storage
+
+    for local_path in local_dir.rglob("*"):
+        local_relative_path = local_path.relative_to(local_dir)
+        remote_path = base/local_relative_path
+
+        storage.save(str(local_path), str(remote_path))
+
+
 def copy_recursive_from_storage(base="/", local_dir=".", storage=None):
     base = Path(base)
     local_dir = Path(local_dir)
