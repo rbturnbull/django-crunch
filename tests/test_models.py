@@ -26,4 +26,4 @@ class DatasetTests(CrunchTestCase):
         project = models.Project.objects.create(name="Test Project")
         dataset = models.Dataset.objects.create(name="Test Dataset", parent=project)
 
-        self.assertEqual(dataset.slug, "test-project.test-dataset")
+        self.assertEqual(dataset.slug, "test-project:test-dataset")
