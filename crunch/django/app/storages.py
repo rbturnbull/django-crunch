@@ -1,12 +1,13 @@
 import logging
 from operator import mod 
 from pathlib import Path
-
+from django.core.files import File
 from django.conf import settings
 from django.core.files.storage import default_storage
 import os
 import time
 import shutil
+import datetime
 
 class Directory:
     pass
@@ -63,10 +64,25 @@ def copy_recursive_to_storage(local_dir=".", base="/", storage=None):
         storage = default_storage
 
     for local_path in local_dir.rglob("*"):
+        if local_path.is_dir():
+            continue
+
         local_relative_path = local_path.relative_to(local_dir)
-        remote_path = base/local_relative_path
+        remote_path = str(base/local_relative_path)
+        
+        if str(local_relative_path).startswith(".snakemake/"):
+            continue
+
+        if storage.exists(remote_path):
+            remote_mod_time = storage.get_modified_time(remote_path)
+            local_mod_time = datetime.datetime.fromtimestamp(local_path.lstat().st_mtime)
+            
+            if remote_mod_time >= local_mod_time:
+                continue
+
         print(f"Copying '{local_path}' from local directory '{local_dir}' to storage at '{remote_path}'")
-        storage.save(str(local_path), str(remote_path))
+        with local_path.open(mode='rb') as f:
+            storage._save(remote_path, File(f, name=str(local_path)))
 
 
 def copy_recursive_from_storage(base="/", local_dir=".", storage=None):
