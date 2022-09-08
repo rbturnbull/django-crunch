@@ -116,7 +116,7 @@ class Project(Item):
         return reverse("crunch:project-detail", kwargs={"slug": self.slug})
 
     def unprocessed_datasets(self):
-        return Dataset.objects.filter(id__in=self.items())
+        return Dataset.unprocessed().filter(id__in=self.items())
 
     def next_unprocessed_dataset(self):
         return self.unprocessed_datasets().first()
@@ -124,6 +124,7 @@ class Project(Item):
 
 class Dataset(Item):
     base_file_path = models.CharField(max_length=4096, default="", blank=True)
+    locked = models.BooleanField(default=False, help_text="If the dataset is locked then it will not show up in the loop of available datasets.")
     
     def save(self, *args, **kwargs):
         assert isinstance(self.parent, Project)
@@ -136,8 +137,18 @@ class Dataset(Item):
         return f"{self.parent.get_absolute_url()}datasets/{self.slug}"
 
     @classmethod
+    def completed_ids(cls):
+        """ Returns the ids of all the completed datasets. """
+        return Status.completed().get_values("dataset__id", flat=True)
+
+    @classmethod
+    def completed(cls):
+        """ Returns a queryset of all the completed datasets. """
+        return cls.objects.filter(id__in=cls.completed_ids())
+
+    @classmethod
     def unprocessed(cls):
-        return cls.objects.filter(statuses=None)
+        return cls.objects.filter(locked=False).exclude(id__in=cls.completed())
 
     @classmethod
     def next_unprocessed(cls):
@@ -175,6 +186,20 @@ class Status(NextPrevMixin, TimeStampedModel):
 
     def __str__(self):
         return f"{self.dataset}: {self.get_stage_display()} {self.get_state_display()}"
+
+    def save(self, *args, **kwargs):
+
+        # Lock dataset if necessary
+        assert isinstance(self.dataset, Dataset)
+        if not self.dataset.locked:
+            self.dataset.locked = True
+            self.dataset.save()
+
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def completed(cls):
+        return Status.objects.filter(stage=enums.Stage.UPLOAD, state=enums.State.SUCCESS)
 
 
 class Attribute(NextPrevMixin, TimeStampedModel, PolymorphicModel):

@@ -2,6 +2,7 @@ from os import getenv
 from typing import Union
 from unicodedata import decimal
 import requests
+from rest_framework import status as drf_status
 import enum
 from datetime import datetime, date
 from django.core.validators import URLValidator
@@ -78,8 +79,10 @@ class Connection():
         result = requests.post(url, headers=self.get_headers(), data=kwargs)
         if self.verbose:
             console.print(f"Response {result.status_code}: {result.reason}")
-            if result.status_code >= 400:
-                console.print(result.json())
+
+        if result.status_code >= 400:
+            console.print(f"Failed posting to {url} : {kwargs}")
+            console.print(result.json())
         return result
 
     def add_project(self, project:str, description:str="", details:str="") -> requests.Response:
@@ -417,7 +420,11 @@ class Connection():
             note=note,
         )
         data.update( diagnostics.get_diagnostics() )
-        return self.post("api/statuses/", **data)
+        result = self.post("api/statuses/", **data)
+        if result.status_code >= 400:
+            raise CrunchAPIException(f"Failed sending status.\n{result.status_code}: {result.reason}\nData: {data}")
+
+        return result
 
     def get_json_response( self, relative_url ):
         url = self.absolute_url(relative_url)

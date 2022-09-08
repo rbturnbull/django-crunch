@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from crunch.django.app import models
+from crunch.django.app import models, enums
 
 from django.contrib.contenttypes.models import ContentType
 
@@ -27,3 +27,16 @@ class DatasetTests(CrunchTestCase):
         dataset = models.Dataset.objects.create(name="Test Dataset", parent=project)
 
         self.assertEqual(dataset.slug, "test-project:test-dataset")
+
+
+class StatusTests(CrunchTestCase):
+    def setUp(self):
+        super().setUp()
+        self.project = models.Project.objects.create(name="Test Project")
+        self.dataset = models.Dataset.objects.create(name="Test Dataset", parent=self.project)
+
+    def test_dataset_locking(self):
+        assert not self.dataset.locked
+        status = models.Status.objects.create(dataset=self.dataset, stage=enums.Stage.SETUP, state=enums.State.START)
+        assert self.dataset.locked
+
