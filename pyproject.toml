@@ -41,7 +41,6 @@ django-polymorphic-tree = "^2.1"
 humanize = "^4.0.0"
 pydeck = "^0.7.1"
 toml = "^0.10.2"
-coverage = "^6.4.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
@@ -54,6 +53,10 @@ sphinx-copybutton = "^0.4.0"
 sphinxcontrib-mermaid = "^0.7.1"
 myst-parser = "^0.17.0"
 sphinx-click = {git = "https://github.com/rbturnbull/sphinx-click.git"}
+coverage = "^6.4.4"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^2.20.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

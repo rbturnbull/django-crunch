@@ -1,0 +1,5 @@
+[run]
+source = crunch
+
+[report]
+precision = 2
