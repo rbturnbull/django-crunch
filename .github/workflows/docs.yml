@@ -1,23 +1,47 @@
 name: docs
-on: [push]
+
+on:
+  push:
+    branches: main
+      
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9"]
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2.3.1
-
-      - name: Install and Build 🔧
-        run: |
-          sudo apt-get update && sudo apt-get install -y pandoc
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry install
-          poetry run sphinx-build -b html docs docs/_build/html
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.5
-        with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: docs/_build/html # The folder the action should deploy.
-
+    - uses: actions/checkout@v3
+    - name: Install poetry
+      run: pipx install poetry
+    - name: Install dependencies for Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'poetry'
+    - run: poetry install
+    - name: Docs
+      run: |
+        poetry run sphinx-build -b html docs gh-pages
+    - name: Coverage
+      run: |
+        poetry run coverage run -m ./tests.py
+        echo "COVERAGE=$(poetry run coverage report --precision 2 | grep TOTAL | tr -s ' ' | cut -f 4 -d " ")" >> $GITHUB_ENV
+        poetry run coverage html --directory gh-pages/coverage
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        branch: gh-pages # The branch the action should deploy to.
+        folder: gh-pages # The folder the action should deploy.
+    
+    - name: Create Coverage Badge
+      uses: schneegans/dynamic-badges-action@v1.1.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: d83b00666fad82df59a814083a09d1c1
+        filename: coverage-badge.json
+        label: coverage
+        message: ${{ env.COVERAGE }}
+        color: green
+    

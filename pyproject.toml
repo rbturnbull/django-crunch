@@ -41,6 +41,7 @@ django-polymorphic-tree = "^2.1"
 humanize = "^4.0.0"
 pydeck = "^0.7.1"
 toml = "^0.10.2"
+coverage = "^6.4.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
