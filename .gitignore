@@ -3,3 +3,5 @@ tmp
 storage/*
 docshtml/*
 *.ipynb
+
+__pycache__
