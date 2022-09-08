@@ -18,8 +18,11 @@ from . import enums, storages
 
 User = get_user_model()
 
+
 def OptionalCharField(max_length=255, default="", blank=True, **kwargs):
-    return models.CharField(max_length=max_length, default=default, blank=blank, **kwargs)
+    return models.CharField(
+        max_length=max_length, default=default, blank=blank, **kwargs
+    )
 
 
 class NextPrevMixin(models.Model):
@@ -27,21 +30,40 @@ class NextPrevMixin(models.Model):
         abstract = True
 
     def next_in_order(self, **kwargs):
-        return next_in_order( self )
+        return next_in_order(self)
 
     def prev_in_order(self, **kwargs):
-        return prev_in_order( self )
+        return prev_in_order(self)
 
     def get_admin_url(self):
-        return reverse(f'admin:{self._meta.app_label}_{self._meta.model_name}_change', args=(self.pk,))
+        return reverse(
+            f"admin:{self._meta.app_label}_{self._meta.model_name}_change",
+            args=(self.pk,),
+        )
 
 
 class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
-    parent = PolymorphicTreeForeignKey('self', blank=True, null=True, default=None, related_name='children', on_delete=models.SET_DEFAULT)
+    parent = PolymorphicTreeForeignKey(
+        "self",
+        blank=True,
+        null=True,
+        default=None,
+        related_name="children",
+        on_delete=models.SET_DEFAULT,
+    )
     name = models.CharField(max_length=1023, unique=True)
-    description = models.CharField(max_length=1023, default="", blank=True, help_text="A short description in a sentence or more of this item.")
-    details = models.TextField(default="", blank=True, help_text="A detailed description of this item (written in Markdown).")    
-    slug = AutoSlugField(populate_from='name', unique=True, max_length=255)
+    description = models.CharField(
+        max_length=1023,
+        default="",
+        blank=True,
+        help_text="A short description in a sentence or more of this item.",
+    )
+    details = models.TextField(
+        default="",
+        blank=True,
+        help_text="A detailed description of this item (written in Markdown).",
+    )
+    slug = AutoSlugField(populate_from="name", unique=True, max_length=255)
     # TODO Add tags
 
     def slugify_function(self, content):
@@ -51,7 +73,7 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
         return slug
 
     class Meta(PolymorphicMPTTModel.Meta):
-        unique_together = ('parent', 'slug')
+        unique_together = ("parent", "slug")
 
     def __str__(self):
         return self.name
@@ -62,7 +84,9 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
     def items(self):
         return self.get_children()
 
-    def descendant_attributes(self, attribute_type:Type=None, include_self:bool=True) -> models.QuerySet:
+    def descendant_attributes(
+        self, attribute_type: Type = None, include_self: bool = True
+    ) -> models.QuerySet:
         """Returns a queryset with all the attributes of the descendants of this item.
 
         Args:
@@ -73,30 +97,37 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
             models.QuerySet: A queryset of attributes of items descended from this item.
         """
         attribute_type = attribute_type or Attribute
-        return attribute_type.objects.filter(item__in=self.get_descendants(include_self=include_self))
+        return attribute_type.objects.filter(
+            item__in=self.get_descendants(include_self=include_self)
+        )
 
     def descendant_total_filesize(self):
-        filesize_attributes = self.descendant_attributes(attribute_type=FilesizeAttribute, include_self=True)
+        filesize_attributes = self.descendant_attributes(
+            attribute_type=FilesizeAttribute, include_self=True
+        )
 
         if not filesize_attributes:
             return None
 
-        return filesize_attributes.aggregate(models.Sum('value'))['value__sum']
+        return filesize_attributes.aggregate(models.Sum("value"))["value__sum"]
 
     def descendant_total_filesize_readable(self) -> str:
         descendant_total_filesize = self.descendant_total_filesize()
 
         if descendant_total_filesize:
             return humanize.naturalsize(descendant_total_filesize)
-        
+
         return "None"
 
     def map(self):
         from .mapping import item_map
+
         return item_map(self)
 
     def descendant_latlongattributes(self):
-        return self.descendant_attributes(attribute_type=LatLongAttribute, include_self=True)
+        return self.descendant_attributes(
+            attribute_type=LatLongAttribute, include_self=True
+        )
 
     def has_descendant_latlongattributes(self):
         return self.descendant_latlongattributes().count() > 0
@@ -108,10 +139,14 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
 
 
 class Project(Item):
-    workflow = models.TextField(default="", blank=True, help_text="URL to snakemake repository or text of snakefile.")
+    workflow = models.TextField(
+        default="",
+        blank=True,
+        help_text="URL to snakemake repository or text of snakefile.",
+    )
     # More workflow languages need to be supported.
-    # TODO assert parent is none    
-    
+    # TODO assert parent is none
+
     def get_absolute_url(self):
         return reverse("crunch:project-detail", kwargs={"slug": self.slug})
 
@@ -124,13 +159,16 @@ class Project(Item):
 
 class Dataset(Item):
     base_file_path = models.CharField(max_length=4096, default="", blank=True)
-    locked = models.BooleanField(default=False, help_text="If the dataset is locked then it will not show up in the loop of available datasets.")
-    
+    locked = models.BooleanField(
+        default=False,
+        help_text="If the dataset is locked then it will not show up in the loop of available datasets.",
+    )
+
     def save(self, *args, **kwargs):
         assert isinstance(self.parent, Project)
 
         if not self.base_file_path:
-            self.base_file_path = storages.dataset_path( self.parent.slug, self.slug )
+            self.base_file_path = storages.dataset_path(self.parent.slug, self.slug)
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -138,12 +176,12 @@ class Dataset(Item):
 
     @classmethod
     def completed_ids(cls):
-        """ Returns the ids of all the completed datasets. """
-        return Status.completed().get_values("dataset__id", flat=True)
+        """Returns the ids of all the completed datasets."""
+        return Status.completed().values_list("dataset__id", flat=True)
 
     @classmethod
     def completed(cls):
-        """ Returns a queryset of all the completed datasets. """
+        """Returns a queryset of all the completed datasets."""
         return cls.objects.filter(id__in=cls.completed_ids())
 
     @classmethod
@@ -156,30 +194,74 @@ class Dataset(Item):
 
     def files(self):
         return storages.storage_walk(self.base_file_path)
-        
+
 
 class Status(NextPrevMixin, TimeStampedModel):
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='statuses')
-    site_user = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=None, blank=True, null=True)
+    dataset = models.ForeignKey(
+        Dataset, on_delete=models.CASCADE, related_name="statuses"
+    )
+    site_user = models.ForeignKey(
+        User, on_delete=models.SET_DEFAULT, default=None, blank=True, null=True
+    )
     stage = models.IntegerField(choices=enums.Stage.choices)
     state = models.IntegerField(choices=enums.State.choices)
     note = models.TextField(default="", blank=True)
     # Diagnostic info
-    agent_user = OptionalCharField(help_text="The name of the user running the agent (see https://docs.python.org/3/library/getpass.html).")
-    version = OptionalCharField(help_text="The django-crunch version number of the agent.")
-    revision = OptionalCharField(help_text="The django-crunch git revision hash of the agent.")
+    agent_user = OptionalCharField(
+        help_text="The name of the user running the agent (see https://docs.python.org/3/library/getpass.html)."
+    )
+    version = OptionalCharField(
+        help_text="The django-crunch version number of the agent."
+    )
+    revision = OptionalCharField(
+        help_text="The django-crunch git revision hash of the agent."
+    )
     # terminal = OptionalCharField(help_text="the tty or pseudo-tty associated with the agent user (see https://psutil.readthedocs.io/en/latest/).")
-    system = OptionalCharField(help_text="Returns the system/OS name, such as 'Linux', 'Darwin', 'Java', 'Windows' (see https://docs.python.org/3/library/platform.html).")
-    system_release = OptionalCharField(help_text="Returns the system’s release, e.g. '2.2.0' or 'NT' (see https://docs.python.org/3/library/platform.html).")
-    system_version = OptionalCharField(help_text="Returns the system’s release version, e.g. '#3 on degas' (see https://docs.python.org/3/library/platform.html).")
-    machine = OptionalCharField(help_text="Returns the machine type, e.g. 'i386' (see https://docs.python.org/3/library/platform.html).")
-    hostname = OptionalCharField(help_text="The hostname of the machine where the agent was running (see https://docs.python.org/3/library/socket.html).")
-    ip_address = OptionalCharField(help_text="The hostname in IPv4 address format (see https://docs.python.org/3/library/socket.html).")
-    mac_address = OptionalCharField(help_text="The hardware address  (see https://docs.python.org/3/library/uuid.html).")
-    memory_total = models.BigIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
-    memory_free = models.BigIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
-    disk_total = models.BigIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
-    disk_free = models.BigIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
+    system = OptionalCharField(
+        help_text="Returns the system/OS name, such as 'Linux', 'Darwin', 'Java', 'Windows' (see https://docs.python.org/3/library/platform.html)."
+    )
+    system_release = OptionalCharField(
+        help_text="Returns the system’s release, e.g. '2.2.0' or 'NT' (see https://docs.python.org/3/library/platform.html)."
+    )
+    system_version = OptionalCharField(
+        help_text="Returns the system’s release version, e.g. '#3 on degas' (see https://docs.python.org/3/library/platform.html)."
+    )
+    machine = OptionalCharField(
+        help_text="Returns the machine type, e.g. 'i386' (see https://docs.python.org/3/library/platform.html)."
+    )
+    hostname = OptionalCharField(
+        help_text="The hostname of the machine where the agent was running (see https://docs.python.org/3/library/socket.html)."
+    )
+    ip_address = OptionalCharField(
+        help_text="The hostname in IPv4 address format (see https://docs.python.org/3/library/socket.html)."
+    )
+    mac_address = OptionalCharField(
+        help_text="The hardware address  (see https://docs.python.org/3/library/uuid.html)."
+    )
+    memory_total = models.BigIntegerField(
+        default=None,
+        blank=True,
+        null=True,
+        help_text="See https://psutil.readthedocs.io/en/latest/",
+    )
+    memory_free = models.BigIntegerField(
+        default=None,
+        blank=True,
+        null=True,
+        help_text="See https://psutil.readthedocs.io/en/latest/",
+    )
+    disk_total = models.BigIntegerField(
+        default=None,
+        blank=True,
+        null=True,
+        help_text="See https://psutil.readthedocs.io/en/latest/",
+    )
+    disk_free = models.BigIntegerField(
+        default=None,
+        blank=True,
+        null=True,
+        help_text="See https://psutil.readthedocs.io/en/latest/",
+    )
 
     class Meta:
         verbose_name_plural = "statuses"
@@ -199,11 +281,13 @@ class Status(NextPrevMixin, TimeStampedModel):
 
     @classmethod
     def completed(cls):
-        return Status.objects.filter(stage=enums.Stage.UPLOAD, state=enums.State.SUCCESS)
+        return Status.objects.filter(
+            stage=enums.Stage.UPLOAD, state=enums.State.SUCCESS
+        )
 
 
 class Attribute(NextPrevMixin, TimeStampedModel, PolymorphicModel):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='attributes')
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="attributes")
     key = models.CharField(max_length=255)
 
     def value_dict(self):
@@ -229,9 +313,9 @@ class Attribute(NextPrevMixin, TimeStampedModel, PolymorphicModel):
         """
         class_name = self.__class__.__name__
         if class_name.endswith("Attribute"):
-            class_name = class_name[:-len("Attribute")]
-        
-        return re.sub(r'((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))', r' \1', class_name) 
+            class_name = class_name[: -len("Attribute")]
+
+        return re.sub(r"((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))", r" \1", class_name)
 
 
 class ValueAttribute(Attribute):
@@ -239,10 +323,10 @@ class ValueAttribute(Attribute):
 
     class Meta:
         abstract = True
-    
+
     def value_dict(self):
         d = super().value_dict()
-        d['value'] = self.value
+        d["value"] = self.value
         return d
 
     def value_str(self):
@@ -251,7 +335,7 @@ class ValueAttribute(Attribute):
 
 class CharAttribute(ValueAttribute):
     value = models.CharField(max_length=1023)
-    
+
 
 class FloatAttribute(ValueAttribute):
     value = models.FloatField()
@@ -262,7 +346,9 @@ class IntegerAttribute(ValueAttribute):
 
 
 class FilesizeAttribute(ValueAttribute):
-    value = models.PositiveBigIntegerField(help_text="The filesize of this item in bytes.")
+    value = models.PositiveBigIntegerField(
+        help_text="The filesize of this item in bytes."
+    )
 
     def value_str(self):
         return humanize.naturalsize(self.value)
@@ -282,7 +368,7 @@ class DateAttribute(ValueAttribute):
 
 class URLAttribute(ValueAttribute):
     value = models.URLField(max_length=1023)
-    
+
     def value_html(self):
         return format_html(
             "<a href='{}'>{}</a>",
@@ -292,13 +378,21 @@ class URLAttribute(ValueAttribute):
 
 
 class LatLongAttribute(Attribute):
-    latitude = models.DecimalField(max_digits=12, decimal_places=9, help_text="The latitude of this location in decimal degrees.")
-    longitude = models.DecimalField(max_digits=12, decimal_places=9, help_text="The longitude of this location in decimal degrees.")
-    
+    latitude = models.DecimalField(
+        max_digits=12,
+        decimal_places=9,
+        help_text="The latitude of this location in decimal degrees.",
+    )
+    longitude = models.DecimalField(
+        max_digits=12,
+        decimal_places=9,
+        help_text="The longitude of this location in decimal degrees.",
+    )
+
     def value_dict(self):
         d = super().value_dict()
-        d['latitude'] = self.latitude
-        d['longitude'] = self.longitude
+        d["latitude"] = self.latitude
+        d["longitude"] = self.longitude
         return d
 
     def value_str(self):
@@ -311,5 +405,3 @@ class LatLongAttribute(Attribute):
             self.longitude,
             self.value_str(),
         )
-
-

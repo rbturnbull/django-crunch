@@ -9,5 +9,4 @@ class ClientMainTestCase(TestCase):
     def test_help(self):
         result = runner.invoke(app, ["--help"])
         assert result.exit_code == 0
-        breakpoint()
         assert "Usage: " in result.stdout
