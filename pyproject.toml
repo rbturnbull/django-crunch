@@ -4,9 +4,18 @@ version = "0.1.8"
 description = "A data processing orcestration tool."
 authors = ["Robert Turnbull <robert.turnbull@unimelb.edu.au>"]
 license = "Apache-2.0"
-readme = "README.md"
+readme = "README.rst"
 packages = [
     { include = "crunch" },
+]
+homepage = "https://github.com/rbturnbull/django-crunch"
+repository = "https://github.com/rbturnbull/django-crunch"
+repository = "https://rbturnbull.github.io/django-crunch/"
+keywords = ["django", "data processing"]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Intended Audience :: Science/Research",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
 [tool.poetry.dependencies]
