@@ -10,7 +10,7 @@ packages = [
 ]
 homepage = "https://github.com/rbturnbull/django-crunch"
 repository = "https://github.com/rbturnbull/django-crunch"
-repository = "https://rbturnbull.github.io/django-crunch/"
+documentation = "https://rbturnbull.github.io/django-crunch/"
 keywords = ["django", "data processing"]
 classifiers = [
     "License :: OSI Approved :: Apache Software License",
