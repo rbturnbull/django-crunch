@@ -6,6 +6,10 @@
 django-crunch
 =========================================
 
+.. include:: ../README.rst
+   :start-after: start-badges
+   :end-before: end-badges
+
 A data processing orcestration tool.
 Crunch allows you to visualize the datasets, orchestrate and manage the processing online and present the results to the world.
 The main usecase is for crunching a number of datasets that need to be processed with the same workflow which do not fit on disk.
