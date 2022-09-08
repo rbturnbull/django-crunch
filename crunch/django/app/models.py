@@ -165,10 +165,10 @@ class Status(NextPrevMixin, TimeStampedModel):
     hostname = OptionalCharField(help_text="The hostname of the machine where the agent was running (see https://docs.python.org/3/library/socket.html).")
     ip_address = OptionalCharField(help_text="The hostname in IPv4 address format (see https://docs.python.org/3/library/socket.html).")
     mac_address = OptionalCharField(help_text="The hardware address  (see https://docs.python.org/3/library/uuid.html).")
-    memory_total = models.PositiveIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
-    memory_free = models.PositiveIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
-    disk_total = models.PositiveIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
-    disk_free = models.PositiveIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
+    memory_total = models.BigIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
+    memory_free = models.BigIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
+    disk_total = models.BigIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
+    disk_free = models.BigIntegerField( default=None, blank=True, null=True, help_text="See https://psutil.readthedocs.io/en/latest/")
 
     class Meta:
         verbose_name_plural = "statuses"
