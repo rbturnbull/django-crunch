@@ -49,21 +49,17 @@
     <p class="font-weight-bold">{{project.description}}</p>
     <p>{{project.details}}</p>
 
-    <h3>{{project.children.count}} Datasets</h3>
+    <h3>Unprocessed Datasets</h3>
+    {% dataset_list project.unprocessed_datasets %}
 
-    <ul>
-    {% for dataset in project.children.all %}
-        <li>
-            <a href='{{dataset.get_absolute_url}}' 
-            {% if dataset.description %}
-                data-toggle="tooltip" data-placement="bottom" title="{{dataset.description}}"
-            {% endif %}
-            >
-                {{dataset}}
-            </a>
-        </li>
-    {% endfor %}
-    </ul>
+    <h3>Running Datasets</h3>
+    {% dataset_list project.running_datasets %}
+
+    <h3>Completed Datasets</h3>
+    {% dataset_list project.completed_datasets %}
+
+    <h3>Failed Datasets</h3>
+    {% dataset_list project.failed_datasets %}
 
     <h3>Attributes</h3>
 

@@ -1,0 +1,14 @@
+<ul>
+  <p>{{datasets.count}} Datasets</p>
+  {% for dataset in datasets.all %}
+    <li>
+      <a href='{{dataset.get_absolute_url}}' 
+      {% if dataset.description %}
+          data-toggle="tooltip" data-placement="bottom" title="{{dataset.description}}"
+      {% endif %}
+      >
+          {{dataset}}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
