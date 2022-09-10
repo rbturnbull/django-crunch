@@ -55,7 +55,7 @@ cores_arg = typer.Option(
     "1",
     help="The maximum number of cores/jobs to use to run the workflow. If 'all' then it uses all available cores.",
 )
-snakefile_arg = typer.Option(None, help="The path to the snakemake file.")
+snakefile_arg = typer.Option(..., help="The path to the snakemake file.")
 
 
 @app.command()
@@ -181,8 +181,8 @@ def run(
     #############################
     console.print(f"Upload stage {dataset}", style=stage_style)
     stage = Stage.UPLOAD
-
     try:
+        connection.send_status(dataset_id, stage=stage, state=State.START)
         storages.copy_recursive_to_storage(
             directory, dataset_data["base_file_path"], storage=storage
         )

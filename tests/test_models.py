@@ -32,7 +32,7 @@ class DatasetTests(CrunchTestCase):
     def test_slug(self):
         self.assertEqual(self.dataset.slug, "test-project:test-dataset")
 
-    def test_unprocessed(self):
+    def test_one_started(self):
         dataset2 = models.Dataset.objects.create(
             name="Test Dataset2", parent=self.project
         )
@@ -49,6 +49,28 @@ class DatasetTests(CrunchTestCase):
         assert dataset2 not in unprocessed
         assert dataset3 in unprocessed
         assert self.dataset in unprocessed
+
+        running = models.Dataset.running()
+        assert running.count() == 1
+        assert dataset2 in running
+
+        assert models.Dataset.failed().count() == 0
+        assert models.Dataset.completed().count() == 0
+
+    def test_has_status(self):
+        dataset2 = models.Dataset.objects.create(
+            name="Test Dataset2", parent=self.project
+        )
+        dataset3 = models.Dataset.objects.create(
+            name="Test Dataset3", parent=self.project
+        )
+
+        models.Status.objects.create(
+            dataset=dataset2, stage=enums.Stage.SETUP, state=enums.State.START
+        )
+        has_status = models.Dataset.has_status()
+        assert has_status.count() == 1
+        assert dataset2 in has_status
 
 
 class StatusTests(CrunchTestCase):

@@ -1,4 +1,5 @@
 from operator import mod
+from typing import List
 import re
 from typing import Type
 from django.db import models
@@ -7,12 +8,14 @@ from django.utils.text import slugify
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.utils.html import format_html
+from django.db.models import OuterRef, Subquery
 from mptt.models import MPTTModel, TreeForeignKey
 import humanize
 from polymorphic.models import PolymorphicModel
 from django_extensions.db.models import TimeStampedModel
 from next_prev import next_in_order, prev_in_order
 from polymorphic_tree.models import PolymorphicMPTTModel, PolymorphicTreeForeignKey
+
 
 from . import enums, storages
 
@@ -150,10 +153,31 @@ class Project(Item):
     def get_absolute_url(self):
         return reverse("crunch:project-detail", kwargs={"slug": self.slug})
 
-    def unprocessed_datasets(self):
+    def unprocessed_datasets(self) -> models.QuerySet:
+        """
+        Returns a QuerySet of all datasets in this project that are not complete and are not locked.
+        """
         return Dataset.unprocessed().filter(id__in=self.items())
 
-    def next_unprocessed_dataset(self):
+    def completed_datasets(self) -> models.QuerySet:
+        """
+        Returns a QuerySet of all datasets in this project that are completed.
+        """
+        return Dataset.completed().filter(id__in=self.items())
+
+    def running_datasets(self) -> models.QuerySet:
+        """
+        Returns a QuerySet of all datasets in this project that are running.
+        """
+        return Dataset.running().filter(id__in=self.items())
+
+    def failed_datasets(self) -> models.QuerySet:
+        """
+        Returns a QuerySet of all datasets in this project that have failed.
+        """
+        return Dataset.failed().filter(id__in=self.items())
+
+    def next_unprocessed_dataset(self) -> "Dataset":
         return self.unprocessed_datasets().first()
 
 
@@ -169,27 +193,76 @@ class Dataset(Item):
 
         if not self.base_file_path:
             self.base_file_path = storages.dataset_path(self.parent.slug, self.slug)
-        super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return f"{self.parent.get_absolute_url()}datasets/{self.slug}"
 
     @classmethod
-    def completed_ids(cls):
-        """Returns the ids of all the completed datasets."""
+    def completed_ids(cls) -> List[int]:
+        """
+        Returns a list of ids of all datasets which have a status with stage UPLOAD and state SUCCESS.
+        """
         return Status.completed().values_list("dataset__id", flat=True)
 
     @classmethod
-    def completed(cls):
-        """Returns a queryset of all the completed datasets."""
+    def completed(cls) -> models.QuerySet:
+        """
+        Returns a QuerySet of all datasets which have a status with stage UPLOAD and state SUCCESS.
+        """
         return cls.objects.filter(id__in=cls.completed_ids())
 
     @classmethod
-    def unprocessed(cls):
-        return cls.objects.filter(locked=False).exclude(id__in=cls.completed())
+    def incomplete(cls) -> models.QuerySet:
+        """
+        Returns a QuerySet of all datasets that are not complete (including unprocessed, running and failed datasets).
+        """
+        return cls.objects.exclude(id__in=cls.completed_ids())
 
     @classmethod
-    def next_unprocessed(cls):
+    def unprocessed(cls) -> models.QuerySet:
+        """
+        Returns a QuerySet of all incomplete datasets that are not locked.
+        """
+        return cls.incomplete().filter(locked=False)
+
+    @classmethod
+    def inprocess(cls) -> models.QuerySet:
+        """
+        Returns a QuerySet of all incomplete datasets that are locked (including running and failed datasets).
+        """
+        return cls.incomplete().filter(locked=True)
+
+    @classmethod
+    def has_status(cls) -> models.QuerySet:
+        """
+        Returns a QuerySet of all datasets with at least one status.
+        """
+        statuses = Status.objects.filter(dataset=OuterRef("pk"))
+        return cls.objects.filter(models.Exists(statuses))
+
+    @classmethod
+    def failed(cls) -> models.QuerySet:
+        """
+        Returns a QuerySet of all incomplete unlocked datasets where the latest status has a state of 'FAILED'.
+        """
+        newest_statuses = Status.objects.filter(dataset=OuterRef("pk")).order_by(
+            "-created"
+        )
+        annotated = cls.inprocess().annotate(
+            newest_status_state=Subquery(newest_statuses.values("state")[:1])
+        )
+        return annotated.filter(newest_status_state=enums.State.FAIL)
+
+    @classmethod
+    def running(cls) -> models.QuerySet:
+        """
+        Returns a QuerySet of all incomplete unlocked datasets where the latest status does not have a state of 'FAILED'.
+        """
+        return cls.inprocess().exclude(id__in=cls.failed())
+
+    @classmethod
+    def next_unprocessed(cls) -> "Dataset":
         return cls.unprocessed().first()
 
     def files(self):
