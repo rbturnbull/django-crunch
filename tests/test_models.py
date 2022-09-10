@@ -10,6 +10,60 @@ class CrunchTestCase(TestCase):
         ContentType.objects.clear_cache()  # needed because of this issue https://github.com/django-polymorphic/django-polymorphic/issues/470
 
 
+class LatLongAttributeTests(CrunchTestCase):
+    def setUp(self):
+        super().setUp()
+        self.item = models.Item.objects.create(name="Test Item")
+        self.latitude = 50
+        self.longitude = 20
+        self.attribute = models.LatLongAttribute.objects.create(
+            item=self.item, latitude=self.latitude, longitude=self.longitude
+        )
+
+    def test_value_dict(self):
+        result = self.attribute.value_dict()
+        assert isinstance(result, dict)
+        assert "latitude" in result.keys()
+        assert "longitude" in result.keys()
+        assert result["latitude"] == self.latitude
+        assert result["longitude"] == self.longitude
+
+    def test_value_html(self):
+        result = self.attribute.value_html()
+        assert isinstance(result, str)
+        assert result == "<a href='https://www.google.com/maps/place/50,20'>+50+20/</a>"
+
+    def test_value_str(self):
+        result = self.attribute.value_str()
+        assert isinstance(result, str)
+        assert result == "+50+20/"
+
+
+class LatLongAttributeTests(CrunchTestCase):
+    def setUp(self):
+        super().setUp()
+        self.item = models.Item.objects.create(name="Test Item")
+        self.url = "http://www.example.com"
+        self.attribute = models.URLAttribute.objects.create(
+            item=self.item, key="url", value=self.url
+        )
+
+    def test_value_dict(self):
+        result = self.attribute.value_dict()
+        assert isinstance(result, dict)
+        assert result["value"] == self.url
+
+    def test_value_html(self):
+        result = self.attribute.value_html()
+        assert isinstance(result, str)
+        assert result == f"<a href='http://www.example.com'>http://www.example.com</a>"
+
+    def test_value_str(self):
+        result = self.attribute.value_str()
+        assert isinstance(result, str)
+        assert result == self.url
+
+
 class ProjectTests(CrunchTestCase):
     def test_slug(self):
         project = models.Project(name="Test Project")

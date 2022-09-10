@@ -53,6 +53,7 @@ toml = "^0.10.2"
 setuptools = "^65.3.0"
 djangocms-bootstrap = "^1.1.2"
 djangocms-themata = {git = "https://github.com/rbturnbull/djangocms-themata.git", branch="main"}
+pandas = "^1.4.4"
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
 ipykernel = "^6.6.1"

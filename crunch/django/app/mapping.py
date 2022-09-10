@@ -1,8 +1,6 @@
 import pydeck
 import pandas as pd
-from django.db import models
 
-from .models import LatLongAttribute
 
 def item_map(item):
     geo_attributes = item.descendant_latlongattributes()
@@ -14,13 +12,13 @@ def item_map(item):
             item=str(attribute.item),
             url=str(attribute.item.get_absolute_url()),
         )
-        for attribute in geo_attributes    
-    ]        
+        for attribute in geo_attributes
+    ]
     df = pd.DataFrame(plot_data)
 
-    ICON_URL = "https://upload.wikimedia.org/wikipedia/commons/9/92/Ic_location_on_48px.svg"
-    ICON_WIDTH = 48
-    ICON_HEIGHT = 48
+    # ICON_URL = "https://upload.wikimedia.org/wikipedia/commons/9/92/Ic_location_on_48px.svg"
+    # ICON_WIDTH = 48
+    # ICON_HEIGHT = 48
 
     ICON_URL = "https://upload.wikimedia.org/wikipedia/commons/6/65/OOjs_UI_icon_mapPin-progressive.svg"
     ICON_WIDTH = 20
@@ -32,9 +30,10 @@ def item_map(item):
         "height": ICON_HEIGHT,
         "anchorY": ICON_HEIGHT,
     }
+
     df["icon_data"] = None
     for i in df.index:
-        df["icon_data"][i] = icon_data
+        df.at[i, "icon_data"] = icon_data
 
     layer = pydeck.Layer(
         "IconLayer",
@@ -42,12 +41,12 @@ def item_map(item):
         pickable=True,
         get_icon="icon_data",
         get_size=20,
-        get_position=['longitude', 'latitude'],
+        get_position=["longitude", "latitude"],
     )
 
     view_state = pydeck.ViewState(
-        latitude=df['latitude'].mean(),
-        longitude=df['longitude'].mean(),
+        latitude=df["latitude"].mean(),
+        longitude=df["longitude"].mean(),
         zoom=2,
         min_zoom=1,
         max_zoom=16,
