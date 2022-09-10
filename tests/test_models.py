@@ -32,46 +32,6 @@ class DatasetTests(CrunchTestCase):
     def test_slug(self):
         self.assertEqual(self.dataset.slug, "test-project:test-dataset")
 
-    def test_one_started(self):
-        dataset2 = models.Dataset.objects.create(
-            name="Test Dataset2", parent=self.project
-        )
-        dataset3 = models.Dataset.objects.create(
-            name="Test Dataset3", parent=self.project
-        )
-
-        models.Status.objects.create(
-            dataset=dataset2, stage=enums.Stage.SETUP, state=enums.State.START
-        )
-
-        unprocessed = models.Dataset.unprocessed()
-        assert unprocessed.count() == 2
-        assert dataset2 not in unprocessed
-        assert dataset3 in unprocessed
-        assert self.dataset in unprocessed
-
-        running = models.Dataset.running()
-        assert running.count() == 1
-        assert dataset2 in running
-
-        assert models.Dataset.failed().count() == 0
-        assert models.Dataset.completed().count() == 0
-
-    def test_has_status(self):
-        dataset2 = models.Dataset.objects.create(
-            name="Test Dataset2", parent=self.project
-        )
-        dataset3 = models.Dataset.objects.create(
-            name="Test Dataset3", parent=self.project
-        )
-
-        models.Status.objects.create(
-            dataset=dataset2, stage=enums.Stage.SETUP, state=enums.State.START
-        )
-        has_status = models.Dataset.has_status()
-        assert has_status.count() == 1
-        assert dataset2 in has_status
-
 
 class StatusTests(CrunchTestCase):
     def setUp(self):
@@ -87,3 +47,44 @@ class StatusTests(CrunchTestCase):
             dataset=self.dataset, stage=enums.Stage.SETUP, state=enums.State.START
         )
         assert self.dataset.locked
+
+
+class OneDatasetStarted(CrunchTestCase):
+    def setUp(self):
+        super().setUp()
+        self.project = models.Project.objects.create(name="Test Project")
+        self.dataset = models.Dataset.objects.create(
+            name="Test Dataset", parent=self.project
+        )
+        self.dataset2 = models.Dataset.objects.create(
+            name="Test Dataset2", parent=self.project
+        )
+        self.dataset3 = models.Dataset.objects.create(
+            name="Test Dataset3", parent=self.project
+        )
+        models.Status.objects.create(
+            dataset=self.dataset2, stage=enums.Stage.SETUP, state=enums.State.START
+        )
+
+    def test_unprocessed(self):
+        unprocessed = models.Dataset.unprocessed()
+        assert unprocessed.count() == 2
+        assert self.dataset2 not in unprocessed
+        assert self.dataset3 in unprocessed
+        assert self.dataset in unprocessed
+
+    def test_running(self):
+        running = models.Dataset.running()
+        assert running.count() == 1
+        assert self.dataset2 in running
+
+    def test_failed(self):
+        assert models.Dataset.failed().count() == 0
+
+    def test_completed(self):
+        assert models.Dataset.completed().count() == 0
+
+    def test_has_status(self):
+        has_status = models.Dataset.has_status()
+        assert has_status.count() == 1
+        assert self.dataset2 in has_status
