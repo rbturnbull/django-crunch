@@ -88,3 +88,78 @@ class OneDatasetStarted(CrunchTestCase):
         has_status = models.Dataset.has_status()
         assert has_status.count() == 1
         assert self.dataset2 in has_status
+
+
+class OneEachCategory(CrunchTestCase):
+    def setUp(self):
+        super().setUp()
+        self.project = models.Project.objects.create(name="Test Project")
+        self.dataset1 = models.Dataset.objects.create(
+            name="Test Dataset1", parent=self.project
+        )
+        self.dataset2 = models.Dataset.objects.create(
+            name="Test Dataset2", parent=self.project
+        )
+        self.dataset3 = models.Dataset.objects.create(
+            name="Test Dataset3", parent=self.project
+        )
+        self.dataset4 = models.Dataset.objects.create(
+            name="Test Dataset4", parent=self.project
+        )
+        models.Status.objects.create(
+            dataset=self.dataset2, stage=enums.Stage.SETUP, state=enums.State.START
+        )
+        models.Status.objects.create(
+            dataset=self.dataset3, stage=enums.Stage.WORKFLOW, state=enums.State.FAIL
+        )
+        models.Status.objects.create(
+            dataset=self.dataset4, stage=enums.Stage.UPLOAD, state=enums.State.SUCCESS
+        )
+
+    def test_unprocessed(self):
+        unprocessed = models.Dataset.unprocessed()
+        assert unprocessed.count() == 1
+        assert self.dataset1 in unprocessed
+
+    def test_running(self):
+        running = models.Dataset.running()
+        assert running.count() == 1
+        assert self.dataset2 in running
+
+    def test_failed(self):
+        running = models.Dataset.failed()
+        assert running.count() == 1
+        assert self.dataset3 in running
+
+    def test_completed(self):
+        running = models.Dataset.completed()
+        assert running.count() == 1
+        assert self.dataset4 in running
+
+    def test_next_unprocessed(self):
+        next = models.Dataset.next_unprocessed()
+        assert next.id == self.dataset1.id
+
+    def test_project_unprocessed(self):
+        unprocessed = self.project.unprocessed_datasets()
+        assert unprocessed.count() == 1
+        assert self.dataset1 in unprocessed
+
+    def test_project_running_datasets(self):
+        running = self.project.running_datasets()
+        assert running.count() == 1
+        assert self.dataset2 in running
+
+    def test_project_failed_datasets(self):
+        running = self.project.failed_datasets()
+        assert running.count() == 1
+        assert self.dataset3 in running
+
+    def test_project_completed_datasets(self):
+        running = self.project.completed_datasets()
+        assert running.count() == 1
+        assert self.dataset4 in running
+
+    def test_project_next_unprocessed_dataset(self):
+        next = self.project.next_unprocessed_dataset()
+        assert next.id == self.dataset1.id
