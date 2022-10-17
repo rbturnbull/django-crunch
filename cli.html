@@ -59,6 +59,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#crunch-add-project">add-project</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crunch-add-url-attribute">add-url-attribute</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crunch-diagnostics">diagnostics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crunch-files">files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crunch-loop">loop</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crunch-next">next</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crunch-run">run</a></li>
@@ -973,6 +974,56 @@
 </pre></div>
 </div>
 </section>
+<section id="crunch-files">
+<h3>files<a class="headerlink" href="#crunch-files" title="Permalink to this headline"></a></h3>
+<p>Displays the files for a dataset.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>crunch files <span class="o">[</span>OPTIONS<span class="o">]</span> DATASET STORAGE_SETTINGS
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-files-url">
+<span class="sig-name descname"><span class="pre">--url</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;url&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-files-url" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> The URL for the endpoint for the project on the crunch hosted site.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-files-token">
+<span class="sig-name descname"><span class="pre">--token</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;token&gt;</span></span><a class="headerlink" href="#cmdoption-crunch-files-token" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required</strong> An access token for a user on the hosted site.</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-files-arg-DATASET">
+<span id="cmdoption-crunch-files-arg-dataset"></span><span class="sig-name descname"><span class="pre">DATASET</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-files-arg-DATASET" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The slug for the dataset. STRING</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crunch-files-arg-STORAGE_SETTINGS">
+<span id="cmdoption-crunch-files-arg-storage-settings"></span><span class="sig-name descname"><span class="pre">STORAGE_SETTINGS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-files-arg-STORAGE_SETTINGS" title="Permalink to this definition"></a></dt>
+<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7f14f4488760&gt;</p>
+</dd></dl>
+
+<p class="rubric">Environment variables</p>
+<span class="target" id="crunch-files-url-crunch-url"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_URL</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-files-url"><code class="xref std std-option docutils literal notranslate"><span class="pre">--url</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<span class="target" id="crunch-files-token-crunch-token"></span><dl class="std envvar">
+<dt class="sig sig-object std">
+<span class="sig-name descname"><span class="pre">CRUNCH_TOKEN</span></span></dt>
+<dd><blockquote>
+<div><p>Provide a default for <a class="reference internal" href="#cmdoption-crunch-files-token"><code class="xref std std-option docutils literal notranslate"><span class="pre">--token</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+</section>
 <section id="crunch-loop">
 <h3>loop<a class="headerlink" href="#crunch-loop" title="Permalink to this headline"></a></h3>
 <p>Loops through all the datasets in a project and stops when complete.</p>
@@ -1024,7 +1075,7 @@
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-crunch-loop-arg-STORAGE_SETTINGS">
 <span id="cmdoption-crunch-loop-arg-storage-settings"></span><span class="sig-name descname"><span class="pre">STORAGE_SETTINGS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-loop-arg-STORAGE_SETTINGS" title="Permalink to this definition"></a></dt>
-<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7fdbe47ea8e0&gt;</p>
+<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7f14f44eda00&gt;</p>
 </dd></dl>
 
 <p class="rubric">Environment variables</p>
@@ -1106,7 +1157,7 @@
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-crunch-next-arg-STORAGE_SETTINGS">
 <span id="cmdoption-crunch-next-arg-storage-settings"></span><span class="sig-name descname"><span class="pre">STORAGE_SETTINGS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-next-arg-STORAGE_SETTINGS" title="Permalink to this definition"></a></dt>
-<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7fdbe47ea670&gt;</p>
+<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7f14f44ed790&gt;</p>
 </dd></dl>
 
 <p class="rubric">Environment variables</p>
@@ -1190,7 +1241,7 @@
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-crunch-run-arg-STORAGE_SETTINGS">
 <span id="cmdoption-crunch-run-arg-storage-settings"></span><span class="sig-name descname"><span class="pre">STORAGE_SETTINGS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-crunch-run-arg-STORAGE_SETTINGS" title="Permalink to this definition"></a></dt>
-<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7fdbe47ea490&gt;</p>
+<dd><p><strong>Required argument</strong> The path to a JSON file with the Django settings for the storage. &lt;click.types.Path object at 0x7f14f44ed5b0&gt;</p>
 </dd></dl>
 
 <p class="rubric">Environment variables</p>
