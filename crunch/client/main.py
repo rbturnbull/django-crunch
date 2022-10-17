@@ -1,5 +1,4 @@
 import json
-import toml
 from pathlib import Path
 from typing import Optional
 import traceback
@@ -112,17 +111,7 @@ def run(
             json.dump(project_data, f, ensure_ascii=False, indent=4)
 
         # Setup Storage
-        if isinstance(storage_settings, Path):
-            with open(storage_settings) as storage_settings_file:
-                suffix = storage_settings.suffix.lower()
-                if suffix == ".toml":
-                    storage_settings = toml.load(storage_settings_file)
-                elif suffix == ".json":
-                    storage_settings = json.load(storage_settings_file)
-                else:
-                    raise Exception(f"Cannot find interpreter for {storage_settings}")
-
-        storage = storages.get_storage_with_settings(**storage_settings)
+        storage = storages.get_storage_with_settings(storage_settings)
 
         # Pull data from storage
         storages.copy_recursive_from_storage(
@@ -494,3 +483,21 @@ def add_url_attribute(
 def diagnostics():
     """Display system diagnostics."""
     console.print(get_diagnostics())
+
+
+@app.command()
+def files(
+    dataset: str = dataset_slug_arg,
+    storage_settings: Path = storage_settings_arg,
+    url: str = url_arg,
+    token: str = token_arg,
+):
+    """Displays the files for a dataset."""
+    # get dataset details
+    connection = connections.Connection(url, token)
+    dataset_data = connection.get_json_response(f"/api/datasets/{dataset}")
+    base_file_path = dataset_data.get("base_file_path")
+
+    storage = storages.get_storage_with_settings(storage_settings)
+    listing = storages.storage_walk(base_file_path, storage=storage)
+    console.print(listing.render_html())

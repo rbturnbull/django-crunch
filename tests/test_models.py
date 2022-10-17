@@ -39,7 +39,7 @@ class LatLongAttributeTests(CrunchTestCase):
         assert result == "+50+20/"
 
 
-class LatLongAttributeTests(CrunchTestCase):
+class URLAttributeTests(CrunchTestCase):
     def setUp(self):
         super().setUp()
         self.item = models.Item.objects.create(name="Test Item")

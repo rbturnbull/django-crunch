@@ -54,6 +54,7 @@ setuptools = "^65.3.0"
 djangocms-bootstrap = "^1.1.2"
 djangocms-themata = {git = "https://github.com/rbturnbull/djangocms-themata.git", branch="main"}
 pandas = "^1.4.4"
+anytree = "^2.8.0"
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
 ipykernel = "^6.6.1"

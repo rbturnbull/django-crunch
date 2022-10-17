@@ -136,19 +136,12 @@
       </div>  
 
       <h3>Files</h3>
-      <ul>
-      {% for file in dataset.files %}
-        <li>{{file}}</li>
-      {% endfor %}
-      </ul>
-      <p><i>File list not yet implemented.</i></p>
+      {{ dataset.files.render_html|safe }}
 
     <hr>
 
     {% if dataset.statuses.count %}
     <h3>History</h3>
-    <ul>
-    </ul>
     <table class="table table-striped">
         <thead>
           <tr>
