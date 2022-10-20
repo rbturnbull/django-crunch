@@ -145,7 +145,7 @@ class Project(Item):
     workflow = models.TextField(
         default="",
         blank=True,
-        help_text="URL to snakemake repository or text of snakefile.",
+        help_text="URL to snakemake repository/shell script or its content.",
     )
     # More workflow languages need to be supported.
     # TODO assert parent is none
