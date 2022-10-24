@@ -1,5 +1,7 @@
+from enum import Enum
 import json
 from pathlib import Path
+import stat
 from typing import Optional
 import traceback
 from typing import List
@@ -54,8 +56,11 @@ cores_arg = typer.Option(
     "1",
     help="The maximum number of cores/jobs to use to run the workflow. If 'all' then it uses all available cores.",
 )
-snakefile_arg = typer.Option(..., help="The path to the snakemake file.")
+path_arg = typer.Option(..., help="The path to the workflow file.")
 
+class WorkflowType(str, Enum):
+    snakemake = "snakemake"
+    script = "script"
 
 @app.command()
 def run(
@@ -66,7 +71,8 @@ def run(
     cores: str = cores_arg,
     url: str = url_arg,
     token: str = token_arg,
-    snakefile: Path = typer.Option(None, help="The path to the snakemake file."),
+    workflow: WorkflowType = typer.Option("snakemake", help="Workflow type (snakemake/script)."),
+    path: Path = typer.Option(None, help="The path to the workflow file."),
 ):
     """
     Processes a dataset.
@@ -118,12 +124,17 @@ def run(
             dataset_data["base_file_path"], directory, storage=storage
         )
 
-        # get snakefile
-        if not snakefile:
-            assert project_data["snakefile"]
-            snakefile = directory / "Snakefile"
-            with open(snakefile, "w", encoding="utf-8") as f:
-                f.write(project_data["snakefile"])
+        # get snakefile or script
+        if not path:
+            assert project_data["workflow"]
+            if workflow == WorkflowType.snakemake:
+                path = directory / "Snakefile"
+            elif workflow == WorkflowType.script:
+                path = directory / "script.sh"
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(project_data["workflow"])
+            if workflow == WorkflowType.script:
+                path.chmod(path.stat().st_mode | stat.S_IEXEC)
 
         connection.send_status(dataset_id, stage=stage, state=State.SUCCESS)
     except Exception as e:
@@ -139,26 +150,29 @@ def run(
 
     try:
         connection.send_status(dataset_id, stage=stage, state=State.START)
-        import snakemake
+        if workflow == WorkflowType.snakemake:
+            import snakemake
 
-        args = [
-            f"--snakefile={snakefile}",
-            "--use-conda",
-            f"--cores={cores}",
-            f"--directory={directory}",
-        ]
-        mamba_found = True
-        try:
-            subprocess.run(["mamba", "--version"], capture_output=True, check=True)
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            mamba_found = False
-        if not mamba_found:
-            args.append("--conda-frontend=conda")
+            args = [
+                f"--snakefile={path}",
+                "--use-conda",
+                f"--cores={cores}",
+                f"--directory={directory}",
+            ]
+            mamba_found = True
+            try:
+                subprocess.run(["mamba", "--version"], capture_output=True, check=True)
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                mamba_found = False
+            if not mamba_found:
+                args.append("--conda-frontend=conda")
 
-        try:
-            snakemake.main(args)
-        except SystemExit as result:
-            print(f"result {result}")
+            try:
+                snakemake.main(args)
+            except SystemExit as result:
+                print(f"result {result}")
+        elif workflow == WorkflowType.script:
+            subprocess.run(f"{path.resolve()}", capture_output=True, check=True)
 
         connection.send_status(dataset_id, stage=stage, state=State.SUCCESS)
     except Exception as e:
@@ -195,7 +209,7 @@ def next(
         "",
         help="The slug for a project the dataset is in. If not given, then it chooses any project.",
     ),
-    snakefile: Path = snakefile_arg,
+    path: Path = path_arg,
 ):
     """
     Processes the next dataset in a project.
@@ -219,7 +233,7 @@ def next(
             token=token,
             directory=directory,
             cores=cores,
-            snakefile=snakefile,
+            path=path,
         )
     else:
         console.print("No more datasets to process.")
@@ -232,7 +246,7 @@ def loop(
     cores: str = cores_arg,
     url: str = url_arg,
     token: str = token_arg,
-    snakefile: Path = snakefile_arg,
+    path: Path = path_arg,
 ):
     """
     Loops through all the datasets in a project and stops when complete.
@@ -247,7 +261,7 @@ def loop(
             storage_settings=storage_settings,
             directory=directory,
             cores=cores,
-            snakefile=snakefile,
+            path=path,
         )
         if result is None:
             console.print("Loop concluded.")

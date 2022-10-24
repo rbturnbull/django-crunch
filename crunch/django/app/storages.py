@@ -63,7 +63,7 @@ def storage_walk_old(base="/", storage=None, error_handler=None):
 
         new_base = Path(base, subfolder)
         for f in storage_walk(
-            base=new_base, storage=storage, error_handler=error_handler
+            base_path=new_base, storage=storage, error_handler=error_handler
         ):
             yield f
 
@@ -124,7 +124,7 @@ class StorageDirectory(NodeMixin):
         """Does a pre order iteration of subdirectories."""
         return PreOrderIter(
             self,
-            filter=lambda node: isinstance(node, StorageDirectory),
+            filter_=lambda node: isinstance(node, StorageDirectory),
             stop=stop,
             maxlevel=maxlevel,
         )
@@ -133,7 +133,7 @@ class StorageDirectory(NodeMixin):
         """Does a pre order iteration of subdirectories and returns the files in them."""
         return PreOrderIter(
             self,
-            filter=lambda node: isinstance(node, StorageFile),
+            filter_=lambda node: isinstance(node, StorageFile),
             stop=stop,
             maxlevel=maxlevel,
         )
@@ -190,7 +190,7 @@ def storage_walk(
 
         new_base = Path(base_path, subfolder)
         storage_walk(
-            base=new_base,
+            base_path=new_base,
             storage=storage,
             error_handler=error_handler,
             parent=directory,
@@ -244,7 +244,7 @@ def copy_recursive_from_storage(base="/", local_dir=".", storage=None):
     if storage is None:
         storage = default_storage
 
-    dir_object = storage_walk(base=base, storage=storage)
+    dir_object = storage_walk(base_path=base, storage=storage)
     subdirs = dir_object.directory_descendents()
 
     for subdir in subdirs:
