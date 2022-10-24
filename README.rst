@@ -51,7 +51,7 @@ Credits
 
 .. start-credits
 
-Robert Turnbull
+Robert Turnbull, Mar Quiroga and Simon Mutch from the Melbourne Data Analytics Platform.
 
 Publication and citation details to follow.
 
