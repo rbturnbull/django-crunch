@@ -132,7 +132,7 @@ def run(
             elif workflow == WorkflowType.script:
                 path = directory / "script.sh"
             with open(path, "w", encoding="utf-8") as f:
-                f.write(project_data["workflow"])
+                f.write(project_data["workflow"].replace('\r\n', '\n'))
             if workflow == WorkflowType.script:
                 path.chmod(path.stat().st_mode | stat.S_IEXEC)
 
@@ -172,7 +172,7 @@ def run(
             except SystemExit as result:
                 print(f"result {result}")
         elif workflow == WorkflowType.script:
-            subprocess.run(f"{path.resolve()}", capture_output=True, check=True)
+            subprocess.run(f"{path.resolve()}", capture_output=True, check=True, cwd=directory)
 
         connection.send_status(dataset_id, stage=stage, state=State.SUCCESS)
     except Exception as e:
