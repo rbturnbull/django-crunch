@@ -10,6 +10,32 @@ class CrunchTestCase(TestCase):
         ContentType.objects.clear_cache()  # needed because of this issue https://github.com/django-polymorphic/django-polymorphic/issues/470
 
 
+class FilesizeAttributeTests(CrunchTestCase):
+    def setUp(self):
+        super().setUp()
+        self.item = models.Item.objects.create(name="Test Item")
+        self.value = 1_234_000
+        self.attribute = models.FilesizeAttribute.objects.create(
+            item=self.item, value=self.value
+        )
+
+    def test_value_dict(self):
+        result = self.attribute.value_dict()
+        assert isinstance(result, dict)
+        assert "value" in result.keys()
+        assert result["value"] == self.value
+
+    def test_value_html(self):
+        result = self.attribute.value_html()
+        assert isinstance(result, str)
+        assert result == "1.2 MB"
+
+    def test_value_str(self):
+        result = self.attribute.value_str()
+        assert isinstance(result, str)
+        assert result == "1.2 MB"
+
+
 class LatLongAttributeTests(CrunchTestCase):
     def setUp(self):
         super().setUp()
