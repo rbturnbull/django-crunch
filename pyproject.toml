@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-crunch"
-version = "0.1.8"
+version = "0.1.9"
 description = "A data processing orcestration tool."
 authors = ["Robert Turnbull, Mar Quiroga and Simon Mutch <robert.turnbull@unimelb.edu.au>"]
 license = "Apache-2.0"

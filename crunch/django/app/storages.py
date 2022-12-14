@@ -154,12 +154,12 @@ class StorageFile(NodeMixin):
     def __repr__(self):
         return str(self)
 
-    def path(self):
+    def path(self) -> Path:
         return Path(self.parent.base_path, self.filename)
 
     def url(self):
         storage = self.parent.storage or default_storage
-        return storage.url(self.path())
+        return storage.url(str(self.path()))
 
 
 def storage_walk(
