@@ -1387,7 +1387,10 @@ optional = false
 python-versions = ">=3.8"
 
 [package.dependencies]
-numpy = {version = ">=1.20.3", markers = "python_version < \"3.10\""}
+numpy = [
+    {version = ">=1.20.3", markers = "python_version < \"3.10\""},
+    {version = ">=1.21.0", markers = "python_version >= \"3.10\""},
+]
 python-dateutil = ">=2.8.1"
 pytz = ">=2020.1"
 
@@ -2242,8 +2245,8 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 
 [metadata]
 lock-version = "1.1"
-python-versions = ">=3.8,<3.10"
-content-hash = "b7b6b19ef1e95d6dad30fa643b94a17c51c0e2a1d6ae0f503b094e35c2ba1a9b"
+python-versions = ">=3.8,<=3.10"
+content-hash = "21f8e814206643fd8f2a7fd612eaaa8b58abd01c379c80a0356b6028a7a985b8"
 
 [metadata.files]
 alabaster = [
