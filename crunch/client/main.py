@@ -39,9 +39,6 @@ token_arg = typer.Option(
     help="An access token for a user on the hosted site.",
     prompt=True,
 )
-project_slug_arg = typer.Argument(
-    ..., help="The slug for the project the dataset is in."
-)
 dataset_slug_arg = typer.Argument(..., help="The slug for the dataset.")
 item_slug_arg = typer.Argument(..., help="The slug for the item.")
 storage_settings_arg = typer.Argument(
@@ -66,7 +63,6 @@ class WorkflowType(str, Enum):
 
 @app.command()
 def run(
-    project: str = project_slug_arg,
     dataset: str = dataset_slug_arg,
     storage_settings: Path = storage_settings_arg,
     directory: Path = directory_arg,
@@ -82,7 +78,7 @@ def run(
     if not dataset:
         return
 
-    console.print(f"Processing '{dataset}' from project '{project}' at {url}.")
+    console.print(f"Processing '{dataset}' from {url}.")
 
     # Create temporary dir
     directory = Path(directory)
@@ -96,7 +92,7 @@ def run(
     dataset_data = connection.get_json_response(f"/api/datasets/{dataset}")
     # TODO raise exception
     assert dataset_data["slug"] == dataset
-    assert project in dataset_data["parent"]
+    project = dataset_data["parent"]
     dataset_id = dataset_data["id"]
 
     stage_style = "bold red"
@@ -229,7 +225,6 @@ def next(
 
     if "dataset" in next and "project" in next and next["project"] and next["dataset"]:
         return run(
-            project=next["project"],
             dataset=next["dataset"],
             storage_settings=storage_settings,
             url=url,
