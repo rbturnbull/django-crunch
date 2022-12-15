@@ -19,7 +19,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<=3.10"
+python = ">=3.8,<=3.11"
 Django = "^3.2"
 django-cms = "^3.9.0"
 typer = {extras = ["all"], version = "^0.4.0"}
@@ -55,8 +55,9 @@ djangocms-bootstrap = "^1.1.2"
 djangocms-themata = {git = "https://github.com/rbturnbull/djangocms-themata.git", branch="main"}
 pandas = "^1.4.4"
 anytree = "^2.8.0"
+
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.5"
+pytest = "^7.2.0"
 ipykernel = "^6.6.1"
 Sphinx = "^4.4.0"
 nbsphinx = "^0.8.7"
