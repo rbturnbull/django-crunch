@@ -56,7 +56,9 @@ cores_arg = typer.Option(
     "1",
     help="The maximum number of cores/jobs to use to run the workflow. If 'all' then it uses all available cores.",
 )
-path_arg = typer.Option(..., help="The path to the workflow file.")
+workflow_type_arg = typer.Option("snakemake", help="Workflow type (snakemake/script).")
+path_arg = typer.Option(None, help="The path to the workflow file.")
+
 
 class WorkflowType(str, Enum):
     snakemake = "snakemake"
@@ -71,8 +73,8 @@ def run(
     cores: str = cores_arg,
     url: str = url_arg,
     token: str = token_arg,
-    workflow: WorkflowType = typer.Option("snakemake", help="Workflow type (snakemake/script)."),
-    path: Path = typer.Option(None, help="The path to the workflow file."),
+    workflow: WorkflowType = workflow_type_arg,
+    path: Path = path_arg,
 ):
     """
     Processes a dataset.
@@ -209,6 +211,7 @@ def next(
         "",
         help="The slug for a project the dataset is in. If not given, then it chooses any project.",
     ),
+    workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
 ):
     """
@@ -233,6 +236,7 @@ def next(
             token=token,
             directory=directory,
             cores=cores,
+            workflow=workflow,
             path=path,
         )
     else:
@@ -246,6 +250,7 @@ def loop(
     cores: str = cores_arg,
     url: str = url_arg,
     token: str = token_arg,
+    workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
 ):
     """
@@ -261,6 +266,7 @@ def loop(
             storage_settings=storage_settings,
             directory=directory,
             cores=cores,
+            workflow=workflow,
             path=path,
         )
         if result is None:
