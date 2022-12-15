@@ -433,6 +433,9 @@ class Connection():
         json_response = response.json()
         
         if len(json_response.keys()) == 1 and "detail" in json_response:
-            raise CrunchAPIException(json_response["detail"])
+            raise CrunchAPIException(
+                f"Error getting JSON response from URL '{url}':\n" +
+                f"{json_response['detail']}"
+            )
 
         return json_response
