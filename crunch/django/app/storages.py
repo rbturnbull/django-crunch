@@ -107,17 +107,21 @@ class StorageDirectory(NodeMixin):
         return result
 
     def render_html(self):
-        result = "<div>"
-        result += self.base_path + "<br>\n"
-        for pre, _, node in RenderTree(self):
-            if node == self:
-                continue
+        try:
+            result = "<div>"
+            result += self.base_path + "<br>\n"
+            for pre, _, node in RenderTree(self):
+                if node == self:
+                    continue
 
-            if isinstance(node, StorageFile):
-                result += f"{pre}<a href='{node.url()}'>{node.short_str()}</a><br>\n"
-            else:
-                result += f"{pre}{node.short_str()}<br>\n"
-        result += "</div>"
+                if isinstance(node, StorageFile):
+                    result += f"{pre}<a href='{node.url()}'>{node.short_str()}</a><br>\n"
+                else:
+                    result += f"{pre}{node.short_str()}<br>\n"
+            result += "</div>"
+        except Exception as err:
+            result = f"<div>Failed to read storage at {self.base_path}</div>"
+            
         return result
 
     def directory_descendents(self, stop=None, maxlevel: int = None):
