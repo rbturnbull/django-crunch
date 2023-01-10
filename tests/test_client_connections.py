@@ -1,13 +1,11 @@
 from datetime import datetime
-import os
+import os, re
 import pytest
 from unittest.mock import patch
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import status as drf_status
-from rest_framework.test import APITestCase
 from rest_framework.test import APIClient
 from crunch.client import connections
 from crunch.django.app.enums import Stage, State
@@ -231,3 +229,38 @@ def test_connection_add_url_attribute(capsys):
 
     captured = capsys.readouterr()
     assert "Adding attribute 'key1'->'http://www.example.com' to item 'test-project' on the hosted site http://www.example.com/" in captured.out.replace("\n", "")    
+
+
+@pytest.mark.django_db
+def test_connection_add_attributes_unknown_type():
+    connection = MockConnection(base_url="http://www.example.com/", token="token")
+    project = models.Project.objects.create(name="Test Project")  
+    class UnknownObject():
+        def __str__(self):
+            return "unknown object" 
+
+    with pytest.raises(connections.CrunchAPIException, match=re.escape("Cannot infer type of value 'unknown object' (UnknownObject). (The key was 'object_attribute')")):
+        connection.add_attributes(
+            project.slug,
+            url_attribute="http://www.example.com",
+            char_attribute="Char info",
+            object_attribute=UnknownObject(),
+        )
+
+@pytest.mark.django_db
+def test_connection_add_lat_long_attribute(capsys):
+    connection = MockConnection(base_url="http://www.example.com/", token="token", verbose=True)
+    project = models.Project.objects.create(name="Test Project")    
+    response = connection.add_lat_long_attribute(project.slug, "key1", latitude=-20, longitude=40)
+    assert response.status_code == drf_status.HTTP_201_CREATED
+
+    project = models.Project.objects.get(name="Test Project")
+    assert project.attributes.count() == 1
+    attribute = project.attributes.first()
+    assert isinstance(attribute, models.LatLongAttribute)
+    assert attribute.key == "key1"
+    assert attribute.latitude == -20
+    assert attribute.longitude == 40
+
+    captured = capsys.readouterr()
+    assert "Adding attribute 'key1'->'-20,40' to item 'test-project' on the hosted site http://www.example.com/" in captured.out.replace("\n", "")    

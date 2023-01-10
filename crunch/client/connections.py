@@ -232,7 +232,7 @@ class Connection():
             elif isinstance(value, date):
                 self.add_date_attribute(item=item, key=key, value=value)
             else:
-                raise CrunchAPIException(f"Cannot infer type of value '{value}' ({type(value)}). (The key was '{key}')")
+                raise CrunchAPIException(f"Cannot infer type of value '{value}' ({type(value).__name__}). (The key was '{key}')")
 
     def add_float_attribute(self, item:str, key:str, value:float) -> requests.Response:
         """
