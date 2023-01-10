@@ -264,3 +264,17 @@ def test_connection_add_lat_long_attribute(capsys):
 
     captured = capsys.readouterr()
     assert "Adding attribute 'key1'->'-20,40' to item 'test-project' on the hosted site http://www.example.com/" in captured.out.replace("\n", "")    
+
+@pytest.mark.django_db
+def test_connection_add_filesize_attribute():
+    connection = MockConnection(base_url="http://www.example.com/", token="token")
+    project = models.Project.objects.create(name="Test Project")    
+    response = connection.add_filesize_attribute(project.slug, "key1", value=1_000_000)
+    assert response.status_code == drf_status.HTTP_201_CREATED
+
+    project = models.Project.objects.get(name="Test Project")
+    assert project.attributes.count() == 1
+    attribute = project.attributes.first()
+    assert isinstance(attribute, models.FilesizeAttribute)
+    assert attribute.key == "key1"
+    assert attribute.value == 1_000_000
