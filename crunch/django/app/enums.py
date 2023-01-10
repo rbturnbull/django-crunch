@@ -1,4 +1,15 @@
 from django.db import models
 
-Stage = models.IntegerChoices('Stage', 'SETUP WORKFLOW UPLOAD')
-State = models.IntegerChoices('State', 'START SUCCESS FAIL')
+
+class Stage(models.IntegerChoices):
+    SETUP = 1
+    WORKFLOW = 2
+    UPLOAD = 3
+
+
+class State(models.IntegerChoices):
+    START = 1
+    SUCCESS = 2
+    FAIL = 3
+
+

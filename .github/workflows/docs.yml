@@ -26,7 +26,7 @@ jobs:
         poetry run sphinx-build -b html docs gh-pages
     - name: Coverage
       run: |
-        poetry run coverage run ./tests.py
+        poetry run coverage run -m pytest
         echo "COVERAGE=$(poetry run coverage report --precision 2 | grep TOTAL | tr -s ' ' | cut -f 4 -d " ")" >> $GITHUB_ENV
         poetry run coverage html --directory gh-pages/coverage
         rm gh-pages/coverage/.gitignore

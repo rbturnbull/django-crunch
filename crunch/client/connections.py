@@ -1,5 +1,5 @@
 from os import getenv
-from typing import Union
+from typing import Union, Dict
 from unicodedata import decimal
 import requests
 from rest_framework import status as drf_status
@@ -8,6 +8,7 @@ from datetime import datetime, date
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from rich.console import Console
+from crunch.django.app.enums import Stage, State
 
 console = Console()
 
@@ -30,8 +31,10 @@ class Connection():
         An object to manage calls to the REST API of a crunch hosted site.
 
         Args:
-            base_url (str, optional): The URL for the endpoint for the project on the crunch hosted site. If not provided then it attempts to use the 'CRUNCH_URL' environment variable.
-            token (str, optional): An access token for a user on the crunch hosted site. If not provided then it attempts to use the 'CRUNCH_TOKEN' environment variable.
+            base_url (str, optional): The URL for the endpoint for the project on the crunch hosted site. 
+                If not provided then it attempts to use the 'CRUNCH_URL' environment variable.
+            token (str, optional): An access token for a user on the crunch hosted site. 
+                If not provided then it attempts to use the 'CRUNCH_TOKEN' environment variable.
 
         Raises:
             CrunchAPIException: If the `base_url` is not provided and it is not available using the 'CRUNCH_URL' environment variable.
@@ -62,7 +65,7 @@ class Connection():
         headers = {"Authorization": f"Token {self.token}" }
         return headers
 
-    def absolute_url(self, relative_url):
+    def absolute_url(self, relative_url:str) -> str:
         if self.base_url.endswith("/"):
             self.base_url = self.base_url[:-1]
         if relative_url.startswith("/"):
@@ -407,16 +410,26 @@ class Connection():
             longitude=longitude,
         )
 
-    def send_status(self, dataset_id, stage, state, note=""):
-        if isinstance(stage, enum.Enum):
-            stage = stage.value
-        if isinstance(state, enum.Enum):
-            state = state.value
+    def send_status(self, dataset_id:str, stage:Stage, state:State, note:str="") -> requests.Response:
+        """
+        Sends an update of the status of one stage in processing a dataset.
 
+        Args:
+            dataset_id (str): The ID of the dataset for this status update.
+            stage (Stage): The stage of this status update.
+            state (State): The state of this status update.
+            note (str, optional): A note which gives more information to this status update. Defaults to "".
+
+        Raises:
+            CrunchAPIException: If there was an error posting this status update to the API.
+
+        Returns:
+            requests.Response: The resulting response from the request to the API.
+        """
         data = dict(
             dataset=dataset_id,
-            stage=stage,
-            state=state,
+            stage=stage.value,
+            state=state.value,
             note=note,
         )
         data.update( diagnostics.get_diagnostics() )
@@ -426,7 +439,19 @@ class Connection():
 
         return result
 
-    def get_json_response( self, relative_url ):
+    def get_json_response( self, relative_url:str ) -> Dict:
+        """
+        Requests JSON data from the API of a crunch hosted site and returns it as a dictionary.
+
+        Args:
+            relative_url (str): The URL path relative to the base URL of the endpoint for the project on the crunch hosted site.
+
+        Raises:
+            CrunchAPIException: Raises exception if there is an error getting a JSON response from the API.
+
+        Returns:
+            Dict: The JSON data from the API encoded as a dictionary.
+        """
         url = self.absolute_url(relative_url)
         response = requests.get(url, headers=self.get_headers())
 
