@@ -46,13 +46,6 @@ def test_post():
     assert result.status_code == 200
 
 
-@patch('requests.post', lambda *args, **kwargs: MockResponse(status_code=200))
-def test_post():
-    connection = connections.Connection(base_url="http://www.example.com", token="token")
-    result = connection.post("test")
-    assert result.status_code == 200
-
-
 @patch('requests.post', lambda *args, **kwargs: MockResponse(status_code=403, reason="Forbidden"))
 def test_post_forbidden_verbose(capsys):
     connection = connections.Connection(base_url="http://www.example.com", token="token", verbose=True)
@@ -61,20 +54,6 @@ def test_post_forbidden_verbose(capsys):
     captured = capsys.readouterr()
     assert "Response 403: Forbidden" in captured.out
     assert "Failed posting to http://www.example.com/test" in captured.out
-
-
-@patch('requests.post', lambda *args, **kwargs: MockResponse(status_code=200))
-def test_send_status_sucess():
-    connection = connections.Connection(base_url="http://www.example.com", token="token")
-    result = connection.send_status("dataset_id", Stage.UPLOAD, State.SUCCESS)
-    assert result.status_code == 200
-
-
-@patch('requests.post', lambda *args, **kwargs: MockResponse(status_code=403, reason="Forbidden"))
-def test_send_status_forbidden():
-    connection = connections.Connection(base_url="http://www.example.com", token="token")
-    with pytest.raises(connections.CrunchAPIException, match=r"Failed sending status\.\n403: Forbidden"):
-        connection.send_status("dataset_id", Stage.UPLOAD, State.SUCCESS)
 
 
 def test_connection_no_url():
@@ -265,6 +244,7 @@ def test_connection_add_lat_long_attribute(capsys):
     captured = capsys.readouterr()
     assert "Adding attribute 'key1'->'-20,40' to item 'test-project' on the hosted site http://www.example.com/" in captured.out.replace("\n", "")    
 
+
 @pytest.mark.django_db
 def test_connection_add_filesize_attribute():
     connection = MockConnection(base_url="http://www.example.com/", token="token")
@@ -278,3 +258,88 @@ def test_connection_add_filesize_attribute():
     assert isinstance(attribute, models.FilesizeAttribute)
     assert attribute.key == "key1"
     assert attribute.value == 1_000_000
+
+
+@pytest.mark.django_db
+def test_connection_add_datetime_attribute():
+    connection = MockConnection(base_url="http://www.example.com/", token="token")
+    project = models.Project.objects.create(name="Test Project")    
+    response = connection.add_datetime_attribute(project.slug, "key1", value="14:00 November 13, 2022")
+    assert response.status_code == drf_status.HTTP_201_CREATED
+
+    project = models.Project.objects.get(name="Test Project")
+    assert project.attributes.count() == 1
+    attribute = project.attributes.first()
+    assert isinstance(attribute, models.DateTimeAttribute)
+    assert attribute.key == "key1"
+    assert attribute.value == datetime(2022, 11, 13, 14, 0, tzinfo=attribute.value.tzinfo)
+
+
+@pytest.mark.django_db
+def test_connection_add_datetime_attribute_format():
+    connection = MockConnection(base_url="http://www.example.com/", token="token")
+    project = models.Project.objects.create(name="Test Project")    
+    response = connection.add_datetime_attribute(project.slug, "key1", value="6 July, 2001", format="%d %B, %Y")
+    assert response.status_code == drf_status.HTTP_201_CREATED
+
+    project = models.Project.objects.get(name="Test Project")
+    assert project.attributes.count() == 1
+    attribute = project.attributes.first()
+    assert isinstance(attribute, models.DateTimeAttribute)
+    assert attribute.key == "key1"
+    assert attribute.value == datetime(2001, 7, 6, 0, 0, tzinfo=attribute.value.tzinfo)
+
+
+
+
+@pytest.mark.django_db
+def test_connection_add_date_attribute():
+    connection = MockConnection(base_url="http://www.example.com/", token="token")
+    project = models.Project.objects.create(name="Test Project")    
+    response = connection.add_date_attribute(project.slug, "key1", value="November 13, 2022")
+    assert response.status_code == drf_status.HTTP_201_CREATED
+
+    project = models.Project.objects.get(name="Test Project")
+    assert project.attributes.count() == 1
+    attribute = project.attributes.first()
+    assert isinstance(attribute, models.DateAttribute)
+    assert attribute.key == "key1"
+    assert attribute.value == datetime(2022, 11, 13, 0, 0).date()
+
+
+@pytest.mark.django_db
+def test_connection_add_date_attribute_format():
+    connection = MockConnection(base_url="http://www.example.com/", token="token")
+    project = models.Project.objects.create(name="Test Project")    
+    response = connection.add_date_attribute(project.slug, "key1", value="6 July, 2001", format="%d %B, %Y")
+    assert response.status_code == drf_status.HTTP_201_CREATED
+
+    project = models.Project.objects.get(name="Test Project")
+    assert project.attributes.count() == 1
+    attribute = project.attributes.first()
+    assert isinstance(attribute, models.DateAttribute)
+    assert attribute.key == "key1"
+    assert attribute.value == datetime(2001, 7, 6, 0, 0).date()
+
+
+@pytest.mark.django_db
+def test_send_status():
+    connection = MockConnection(base_url="http://www.example.com/", token="token")
+    project = models.Project.objects.create(name="Test Project")    
+    dataset = models.Dataset.objects.create(parent=project, name="Test Dataset")    
+   
+    response = connection.send_status(dataset.id, Stage.UPLOAD, State.FAIL, note="upload failed")
+    assert response.status_code == drf_status.HTTP_201_CREATED
+
+    assert models.Status.objects.count() == 1
+    status = models.Status.objects.first()
+    assert status.state == State.FAIL
+    assert status.stage == Stage.UPLOAD
+    assert status.note == "upload failed"
+
+
+@patch('requests.post', lambda *args, **kwargs: MockResponse(status_code=403, reason="Forbidden"))
+def test_send_status_forbidden():
+    connection = connections.Connection(base_url="http://www.example.com", token="token")
+    with pytest.raises(connections.CrunchAPIException, match=r"Failed sending status\.\n403: Forbidden"):
+        connection.send_status("dataset_id", Stage.UPLOAD, State.SUCCESS)
