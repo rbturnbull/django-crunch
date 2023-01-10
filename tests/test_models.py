@@ -243,3 +243,33 @@ class OneEachCategory(CrunchTestCase):
     def test_project_next_unprocessed_dataset(self):
         next = self.project.next_unprocessed_dataset()
         assert next.id == self.dataset1.id
+
+
+class ItemTests(CrunchTestCase):
+
+    def test_descendant_total_filesize(self):
+        root = models.Item.objects.create(name="root")
+        child1 = models.Item.objects.create(name="child1", parent=root)
+        child2 = models.Item.objects.create(name="child2", parent=root)
+        child3 = models.Item.objects.create(name="child3", parent=root)
+        grandchild = models.Item.objects.create(name="grandchild", parent=child1)
+
+        models.FilesizeAttribute.objects.create(item=root, key="filesize", value=2_000_000)
+        models.FilesizeAttribute.objects.create(item=child1, key="filesize", value=3_000_000)
+        models.FilesizeAttribute.objects.create(item=child2, key="filesize", value=5_000_000)
+        models.FilesizeAttribute.objects.create(item=grandchild, key="filesize", value=500_000)
+
+        assert root.descendant_total_filesize() == 10_500_000
+        assert child1.descendant_total_filesize() == 3_500_000
+        assert child2.descendant_total_filesize() == 5_000_000
+        assert grandchild.descendant_total_filesize() == 500_000
+        assert child3.descendant_total_filesize() == None
+
+        assert root.descendant_total_filesize_readable() == "10.5 MB"
+        assert child1.descendant_total_filesize_readable() == "3.5 MB"
+        assert child2.descendant_total_filesize_readable() == "5.0 MB"
+        assert grandchild.descendant_total_filesize_readable() == "500.0 kB"
+        assert child3.descendant_total_filesize_readable() == "None"
+
+        
+

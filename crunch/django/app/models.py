@@ -104,7 +104,15 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
             item__in=self.get_descendants(include_self=include_self)
         )
 
-    def descendant_total_filesize(self):
+    def descendant_total_filesize(self) -> int:
+        """
+        Sums all the filesize attributes for this item and its descendants.
+
+        Returns:
+            int: The total sum of the filesize attributes of this item and all its descendants. 
+                If there are no filesize attributes then it returns None.
+        """
+        
         filesize_attributes = self.descendant_attributes(
             attribute_type=FilesizeAttribute, include_self=True
         )
@@ -115,6 +123,13 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
         return filesize_attributes.aggregate(models.Sum("value"))["value__sum"]
 
     def descendant_total_filesize_readable(self) -> str:
+        """
+        Sums all the filesize attributes for this item and its descendants and converts it to a human readable string.
+
+        Returns:
+            str: The total sum of the filesize attributes of this item and all its descendants in a human readable string. 
+                If there are no filesize attributes then it returns 'None'.
+        """
         descendant_total_filesize = self.descendant_total_filesize()
 
         if descendant_total_filesize:
