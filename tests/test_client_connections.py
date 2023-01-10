@@ -1,8 +1,14 @@
+import os
 import pytest
 from unittest.mock import patch
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+from rest_framework import status as drf_status
+from rest_framework.test import APITestCase
 from crunch.client import connections
 from crunch.django.app.enums import Stage, State
-import os
+from crunch.django.app import models
+
 
 class MockResponse():
     def __init__(self, data=None, status_code=200, reason=""):
@@ -96,3 +102,45 @@ def test_connection_absolute_url():
     assert connections.Connection(base_url="http://www.example.com").absolute_url("data") == "http://www.example.com/data"
     assert connections.Connection(base_url="http://www.example.com/").absolute_url("data") == "http://www.example.com/data"
     assert connections.Connection(base_url="http://www.example.com/").absolute_url("/data") == "http://www.example.com/data"
+
+
+class MockConnection(connections.Connection):
+    def __init__(self, client, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.client = client
+
+    def post(self, relative_url, **kwargs):
+        if not relative_url.startswith("/"):
+            relative_url = f"/{relative_url}"
+        return self.client.post(relative_url, kwargs)        
+
+
+
+
+class ConnectionAPITestCase(APITestCase):
+    def setUp(self):
+        User = get_user_model()
+        self.username = "username"
+        self.password = "password-for-unit-testing"
+        self.user = User.objects.create_superuser(username=self.username, password=self.password)
+        self.client.login(username=self.username, password=self.password)
+        self.project = models.Project.objects.create(name="Test Project")
+        self.dataset = models.Dataset.objects.create(name="Test Dataset", parent=self.project)
+        self.connection = MockConnection(client=self.client, base_url="http://www.example.com/", token="token", verbose=True)
+
+    def test_connection_add_project(self):
+        response = self.connection.add_project("project", "description", "details")
+        assert response.status_code == drf_status.HTTP_201_CREATED
+
+        project = models.Project.objects.get(name="project")
+        assert project.description == "description"
+        assert project.details == "details"
+
+    def test_connection_add_dataset(self):
+        response = self.connection.add_dataset(self.project.slug, "dataset 2", "description", "details")
+        assert response.status_code == drf_status.HTTP_201_CREATED
+
+        dataset = models.Dataset.objects.get(name="dataset 2")
+        assert dataset.parent == self.project
+        assert dataset.description == "description"
+        assert dataset.details == "details"

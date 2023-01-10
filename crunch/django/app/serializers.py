@@ -5,7 +5,7 @@ from . import models
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Project
-        fields = ['id', 'name', 'slug', 'workflow']
+        fields = ['id', 'name', 'slug', 'description', 'details', 'workflow']
 
 
 class AttributeSerializer(serializers.ModelSerializer):
