@@ -92,8 +92,10 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>base_url</strong> (<em>str</em><em>, </em><em>optional</em>) – The URL for the endpoint for the project on the crunch hosted site. If not provided then it attempts to use the ‘CRUNCH_URL’ environment variable.</p></li>
-<li><p><strong>token</strong> (<em>str</em><em>, </em><em>optional</em>) – An access token for a user on the crunch hosted site. If not provided then it attempts to use the ‘CRUNCH_TOKEN’ environment variable.</p></li>
+<li><p><strong>base_url</strong> (<em>str</em><em>, </em><em>optional</em>) – The URL for the endpoint for the project on the crunch hosted site.
+If not provided then it attempts to use the ‘CRUNCH_URL’ environment variable.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>optional</em>) – An access token for a user on the crunch hosted site.
+If not provided then it attempts to use the ‘CRUNCH_TOKEN’ environment variable.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -415,6 +417,51 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crunch.client.connections.Connection.get_json_response">
+<span class="sig-name descname"><span class="pre">get_json_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="headerlink" href="#crunch.client.connections.Connection.get_json_response" title="Permalink to this definition"></a></dt>
+<dd><p>Requests JSON data from the API of a crunch hosted site and returns it as a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>relative_url</strong> (<em>str</em>) – The URL path relative to the base URL of the endpoint for the project on the crunch hosted site.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#crunch.client.connections.CrunchAPIException" title="crunch.client.connections.CrunchAPIException"><strong>CrunchAPIException</strong></a> – Raises exception if there is an error getting a JSON response from the API.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The JSON data from the API encoded as a dictionary.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crunch.client.connections.Connection.send_status">
+<span class="sig-name descname"><span class="pre">send_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">crunch.django.app.enums.Stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">crunch.django.app.enums.State</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">note</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">requests.models.Response</span></span></span><a class="headerlink" href="#crunch.client.connections.Connection.send_status" title="Permalink to this definition"></a></dt>
+<dd><p>Sends an update of the status of one stage in processing a dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_id</strong> (<em>str</em>) – The ID of the dataset for this status update.</p></li>
+<li><p><strong>stage</strong> (<em>Stage</em>) – The stage of this status update.</p></li>
+<li><p><strong>state</strong> (<em>State</em>) – The state of this status update.</p></li>
+<li><p><strong>note</strong> (<em>str</em><em>, </em><em>optional</em>) – A note which gives more information to this status update. Defaults to “”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#crunch.client.connections.CrunchAPIException" title="crunch.client.connections.CrunchAPIException"><strong>CrunchAPIException</strong></a> – If there was an error posting this status update to the API.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The resulting response from the request to the API.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>requests.Response</p>
 </dd>
 </dl>
 </dd></dl>
