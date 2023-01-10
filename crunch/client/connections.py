@@ -380,7 +380,7 @@ class Connection():
             requests.Response: The request object from posting to the crunch API.
         """
         return self.add_key_value_attribute(
-            url="api/attributes/int/", 
+            url="api/attributes/url/", 
             item=item,
             key=key,
             value=value,

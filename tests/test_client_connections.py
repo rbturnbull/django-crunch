@@ -1,7 +1,9 @@
+from datetime import datetime
 import os
 import pytest
 from unittest.mock import patch
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import status as drf_status
@@ -121,7 +123,7 @@ class MockConnection(connections.Connection):
         if not relative_url.startswith("/"):
             relative_url = f"/{relative_url}"
         return self.client.post(relative_url, kwargs)        
-        
+
 
 @pytest.mark.django_db
 def test_connection_add_project():
@@ -145,3 +147,87 @@ def test_connection_add_dataset():
     assert dataset.parent == project
     assert dataset.description == "description"
     assert dataset.details == "details"
+
+
+@pytest.mark.django_db
+def test_connection_add_item():
+    connection = MockConnection(base_url="http://www.example.com/", token="token", verbose=True)
+    project = models.Project.objects.create(name="Test Project")    
+    response = connection.add_item(project.slug, "item", "description", "details")
+    assert response.status_code == drf_status.HTTP_201_CREATED
+
+    item = models.Item.objects.get(name="item")
+    assert item.parent == project
+    assert item.description == "description"
+    assert item.details == "details"
+
+
+@pytest.mark.django_db
+def test_connection_add_char_attribute(capsys):
+    connection = MockConnection(base_url="http://www.example.com/", token="token", verbose=True)
+    project = models.Project.objects.create(name="Test Project")    
+    response = connection.add_char_attribute(project.slug, "key1", "value1")
+    assert response.status_code == drf_status.HTTP_201_CREATED
+
+    project = models.Project.objects.get(name="Test Project")
+    assert project.attributes.count() == 1
+    attribute = project.attributes.first()
+    assert isinstance(attribute, models.CharAttribute)
+    assert attribute.key == "key1"
+    assert attribute.value == "value1"
+
+    captured = capsys.readouterr()
+    assert "Adding attribute 'key1'->'value1' to item 'test-project' on the hosted site http://www.example.com/" in captured.out.replace("\n", "")
+
+
+def assert_single_attribute(cls, key, value):
+    assert cls.objects.count() == 1
+    attribute = cls.objects.first()
+    assert attribute.key == key
+    assert attribute.value == value
+
+
+@pytest.mark.django_db
+def test_connection_add_attributes():
+    connection = MockConnection(base_url="http://www.example.com/", token="token")
+    project = models.Project.objects.create(name="Test Project")   
+    now = timezone.now()
+    connection.add_attributes(
+        project.slug,
+        url_attribute="http://www.example.com",
+        char_attribute="Char info",
+        float_attribute=0.5,
+        bool_attribute=True,
+        int_attribute=42,
+        datetime_attribute=now,
+        date_attribute=datetime.date(now),
+    )
+    
+    project = models.Project.objects.get(name="Test Project")
+    assert_single_attribute(models.CharAttribute, key="char_attribute", value="Char info")
+    assert_single_attribute(models.FloatAttribute, key="float_attribute", value=0.5)
+    assert_single_attribute(models.BooleanAttribute, key="bool_attribute", value=True)
+    assert_single_attribute(models.IntegerAttribute, key="int_attribute", value=42)
+    assert_single_attribute(models.DateTimeAttribute, key="datetime_attribute", value=now)
+    assert_single_attribute(models.DateAttribute, key="date_attribute", value=datetime.date(now))
+    assert_single_attribute(models.URLAttribute, key="url_attribute", value="http://www.example.com")
+
+    assert project.attributes.count() == 7
+    
+
+@pytest.mark.django_db
+def test_connection_add_url_attribute(capsys):
+    connection = MockConnection(base_url="http://www.example.com/", token="token", verbose=True)
+    project = models.Project.objects.create(name="Test Project")    
+    response = connection.add_url_attribute(project.slug, "key1", "http://www.example.com")
+    assert response.status_code == drf_status.HTTP_201_CREATED
+
+    project = models.Project.objects.get(name="Test Project")
+    assert project.attributes.count() == 1
+    attribute = project.attributes.first()
+    assert isinstance(attribute, models.URLAttribute)
+    assert attribute.key == "key1"
+    assert attribute.value == "http://www.example.com"
+
+    captured = capsys.readouterr()
+    assert "Adding attribute 'key1'->'http://www.example.com' to item 'test-project' on the hosted site http://www.example.com/" in captured.out.replace("\n", "")    
