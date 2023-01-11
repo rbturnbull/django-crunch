@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 
 class CrunchTestCase(TestCase):
     def setUp(self):
+        super().setUp()
         ContentType.objects.clear_cache()  # needed because of this issue https://github.com/django-polymorphic/django-polymorphic/issues/470
 
 

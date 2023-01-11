@@ -1,6 +1,11 @@
+from unittest.mock import patch
 import re
 from django.test import TestCase
 from crunch.client import diagnostics
+
+
+def raise_oserror(*args, **kwargs):
+    raise OSError
 
 
 class DiagnosticsTestCase(TestCase):
@@ -29,3 +34,8 @@ class DiagnosticsTestCase(TestCase):
 
         assert result == default
         assert d[key] == default
+
+    @patch('subprocess.Popen', raise_oserror)
+    def test_unknown(self):
+        assert diagnostics.git_revision() == "Unknown"
+

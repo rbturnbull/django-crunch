@@ -1,5 +1,11 @@
 [run]
 source = crunch
+omit = 
+    crunch/django/proj/manage.py
+    crunch/django/proj/wsgi.py
 
 [report]
 precision = 2
+
+exclude_lines =
+    if __name__ == .__main__.:
