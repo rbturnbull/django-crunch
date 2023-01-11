@@ -16,7 +16,7 @@ class ViewsTests(CrunchTestCase, APITestCase):
         self.user = User.objects.create_superuser(username=self.username, password=self.password)
         self.project1 = models.Project.objects.create(name="Test Project 1")
         self.project2 = models.Project.objects.create(name="Test Project 2")
-        self.dataset1 = models.Dataset.objects.create(name="Test Dataset 1", parent=self.project1)
+        self.dataset1 = models.Dataset.objects.create(name="Test Dataset 1", parent=self.project1, description="description1", details="details1")
         self.dataset2 = models.Dataset.objects.create(name="Test Dataset 2", parent=self.project2)
 
     def test_create_status(self):
@@ -98,4 +98,38 @@ class ViewsTests(CrunchTestCase, APITestCase):
         content = response.content.decode()
         assert '"Test Dataset 1", "latitude": 50.0, "longitude": 20.0, "url": "/projects/test-project-1/datasets/test-project-1:test-dataset-1"' in content
 
+    def test_dataset_api_view(self):
+        url = reverse('crunch:api:dataset-detail', kwargs={'slug': self.dataset1.slug})
+        latitude = 50
+        longitude = 20
+        # add an attribute to check that it comes through
+        models.LatLongAttribute.objects.create(
+            item=self.dataset1, latitude=latitude, longitude=longitude
+        )
 
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, drf_status.HTTP_200_OK)
+        data = response.json()
+        assert data == {
+            "id":3,
+            "name":"Test Dataset 1",
+            "slug":"test-project-1:test-dataset-1",
+            "parent":"test-project-1",
+            "description":"description1",
+            "details":"details1",
+            "attributes":[
+                {
+                    "key":"",
+                    "latitude":50.0,
+                    "longitude":20.0
+                }
+            ],
+            "items":[
+                
+            ],
+            "base_file_path":"crunch/test-project-1"
+            }
+        
+        
+    

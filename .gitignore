@@ -3,5 +3,6 @@ tmp
 storage/*
 docshtml/*
 *.ipynb
+.vscode/
 
 __pycache__
