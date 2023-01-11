@@ -33,10 +33,10 @@ class NextPrevMixin(models.Model):
         abstract = True
 
     def next_in_order(self, **kwargs):
-        return next_in_order(self)
+        return next_in_order(self, **kwargs)
 
     def prev_in_order(self, **kwargs):
-        return prev_in_order(self)
+        return prev_in_order(self, **kwargs)
 
     def get_admin_url(self):
         return reverse(
@@ -77,6 +77,7 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
 
     class Meta(PolymorphicMPTTModel.Meta):
         unique_together = ("parent", "slug")
+        ordering = ('created', 'pk')
 
     def __str__(self):
         return self.name
@@ -382,7 +383,7 @@ class Attribute(NextPrevMixin, TimeStampedModel, PolymorphicModel):
         return dict(key=self.key)
 
     def value_str(self):
-        return ""
+        raise NotImplementedError("value_str not implemented for this attribute class")
 
     def value_html(self):
         return self.value_str()
