@@ -132,4 +132,23 @@ class ViewsTests(CrunchTestCase, APITestCase):
             }
         
         
+    def test_project_detail_view(self):
+        url = reverse('crunch:project-detail', kwargs={'slug': self.project1.slug})
+        latitude = 50
+        longitude = 20
+        # add an attribute to check that it comes through
+        models.LatLongAttribute.objects.create(
+            item=self.dataset1, latitude=latitude, longitude=longitude
+        )
+
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, drf_status.HTTP_200_OK)
+        content = response.content.decode()
+        assert "<h3>Unprocessed Datasets</h3>" in content
+        assert '<iframe class="embed-responsive-item" src="/items/test-project-1/map/" allowfullscreen></iframe>' in content
+
+        
+        
+        
     
