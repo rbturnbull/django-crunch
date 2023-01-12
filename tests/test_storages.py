@@ -92,3 +92,17 @@ def test_copy_recursive_from_storage():
             os.path.getsize(tmpdir/"dummy-files/dummy-file2.txt") > 0
             os.path.getsize(tmpdir/"dummy-files2/dummy-file3.txt") > 0
 
+
+def test_copy_recursive_to_storage():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdir = Path(tmpdir)
+        storage = FileSystemStorage(location=str(tmpdir), base_url="http://www.example.com")
+
+        with patch('crunch.django.app.storages.default_storage', storage):
+            storages.copy_recursive_to_storage(TEST_DIR, "./")
+
+            os.path.getsize(tmpdir/"settings.toml") > 0
+            os.path.getsize(tmpdir/"settings.json") > 0
+            os.path.getsize(tmpdir/"dummy-files/dummy-file1.txt") > 0
+            os.path.getsize(tmpdir/"dummy-files/dummy-file2.txt") > 0
+            os.path.getsize(tmpdir/"dummy-files2/dummy-file3.txt") > 0
