@@ -1,4 +1,6 @@
+import os
 from pathlib import Path
+import tempfile
 from unittest.mock import patch
 from django.core.files.storage import FileSystemStorage
 
@@ -73,3 +75,20 @@ def test_storage_walk():
         html = root_dir.render_html()
         assert "tests/test-data/dummy-files/dummy-file1.txt'>dummy-file1.txt</a><br>\n│   └── <a href='http://www.example.com" in html
         assert "tests/test-data/settings.toml'>settings.toml</a><br>\n</div>" in html
+
+
+def test_copy_recursive_from_storage():
+    absolute_path = str(TEST_DIR.absolute())
+    storage = FileSystemStorage(location=absolute_path, base_url="http://www.example.com")
+    
+    with patch('crunch.django.app.storages.default_storage', storage):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            storages.copy_recursive_from_storage(absolute_path, tmpdir)
+
+            os.path.getsize(tmpdir/"settings.toml") > 0
+            os.path.getsize(tmpdir/"settings.json") > 0
+            os.path.getsize(tmpdir/"dummy-files/dummy-file1.txt") > 0
+            os.path.getsize(tmpdir/"dummy-files/dummy-file2.txt") > 0
+            os.path.getsize(tmpdir/"dummy-files2/dummy-file3.txt") > 0
+
