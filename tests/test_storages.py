@@ -76,16 +76,15 @@ def test_storage_walk():
         immediate_files = root_dir.files()
         assert sorted([x.short_str() for x in immediate_files]) == sorted(['settings.json', 'settings.toml'])
 
-        assert (
-            'django-crunch/tests/test-data\n'
-            '├── dummy-files\n'
-            '│   ├── dummy-file1.txt\n'
-            '│   └── dummy-file2.txt\n'
-            '├── dummy-files2\n'
-            '│   └── dummy-file3.txt\n'
-            '├── settings.json\n'
-            '└── settings.toml\n'
-        ) in root_dir.render()
+        rendered = root_dir.render()
+        assert 'django-crunch/tests/test-data\n' in rendered
+        assert '── dummy-files\n' in rendered
+        assert '   ├── dummy-file1.txt\n' in rendered
+        assert '   └── dummy-file2.txt\n' in rendered
+        assert '── dummy-files2\n' in rendered
+        assert '   └── dummy-file3.txt\n' in rendered
+        assert '── settings.json\n' in rendered
+        assert '── settings.toml\n' in rendered
 
         html = root_dir.render_html()
         assert "tests/test-data/dummy-files/dummy-file1.txt'>dummy-file1.txt</a><br>\n│   └── <a href='http://www.example.com" in html

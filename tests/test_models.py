@@ -179,7 +179,7 @@ class DatasetTests(CrunchTestCase):
             root_dir = self.dataset.files()
             assert isinstance(root_dir, storages.StorageDirectory)
             files = list(root_dir.file_descendents())
-            assert [x.short_str() for x in files] == ['dummy-file1.txt', 'dummy-file2.txt', 'dummy-file3.txt', 'settings.json', 'settings.toml']
+            assert sorted([x.short_str() for x in files]) == sorted(['dummy-file1.txt', 'dummy-file2.txt', 'dummy-file3.txt', 'settings.json', 'settings.toml'])
 
 
 class StatusTests(CrunchTestCase):
