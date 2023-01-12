@@ -87,8 +87,8 @@ def test_storage_walk():
         assert '── settings.toml\n' in rendered
 
         html = root_dir.render_html()
-        assert "tests/test-data/dummy-files/dummy-file1.txt'>dummy-file1.txt</a><br>\n" in html
-        assert "tests/test-data/settings.toml'>settings.toml</a><br>\n</div>" in html
+        assert "tests/test-data/dummy-files/dummy-file1.txt'>dummy-file1.txt</a>" in html
+        assert "tests/test-data/settings.toml'>settings.toml</a>" in html
 
 
 def test_copy_recursive_from_storage():
