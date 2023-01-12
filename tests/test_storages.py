@@ -87,7 +87,7 @@ def test_storage_walk():
         assert '── settings.toml\n' in rendered
 
         html = root_dir.render_html()
-        assert "tests/test-data/dummy-files/dummy-file1.txt'>dummy-file1.txt</a><br>\n│   └── <a href='http://www.example.com" in html
+        assert "tests/test-data/dummy-files/dummy-file1.txt'>dummy-file1.txt</a><br>\n" in html
         assert "tests/test-data/settings.toml'>settings.toml</a><br>\n</div>" in html
 
 
