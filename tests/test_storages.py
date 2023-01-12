@@ -1,5 +1,6 @@
 from pathlib import Path
 from unittest.mock import patch
+from django.core.files.storage import FileSystemStorage
 
 from crunch.django.app import storages
 
@@ -31,3 +32,44 @@ def test_get_storage_with_settings_json():
         storages.get_storage_with_settings(TEST_DIR/"settings.json")
         assert mock_settings.configure_called_count == 1
         assert mock_settings.config == {"file_format":"json"}        
+
+
+def test_storage_walk():
+    absolute_path = str(TEST_DIR.absolute())
+    storage = FileSystemStorage(location=absolute_path, base_url="http://www.example.com")
+    
+    with patch('crunch.django.app.storages.default_storage', storage):
+        root_dir = storages.storage_walk(base_path=absolute_path)
+        assert isinstance(root_dir, storages.StorageDirectory)
+        assert str(root_dir) == absolute_path
+        assert root_dir.__repr__() == absolute_path
+        assert root_dir.short_str() == ""
+
+        subdirs = list(root_dir.directory_descendents())
+        assert [x.short_str() for x in subdirs] == ["", "dummy-files", "dummy-files2"]
+
+        files = list(root_dir.file_descendents())
+        assert [x.short_str() for x in files] == ['dummy-file1.txt', 'dummy-file2.txt', 'dummy-file3.txt', 'settings.json', 'settings.toml']
+
+        file = files[0]
+        assert file.path() == TEST_DIR.absolute()/"dummy-files/dummy-file1.txt"
+        assert file.__repr__() == "dummy-file1.txt"
+        assert file.url() == f"http://www.example.com{file.path()}"
+
+        immediate_files = root_dir.files()
+        assert [x.short_str() for x in immediate_files] == ['settings.json', 'settings.toml']
+
+        assert (
+            'django-crunch/tests/test-data\n'
+            '├── dummy-files\n'
+            '│   ├── dummy-file1.txt\n'
+            '│   └── dummy-file2.txt\n'
+            '├── dummy-files2\n'
+            '│   └── dummy-file3.txt\n'
+            '├── settings.json\n'
+            '└── settings.toml\n'
+        ) in root_dir.render()
+
+        html = root_dir.render_html()
+        assert "tests/test-data/dummy-files/dummy-file1.txt'>dummy-file1.txt</a><br>\n│   └── <a href='http://www.example.com" in html
+        assert "tests/test-data/settings.toml'>settings.toml</a><br>\n</div>" in html

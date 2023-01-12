@@ -55,42 +55,6 @@ def get_storage_with_settings(storage_settings:Union[Dict,Path]) -> DefaultStora
     return default_storage
 
 
-def storage_walk_old(base="/", storage=None, error_handler=None):
-    """
-    Recursively walks a folder, using Django's File Storage.
-
-    :param base: <str> The base folder
-    :param storage: <Storage>
-    :param error_handler: <callable>
-    :yields: A tuple of basedir, subfolders, files
-
-    Adapted from https://gist.github.com/dvf/c103e697dab77c304d39d60cf279c500
-    """
-    if storage is None:
-        storage = default_storage
-
-    try:
-        folders, files = storage.listdir(str(base))
-    except OSError as e:
-        logging.exception("An error occurred while walking directory %s", base)
-        if error_handler:
-            error_handler(e)
-        return
-
-    for subfolder in folders:
-        # On S3, we don't have subfolders, so exclude "."
-        if subfolder == ".":
-            continue
-
-        new_base = Path(base, subfolder)
-        for f in storage_walk(
-            base_path=new_base, storage=storage, error_handler=error_handler
-        ):
-            yield f
-
-    yield str(base), folders, files
-
-
 class StorageDirectory(NodeMixin):
     def __init__(
         self, *args, base_path: str, storage=None, parent=None, children=None, **kwargs
@@ -104,7 +68,7 @@ class StorageDirectory(NodeMixin):
             self.children = children
 
     def __str__(self):
-        return self.base_path
+        return str(self.base_path)
 
     def __repr__(self):
         return str(self)
@@ -174,7 +138,7 @@ class StorageFile(NodeMixin):
         return self.filename
 
     def short_str(self):
-        return self.filename
+        return str(self)
 
     def __repr__(self):
         return str(self)
@@ -227,7 +191,7 @@ def storage_walk(
     return directory
 
 
-def dataset_path(project_slug, dataset_slug):
+def default_dataset_path(project_slug, dataset_slug):
     return Path("crunch", project_slug, dataset_slug)
 
 

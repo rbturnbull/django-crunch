@@ -208,7 +208,7 @@ class Dataset(Item):
         assert isinstance(self.parent, Project)
 
         if not self.base_file_path:
-            self.base_file_path = storages.dataset_path(self.parent.slug, self.slug)
+            self.base_file_path = storages.default_dataset_path(self.parent.slug, self.slug)
         return super().save(*args, **kwargs)
 
     def get_absolute_url(self) -> str:
