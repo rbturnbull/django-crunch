@@ -68,10 +68,11 @@ def test_storage_walk():
         files = list(root_dir.file_descendents())
         assert sorted([x.short_str() for x in files]) == sorted(['dummy-file1.txt', 'dummy-file2.txt', 'dummy-file3.txt', 'settings.json', 'settings.toml'])
 
-        file = files[0]
-        assert file.path() == TEST_DIR.absolute()/"dummy-files/dummy-file1.txt"
-        assert file.__repr__() == "dummy-file1.txt"
-        assert file.url() == f"http://www.example.com{file.path()}"
+        for file in files:
+            if "dummy-file1.txt" == file.name:
+                assert file.path() == TEST_DIR.absolute()/"dummy-files/dummy-file1.txt"
+                assert file.__repr__() == "dummy-file1.txt"
+                assert file.url() == f"http://www.example.com{file.path()}"
 
         immediate_files = root_dir.files()
         assert sorted([x.short_str() for x in immediate_files]) == sorted(['settings.json', 'settings.toml'])
