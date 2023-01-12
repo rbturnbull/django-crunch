@@ -182,8 +182,6 @@ class DatasetTests(CrunchTestCase):
             assert [x.short_str() for x in files] == ['dummy-file1.txt', 'dummy-file2.txt', 'dummy-file3.txt', 'settings.json', 'settings.toml']
 
 
-
-
 class StatusTests(CrunchTestCase):
     def setUp(self):
         super().setUp()
