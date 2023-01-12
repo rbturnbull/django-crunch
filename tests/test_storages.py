@@ -69,7 +69,7 @@ def test_storage_walk():
         assert sorted([x.short_str() for x in files]) == sorted(['dummy-file1.txt', 'dummy-file2.txt', 'dummy-file3.txt', 'settings.json', 'settings.toml'])
 
         for file in files:
-            if "dummy-file1.txt" == file.name:
+            if "dummy-file1.txt" == file.short_str():
                 assert file.path() == TEST_DIR.absolute()/"dummy-files/dummy-file1.txt"
                 assert file.__repr__() == "dummy-file1.txt"
                 assert file.url() == f"http://www.example.com{file.path()}"
