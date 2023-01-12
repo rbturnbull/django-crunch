@@ -131,7 +131,6 @@ class ViewsTests(CrunchTestCase, APITestCase):
             "base_file_path":"crunch/test-project-1"
             }
         
-        
     def test_project_detail_view(self):
         url = reverse('crunch:project-detail', kwargs={'slug': self.project1.slug})
         latitude = 50

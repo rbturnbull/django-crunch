@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Dict, Union
 import toml
 import json
 from operator import mod
@@ -7,7 +7,7 @@ from pathlib import Path
 from django.core.files import File
 from django.conf import settings
 from anytree import NodeMixin, RenderTree, PreOrderIter
-from django.core.files.storage import default_storage
+from django.core.files.storage import default_storage, DefaultStorage
 import os
 import time
 import shutil
@@ -18,19 +18,40 @@ class Directory:
     pass
 
 
-def get_storage_with_settings(settings_kwargs):
-    if isinstance(settings_kwargs, Path):
-        with open(settings_kwargs) as storage_settings_file:
-            suffix = settings_kwargs.suffix.lower()
-            if suffix == ".toml":
-                settings_kwargs = toml.load(storage_settings_file)
-            elif suffix == ".json":
-                settings_kwargs = json.load(storage_settings_file)
-            else:
-                raise IOError(f"Cannot find interpreter for {settings_kwargs}")
+def get_storage_with_settings(storage_settings:Union[Dict,Path]) -> DefaultStorage:
+    """
+    Configures the Django config with settings if it has not been configured yet and then returns the default storage.
 
+    Useful for connecting to a Django storage object outside of a webserver.
+
+    Args:
+        storage_settings (Union[Dict,Path]): The settings with which to configure the Django config if it has not been configured already.
+            Can be a dictionary with settings or can be a path to a toml or json file with the settings.
+
+    Raises:
+        IOError: Raised if passed a Path object which isn't a toml or json file.
+        ValueError: Raised if the settings cannot be interpreted as a dictionary.
+
+    Returns:
+        DefaultStorage: The default storage object used by Django.
+    """
     if not settings.configured:
-        settings.configure(**settings_kwargs)
+        if isinstance(storage_settings, Path):
+            with open(storage_settings) as storage_settings_file:
+                suffix = storage_settings.suffix.lower()
+                if suffix == ".toml":
+                    storage_settings = toml.load(storage_settings_file)
+                elif suffix == ".json":
+                    storage_settings = json.load(storage_settings_file)
+                else:
+                    raise IOError(f"Cannot find interpreter for {storage_settings}")
+
+        if not isinstance(storage_settings, dict):
+            raise ValueError(
+                f"Storage settings of type {type(storage_settings)} unable to be read. " +
+                "Please pass a dictionary or a path to a toml or json file."
+            )
+        settings.configure(**storage_settings)
     return default_storage
 
 
