@@ -1,3 +1,4 @@
+import pytest
 import os
 from pathlib import Path
 import tempfile
@@ -34,6 +35,20 @@ def test_get_storage_with_settings_json():
         storages.get_storage_with_settings(TEST_DIR/"settings.json")
         assert mock_settings.configure_called_count == 1
         assert mock_settings.config == {"file_format":"json"}        
+
+
+def test_get_storage_with_settings_unknown_extension():
+    mock_settings = MockSettings()
+    with patch('crunch.django.app.storages.settings', mock_settings):
+        with pytest.raises(IOError, match=r"Cannot find interpreter for"):
+            storages.get_storage_with_settings(TEST_DIR/"dummy-files/dummy-file1.txt")
+
+
+def test_get_storage_with_settings_unknown_object():
+    mock_settings = MockSettings()
+    with patch('crunch.django.app.storages.settings', mock_settings):
+        with pytest.raises(ValueError, match=r"Please pass a dictionary or a path to a toml or json file"):
+            storages.get_storage_with_settings(1)
 
 
 def test_storage_walk():
@@ -106,3 +121,4 @@ def test_copy_recursive_to_storage():
             os.path.getsize(tmpdir/"dummy-files/dummy-file1.txt") > 0
             os.path.getsize(tmpdir/"dummy-files/dummy-file2.txt") > 0
             os.path.getsize(tmpdir/"dummy-files2/dummy-file3.txt") > 0
+

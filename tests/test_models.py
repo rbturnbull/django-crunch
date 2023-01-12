@@ -1,10 +1,15 @@
 import pytest 
+from unittest.mock import patch
 from django.test import TestCase
 
 from crunch.django.app import models, enums
+from crunch.django.app import storages
+from django.core.files.storage import FileSystemStorage
 
 from django.contrib.contenttypes.models import ContentType
 
+
+from .test_storages import MockSettings, TEST_DIR
 
 class CrunchTestCase(TestCase):
     def setUp(self):
@@ -164,6 +169,20 @@ class DatasetTests(CrunchTestCase):
             '"Test Dataset", "latitude": 50.0, "longitude": 20.0, "url": "/projects/test-project/datasets/test-project:test-dataset"'
             in html
         )    
+
+    def test_dataset_files(self):
+        storage = FileSystemStorage(location=TEST_DIR.absolute(), base_url="http://www.example.com")
+        with patch('crunch.django.app.storages.default_storage', storage):
+            self.dataset.base_file_path = TEST_DIR
+            self.dataset.save()
+
+            root_dir = self.dataset.files()
+            assert isinstance(root_dir, storages.StorageDirectory)
+            files = list(root_dir.file_descendents())
+            assert [x.short_str() for x in files] == ['dummy-file1.txt', 'dummy-file2.txt', 'dummy-file3.txt', 'settings.json', 'settings.toml']
+
+
+
 
 class StatusTests(CrunchTestCase):
     def setUp(self):
