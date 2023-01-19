@@ -155,16 +155,18 @@ def test_add_url_attribute():
 
 @pytest.mark.django_db
 @patch('crunch.client.main.connections.Connection', get_mock_connection )
-def assert_add_lat_long_attribute():
+def test_add_lat_long_attribute():
     cls = models.LatLongAttribute
     key = "key"
 
     project = models.Project.objects.create(name="Test Project")    
 
     result = runner.invoke(app, [
-        "add-lat-long-attribute", project.slug, "key", -20, 40, 
+        "add-lat-long-attribute", project.slug, "key",
         "--url", EXAMPLE_URL, 
-        "--token", "token"
+        "--token", "token",
+        "--",         # needed because of negative number (https://github.com/pallets/click/issues/555)
+        "-20", "40", 
     ])
     assert result.exit_code == 0
     
