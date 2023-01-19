@@ -1,23 +1,35 @@
+from typing import Dict, Union
 import requests
-
+from functools import cached_property
 from pathlib import Path
 import traceback
 import subprocess
 import json
+from django.core.files.storage import DefaultStorage
 
 from crunch.django.app.enums import Stage, State
 from crunch.django.app import storages
-from .main import console
+from rich.console import Console
+
+console = Console()
 
 from . import utils
+from .connections import Connection
 from .enums import WorkflowType, RunResult
-
 
 STAGE_STYLE = "bold red"
 
-
 class Run():
-    def __init__(self, connection, dataset_slug:str, storage_settings, working_directory:Path, workflow_type:WorkflowType, workflow_path:Path=None, cores:str="1"):
+    def __init__(
+        self, 
+        connection:Connection, 
+        dataset_slug:str, 
+        storage_settings:Union[Dict,Path], 
+        working_directory:Path, 
+        workflow_type:WorkflowType, 
+        workflow_path:Path=None, 
+        cores:str="1",
+    ):
         self.connection = connection
         self.dataset_slug = dataset_slug
 
@@ -30,12 +42,12 @@ class Run():
         self.cores = cores
         self.storage_settings = storage_settings
 
+        working_directory = Path(working_directory)
         working_directory.mkdir(exist_ok=True, parents=True)
         self.working_directory = working_directory
         
         # TODO raise exception
         assert self.dataset_data["slug"] == dataset_slug
-        
         self.project = self.dataset_data["parent"]
         self.dataset_id = self.dataset_data["id"]
         self.base_file_path = self.dataset_data["base_file_path"]
@@ -47,6 +59,10 @@ class Run():
             state=state, 
             note=note,
         )
+
+    @cached_property
+    def storage(self) -> DefaultStorage:
+        return storages.get_storage_with_settings(self.storage_settings)
 
     def setup(self) -> RunResult:
         self.current_stage = Stage.SETUP
@@ -65,12 +81,9 @@ class Run():
             with open(self.working_directory / "project.json", "w", encoding="utf-8") as f:
                 json.dump(project_data, f, ensure_ascii=False, indent=4)
 
-            # Setup Storage
-            self.storage = storages.get_storage_with_settings(self.storage_settings)
-
             # Pull data from storage
             storages.copy_recursive_from_storage(
-                self.base_file_path, self.working_directory, storage=self.storage
+                self.base_file_path, self.working_directory, storage=self.storage()
             )
 
             # get snakefile or script
@@ -94,7 +107,7 @@ class Run():
 
         try:
             self.send_status(State.START)
-            if self.workflow == WorkflowType.snakemake:
+            if self.workflow_type == WorkflowType.snakemake:
                 import snakemake
 
                 args = [
@@ -109,7 +122,7 @@ class Run():
                     snakemake.main(args)
                 except SystemExit as result:
                     print(f"result {result}")
-            elif self.workflow == WorkflowType.script:
+            elif self.workflow_type == WorkflowType.script:
                 subprocess.run(f"{self.workflow_path.resolve()}", capture_output=True, check=True, cwd=self.working_directory)
 
             self.send_status(State.SUCCESS)
@@ -130,7 +143,6 @@ class Run():
                 self.base_file_path, 
                 storage=self.storage
             )
-            self.connection.send_status(self.dataset_id, stage=self.current_stage, state=State.SUCCESS)
             self.send_status(State.SUCCESS)
         except Exception as e:
             console.print(f"Upload failed {self.dataset_slug}: {e}", style=STAGE_STYLE)

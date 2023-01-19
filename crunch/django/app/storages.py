@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Union
+from typing import Dict, Union
 import toml
 import json
 from operator import mod
