@@ -6,8 +6,10 @@ from django.test import TestCase
 from crunch.client.main import app
 from unittest.mock import patch
 from crunch.django.app import models
+from django.core.files.storage import FileSystemStorage
 
-from .test_client_connections import MockConnection
+from .test_client_connections import MockConnection, MockResponse
+from .test_storages import TEST_DIR
 
 runner = CliRunner()
 
@@ -171,3 +173,24 @@ def assert_add_lat_long_attribute():
     assert getattr(attribute, "key") == key
     assert getattr(attribute, "latitude") == -20
     assert getattr(attribute, "longitude") == 40
+
+
+@pytest.mark.django_db
+@patch('requests.get', lambda *args, **kwargs: MockResponse(data={"base_file_path": str(TEST_DIR)}))
+def test_files_command():
+    absolute_path = str(TEST_DIR.absolute())
+    storage = FileSystemStorage(location=absolute_path, base_url="http://www.example.com")
+    
+    with patch('crunch.django.app.storages.default_storage', storage):
+        project = models.Project.objects.create(name="Test Project")    
+        dataset = models.Dataset.objects.create(name="Test Dataset", parent=project)    
+        result = runner.invoke(app, [
+            "files", 
+            dataset.slug,
+            str(TEST_DIR/"settings.toml"),
+            "--url", EXAMPLE_URL, 
+            "--token", "token",
+        ])
+        assert result.exit_code == 0
+        assert "── dummy-files" in result.stdout
+        assert "dummy-file2.txt" in result.stdout

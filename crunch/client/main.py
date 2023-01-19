@@ -508,11 +508,10 @@ def files(
     token: str = token_arg,
 ):
     """Displays the files for a dataset."""
-    # get dataset details
     connection = connections.Connection(url, token)
     dataset_data = connection.get_json_response(f"/api/datasets/{dataset}")
     base_file_path = dataset_data.get("base_file_path")
 
     storage = storages.get_storage_with_settings(storage_settings)
     listing = storages.storage_walk(base_file_path, storage=storage)
-    console.print(listing.render_html())
+    console.print(listing.render())
