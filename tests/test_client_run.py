@@ -1,17 +1,20 @@
 from unittest.mock import patch
 from pathlib import Path
 import tempfile
+import unittest
 import pytest
 from crunch.django.app import models
 from crunch.django.app.enums import Stage, State
 
 from django.core.files.storage import FileSystemStorage
 
-from .test_client_connections import MockResponse, MockConnection
-from .test_storages import MockSettings, TEST_DIR
-
 from crunch.client import connections, enums
 from crunch.client.run import Run
+
+from .test_client_connections import MockResponse, MockConnection
+from .test_storages import MockSettings, TEST_DIR, assert_test_data
+from .test_client_utils import raise_called_process_error
+
 
 def request_get(url, **kwargs):
     if url == "http://www.example.com/api/datasets/dataset":
@@ -29,46 +32,140 @@ def request_get(url, **kwargs):
         ))
     raise ValueError(f"url '{url}' cannot be interpreted.")
 
-@pytest.mark.django_db
 @patch('requests.get', request_get)
-def test_run_setup():
-    project = models.Project.objects.create(name="project")    
-    dataset = models.Dataset.objects.create(parent=project, name="dataset")    
-    connection = MockConnection(base_url="http://www.example.com", token="token")
-    absolute_path = str(TEST_DIR.absolute())
-    storage = FileSystemStorage(location=absolute_path, base_url="http://www.example.com")
-    
-    with patch('crunch.django.app.storages.default_storage', storage):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            run = Run(
-                connection=connection, 
-                dataset_slug="dataset", 
-                storage_settings={}, 
-                working_directory=tmpdir, 
-                workflow_type=enums.WorkflowType.script, 
-                workflow_path=None, 
-            )
-            result = run.setup()
+class TestRun(unittest.TestCase):
+    def setUp(self):
+        self.connection = MockConnection(base_url="http://www.example.com", token="token") # ensure first
+        self.project = models.Project.objects.create(name="project")    
+        self.dataset = models.Dataset.objects.create(parent=self.project, name="dataset")    
+        self.absolute_path = str(TEST_DIR.absolute())
+        self.storage = FileSystemStorage(location=self.absolute_path, base_url="http://www.example.com")
 
-            assert result == enums.RunResult.SUCCESS
-            assert models.Status.objects.count() == 2
-            assert dataset.statuses.count() == 2
-            statuses = list(dataset.statuses.all())
+    @pytest.mark.django_db
+    def test_run_setup_script(self):
+        with patch('crunch.django.app.storages.default_storage', self.storage):
+            with tempfile.TemporaryDirectory() as tmpdir:
+                run = Run(
+                    connection=self.connection, 
+                    dataset_slug="dataset", 
+                    storage_settings={}, 
+                    working_directory=tmpdir, 
+                    workflow_type=enums.WorkflowType.script, 
+                    workflow_path=None, 
+                )
+                result = run.setup()
 
-            for status in statuses:
-                assert status.stage == Stage.SETUP
+                assert result == enums.RunResult.SUCCESS
+                assert models.Status.objects.count() == 2
+                assert self.dataset.statuses.count() == 2
+                statuses = list(self.dataset.statuses.all())
 
-            assert statuses[0].state == State.START
-            assert statuses[1].state == State.SUCCESS
+                for status in statuses:
+                    assert status.stage == Stage.SETUP
 
-            tmpdir = Path(tmpdir)
-            dataset_json_text = (tmpdir/".crunch/dataset.json").read_text()
-            assert str(TEST_DIR) in dataset_json_text
+                assert statuses[0].state == State.START
+                assert statuses[1].state == State.SUCCESS
 
-            project_json_text = (tmpdir/".crunch/project.json").read_text()
-            assert "cat dataset.json" in project_json_text
+                tmpdir = Path(tmpdir)
+                dataset_json_text = (tmpdir/".crunch/dataset.json").read_text()
+                assert str(TEST_DIR) in dataset_json_text
 
-            script_text = (tmpdir/".crunch/script.sh").read_text()
-            assert "cat dataset.json" in script_text
+                project_json_text = (tmpdir/".crunch/project.json").read_text()
+                assert "cat dataset.json" in project_json_text
+
+                script_text = (tmpdir/".crunch/script.sh").read_text()
+                assert "cat dataset.json" in script_text
+
+                assert_test_data(tmpdir)
+
+    @pytest.mark.django_db
+    def test_run_setup_snakemake(self):
+        with patch('crunch.django.app.storages.default_storage', self.storage):
+            with tempfile.TemporaryDirectory() as tmpdir:
+                run = Run(
+                    connection=self.connection, 
+                    dataset_slug="dataset", 
+                    storage_settings={}, 
+                    working_directory=tmpdir, 
+                    workflow_type=enums.WorkflowType.snakemake, 
+                    workflow_path=None, 
+                )
+                result = run.setup()
+
+                assert result == enums.RunResult.SUCCESS
+                assert models.Status.objects.count() == 2
+                assert self.dataset.statuses.count() == 2
+                statuses = list(self.dataset.statuses.all())
+
+                for status in statuses:
+                    assert status.stage == Stage.SETUP
+
+                assert statuses[0].state == State.START
+                assert statuses[1].state == State.SUCCESS
+
+                tmpdir = Path(tmpdir)
+                dataset_json_text = (tmpdir/".crunch/dataset.json").read_text()
+                assert str(TEST_DIR) in dataset_json_text
+
+                project_json_text = (tmpdir/".crunch/project.json").read_text()
+                assert "cat dataset.json" in project_json_text
+
+                snakefile_text = (tmpdir/".crunch/Snakefile").read_text()
+                assert "cat dataset.json" in snakefile_text
+
+                assert_test_data(tmpdir)
+
+    @pytest.mark.django_db
+    @patch('subprocess.run', lambda *args, **kwargs: 0 )
+    def test_run_workflow_script(self):
+        with patch('crunch.django.app.storages.default_storage', self.storage):
+            with tempfile.TemporaryDirectory() as tmpdir:
+                run = Run(
+                    connection=self.connection, 
+                    dataset_slug="dataset", 
+                    storage_settings={}, 
+                    working_directory=tmpdir, 
+                    workflow_type=enums.WorkflowType.script, 
+                    workflow_path=None, 
+                )
+                run.workflow_path = Path(tmpdir)/"dummy_workflow"
+                result = run.workflow()
+
+                assert result == enums.RunResult.SUCCESS
+                assert models.Status.objects.count() == 2
+                assert self.dataset.statuses.count() == 2
+                statuses = list(self.dataset.statuses.all())
+
+                for status in statuses:
+                    assert status.stage == Stage.WORKFLOW
+
+                assert statuses[0].state == State.START
+                assert statuses[1].state == State.SUCCESS
 
 
+    @pytest.mark.django_db
+    @patch("subprocess.run", raise_called_process_error )
+    def test_run_workflow_script_fail(self):
+        with patch('crunch.django.app.storages.default_storage', self.storage):
+            with tempfile.TemporaryDirectory() as tmpdir:
+                run = Run(
+                    connection=self.connection, 
+                    dataset_slug="dataset", 
+                    storage_settings={}, 
+                    working_directory=tmpdir, 
+                    workflow_type=enums.WorkflowType.script, 
+                    workflow_path=None, 
+                )
+                run.workflow_path = Path(tmpdir)/"dummy_workflow"
+                result = run.workflow()
+
+                assert result == enums.RunResult.FAIL
+                assert models.Status.objects.count() == 2
+                assert self.dataset.statuses.count() == 2
+                statuses = list(self.dataset.statuses.all())
+
+                for status in statuses:
+                    assert status.stage == Stage.WORKFLOW
+
+                assert statuses[0].state == State.START
+                assert statuses[1].state == State.FAIL

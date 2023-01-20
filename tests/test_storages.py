@@ -92,6 +92,14 @@ def test_storage_walk():
         assert "tests/test-data/settings.toml'>settings.toml</a>" in html
 
 
+def assert_test_data(directory:Path):
+    os.path.getsize(directory/"settings.toml") > 0
+    os.path.getsize(directory/"settings.json") > 0
+    os.path.getsize(directory/"dummy-files/dummy-file1.txt") > 0
+    os.path.getsize(directory/"dummy-files/dummy-file2.txt") > 0
+    os.path.getsize(directory/"dummy-files2/dummy-file3.txt") > 0
+
+
 def test_copy_recursive_from_storage():
     absolute_path = str(TEST_DIR.absolute())
     storage = FileSystemStorage(location=absolute_path, base_url="http://www.example.com")
@@ -101,11 +109,7 @@ def test_copy_recursive_from_storage():
             tmpdir = Path(tmpdir)
             storages.copy_recursive_from_storage(absolute_path, tmpdir)
 
-            os.path.getsize(tmpdir/"settings.toml") > 0
-            os.path.getsize(tmpdir/"settings.json") > 0
-            os.path.getsize(tmpdir/"dummy-files/dummy-file1.txt") > 0
-            os.path.getsize(tmpdir/"dummy-files/dummy-file2.txt") > 0
-            os.path.getsize(tmpdir/"dummy-files2/dummy-file3.txt") > 0
+            assert_test_data(tmpdir)
 
 
 def test_copy_recursive_to_storage():
@@ -116,9 +120,5 @@ def test_copy_recursive_to_storage():
         with patch('crunch.django.app.storages.default_storage', storage):
             storages.copy_recursive_to_storage(TEST_DIR, "./")
 
-            os.path.getsize(tmpdir/"settings.toml") > 0
-            os.path.getsize(tmpdir/"settings.json") > 0
-            os.path.getsize(tmpdir/"dummy-files/dummy-file1.txt") > 0
-            os.path.getsize(tmpdir/"dummy-files/dummy-file2.txt") > 0
-            os.path.getsize(tmpdir/"dummy-files2/dummy-file3.txt") > 0
+            assert_test_data(tmpdir)
 
