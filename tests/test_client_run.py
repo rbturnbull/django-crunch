@@ -16,6 +16,15 @@ from .test_storages import MockSettings, TEST_DIR, assert_test_data
 from .test_client_utils import raise_called_process_error
 
 
+def mock_snakemake_main(*args):
+    assert "--use-conda" in args
+    raise SystemExit
+
+
+def raise_system_error(*args, **kwargs):
+    raise SystemError("Mock System Error")
+
+
 def request_get(url, **kwargs):
     if url == "http://www.example.com/api/datasets/dataset":
         return MockResponse(data=dict(
@@ -31,6 +40,19 @@ def request_get(url, **kwargs):
             workflow="cat dataset.json",
         ))
     raise ValueError(f"url '{url}' cannot be interpreted.")
+
+
+def test_run_blank_dataset_slug():
+    with pytest.raises(ValueError, match=r"Please specifiy dataset"):
+        Run(
+            connection=None, 
+            dataset_slug="", 
+            storage_settings={}, 
+            working_directory=None, 
+            workflow_type=enums.WorkflowType.script, 
+            workflow_path=None, 
+        )
+
 
 @patch('requests.get', request_get)
 class TestRun(unittest.TestCase):
@@ -78,6 +100,33 @@ class TestRun(unittest.TestCase):
                 assert "cat dataset.json" in script_text
 
                 assert_test_data(tmpdir)
+
+    @patch('json.dump', raise_system_error)
+    @pytest.mark.django_db
+    def test_run_setup_script_fail(self):
+        with patch('crunch.django.app.storages.default_storage', self.storage):
+            with tempfile.TemporaryDirectory() as tmpdir:
+                run = Run(
+                    connection=self.connection, 
+                    dataset_slug="dataset", 
+                    storage_settings={}, 
+                    working_directory=tmpdir, 
+                    workflow_type=enums.WorkflowType.script, 
+                    workflow_path=None, 
+                )
+                result = run.setup()
+
+                assert result == enums.RunResult.FAIL
+                assert models.Status.objects.count() == 2
+                assert self.dataset.statuses.count() == 2
+                statuses = list(self.dataset.statuses.all())
+
+                for status in statuses:
+                    assert status.stage == Stage.SETUP
+
+                assert statuses[0].state == State.START
+                assert statuses[1].state == State.FAIL
+                assert statuses[1].note == "Mock System Error"
 
     @pytest.mark.django_db
     def test_run_setup_snakemake(self):
@@ -132,6 +181,36 @@ class TestRun(unittest.TestCase):
                 run.workflow_path = Path(tmpdir)/"dummy_workflow"
                 result = run.workflow()
 
+                assert result == enums.RunResult.SUCCESS
+                assert models.Status.objects.count() == 2
+                assert self.dataset.statuses.count() == 2
+                statuses = list(self.dataset.statuses.all())
+
+                for status in statuses:
+                    assert status.stage == Stage.WORKFLOW
+
+                assert statuses[0].state == State.START
+                assert statuses[1].state == State.SUCCESS
+
+
+    @pytest.mark.django_db
+    @patch('subprocess.run', lambda *args, **kwargs: 0 )
+    @patch('snakemake.main', return_value=mock_snakemake_main )
+    def test_run_workflow_snakemake(self, mock_snakemake):
+        with patch('crunch.django.app.storages.default_storage', self.storage):
+            with tempfile.TemporaryDirectory() as tmpdir:
+                run = Run(
+                    connection=self.connection, 
+                    dataset_slug="dataset", 
+                    storage_settings={}, 
+                    working_directory=tmpdir, 
+                    workflow_type=enums.WorkflowType.snakemake, 
+                    workflow_path=None, 
+                )
+                run.workflow_path = Path(tmpdir)/"dummy_workflow"
+                result = run.workflow()
+
+                mock_snakemake.assert_called_once()
                 assert result == enums.RunResult.SUCCESS
                 assert models.Status.objects.count() == 2
                 assert self.dataset.statuses.count() == 2
