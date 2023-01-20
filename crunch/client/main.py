@@ -122,6 +122,10 @@ def loop(
     cores: str = cores_arg,
     url: str = url_arg,
     token: str = token_arg,
+    project: str = typer.Option(
+        "",
+        help="The slug for a project the dataset is in. If not given, then it chooses any project.",
+    ),
     workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
 ):
@@ -141,6 +145,7 @@ def loop(
                 cores=cores,
                 workflow=workflow,
                 path=path,
+                project=project,
             )
         except NoDatasets:
             console.print("Loop concluded.")

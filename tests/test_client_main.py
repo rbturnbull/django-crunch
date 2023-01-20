@@ -244,3 +244,27 @@ def test_next_command():
     assert dataset1.locked
     assert not dataset2.locked    
     assert result.exit_code == 0
+
+
+@pytest.mark.django_db
+@patch('crunch.client.main.connections.Connection', get_mock_connection )
+@patch.object(Run, '__call__', mock_call_run)
+def test_loop_command():
+    ContentType.objects.clear_cache()
+    project = models.Project.objects.create(name="Test Project")    
+    dataset1 = models.Dataset.objects.create(name="Test Dataset 1", parent=project)    
+    dataset2 = models.Dataset.objects.create(name="Test Dataset 2", parent=project)    
+
+    result = runner.invoke(app, [
+        "loop", 
+        str(TEST_DIR/"settings.toml"),
+        "--directory", str(TEST_DIR),
+        "--url", EXAMPLE_URL, 
+        "--token", "token",
+    ])
+
+    dataset1.refresh_from_db()
+    dataset2.refresh_from_db()
+    assert dataset1.locked
+    assert dataset2.locked    
+    assert result.exit_code == 0
