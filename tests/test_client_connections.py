@@ -22,6 +22,23 @@ class MockResponse():
         return self.data
 
 
+class MockConnection(connections.Connection):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        ContentType.objects.clear_cache()
+        self.client = APIClient()
+        User = get_user_model()
+        self.username = "username"
+        self.password = "password-for-unit-testing"
+        self.user = User.objects.create_superuser(username=self.username, password=self.password)
+        self.client.login(username=self.username, password=self.password)
+
+    def post(self, relative_url, **kwargs):
+        if not relative_url.startswith("/"):
+            relative_url = f"/{relative_url}"
+        return self.client.post(relative_url, kwargs)        
+
+
 @patch('requests.get', lambda *args, **kwargs: MockResponse(data={"detail": "Not found"}))
 def test_get_json_response_error():
     connection = connections.Connection(base_url="http://www.example.com", token="token")
@@ -83,23 +100,6 @@ def test_connection_absolute_url():
     assert connections.Connection(base_url="http://www.example.com").absolute_url("data") == "http://www.example.com/data"
     assert connections.Connection(base_url="http://www.example.com/").absolute_url("data") == "http://www.example.com/data"
     assert connections.Connection(base_url="http://www.example.com/").absolute_url("/data") == "http://www.example.com/data"
-
-
-class MockConnection(connections.Connection):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        ContentType.objects.clear_cache()
-        self.client = APIClient()
-        User = get_user_model()
-        self.username = "username"
-        self.password = "password-for-unit-testing"
-        self.user = User.objects.create_superuser(username=self.username, password=self.password)
-        self.client.login(username=self.username, password=self.password)
-
-    def post(self, relative_url, **kwargs):
-        if not relative_url.startswith("/"):
-            relative_url = f"/{relative_url}"
-        return self.client.post(relative_url, kwargs)        
 
 
 @pytest.mark.django_db

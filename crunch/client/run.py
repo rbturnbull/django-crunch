@@ -61,6 +61,12 @@ class Run():
         )
 
     @cached_property
+    def crunch_subdir(self):
+        crunch_subdir = self.working_directory/".crunch"        
+        crunch_subdir.mkdir(exist_ok=True, parents=True)
+        return crunch_subdir
+
+    @cached_property
     def storage(self) -> DefaultStorage:
         return storages.get_storage_with_settings(self.storage_settings)
 
@@ -69,8 +75,14 @@ class Run():
         console.print(f"Setup stage {self.dataset_slug}", style=STAGE_STYLE)
         try:
             self.send_status(State.START)
+            
+            # Pull data from storage
+            storages.copy_recursive_from_storage(
+                self.base_file_path, self.working_directory, storage=self.storage
+            )
 
-            with open(self.working_directory / "dataset.json", "w", encoding="utf-8") as f:
+            # TODO check to see if dataset.json already exists
+            with open(self.crunch_subdir / "dataset.json", "w", encoding="utf-8") as f:
                 json.dump(self.dataset_data, f, ensure_ascii=False, indent=4)
 
             # get project details
@@ -78,19 +90,15 @@ class Run():
             # TODO raise exception
             assert project_data["slug"] == self.project
 
-            with open(self.working_directory / "project.json", "w", encoding="utf-8") as f:
+            # TODO check to see if project.json already exists
+            with open(self.crunch_subdir / "project.json", "w", encoding="utf-8") as f:
                 json.dump(project_data, f, ensure_ascii=False, indent=4)
-
-            # Pull data from storage
-            storages.copy_recursive_from_storage(
-                self.base_file_path, self.working_directory, storage=self.storage()
-            )
 
             # get snakefile or script
             if not self.workflow_path:
                 self.workflow_path = utils.write_workflow(
                     project_data["workflow"], 
-                    working_directory=self.working_directory,
+                    working_directory=self.crunch_subdir,
                     workflow_type=self.workflow_type,
                 )
 
