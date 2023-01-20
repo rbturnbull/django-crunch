@@ -256,70 +256,85 @@ class TestRunNoStorage(unittest.TestCase):
         super().setUp()
         self.connection = MockConnection(base_url="http://www.example.com", token="token") # ensure first
         self.project = models.Project.objects.create(name="project")    
-        self.dataset = models.Dataset.objects.create(parent=self.project, name="dataset")    
+        self.dataset = models.Dataset.objects.create(parent=self.project, name="dataset")   
 
     @pytest.mark.django_db
     def test_run_upload(self):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            tmpdir = Path(tmpdir)
-            storage = FileSystemStorage(location=tmpdir.absolute(), base_url="http://www.example.com")
-            with patch('crunch.django.app.storages.default_storage', storage):
-                run = Run(
-                    connection=self.connection, 
-                    dataset_slug="dataset", 
-                    storage_settings={}, 
-                    working_directory=TEST_DIR,  
-                    workflow_type=enums.WorkflowType.script, 
-                    workflow_path=None, 
-                )
-                run.base_file_path = "."
-                result = run.upload()
+        with tempfile.TemporaryDirectory() as remote_dir:
+            remote_dir = Path(remote_dir)
+            storage = FileSystemStorage(location=remote_dir.absolute(), base_url="http://www.example.com")
+            
+            # copy files from test data to mock remote store
+            storages.copy_recursive_to_storage(TEST_DIR, "./", storage=storage)
 
-                assert result == enums.RunResult.SUCCESS
-                assert models.Status.objects.count() == 2
-                assert self.dataset.statuses.count() == 2
-                statuses = list(self.dataset.statuses.all())
+            with tempfile.TemporaryDirectory() as local_dir:
+                local_dir = Path(local_dir)
 
-                for status in statuses:
-                    assert status.stage == Stage.UPLOAD
+                with patch('crunch.django.app.storages.default_storage', storage):
+                    run = Run(
+                        connection=self.connection, 
+                        dataset_slug="dataset", 
+                        storage_settings={}, 
+                        working_directory=local_dir,
+                        workflow_type=enums.WorkflowType.script, 
+                        workflow_path=None, 
+                    )
+                    run.base_file_path = "."
+                    result = run.upload()
 
-                assert statuses[0].state == State.START
-                assert statuses[1].state == State.SUCCESS
+                    assert result == enums.RunResult.SUCCESS
+                    assert models.Status.objects.count() == 2
+                    assert self.dataset.statuses.count() == 2
+                    statuses = list(self.dataset.statuses.all())
 
-                assert_test_data(tmpdir)
+                    for status in statuses:
+                        assert status.stage == Stage.UPLOAD
+
+                    assert statuses[0].state == State.START
+                    assert statuses[1].state == State.SUCCESS
+
+                    assert_test_data(remote_dir)
 
     @pytest.mark.django_db
     def test_run_upload_fail(self):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            tmpdir = Path(tmpdir)
-            storage = FileSystemStorage(location=tmpdir.absolute(), base_url="http://www.example.com")
+        with tempfile.TemporaryDirectory() as remote_dir:
+            remote_dir = Path(remote_dir)
+            storage = FileSystemStorage(location=remote_dir.absolute(), base_url="http://www.example.com")
+            
+            # copy files from test data to mock remote store
+            storages.copy_recursive_to_storage(TEST_DIR, "./", storage=storage)
+
             def save_fail(*args, **kwargs):
                 raise FileNotFoundError("This file does not exist.") # force exception
 
             storage._save = save_fail
-            with patch('crunch.django.app.storages.default_storage', storage):
-                run = Run(
-                    connection=self.connection, 
-                    dataset_slug="dataset", 
-                    storage_settings={}, 
-                    working_directory=TEST_DIR,
-                    workflow_type=enums.WorkflowType.script, 
-                    workflow_path=None, 
-                )
-                run.base_file_path = "."
-                result = run.upload()
 
-                assert result == enums.RunResult.FAIL
-                assert models.Status.objects.count() == 2
-                assert self.dataset.statuses.count() == 2
-                statuses = list(self.dataset.statuses.all())
+            with tempfile.TemporaryDirectory() as local_dir:
+                local_dir = Path(local_dir)
 
-                for status in statuses:
-                    assert status.stage == Stage.UPLOAD
+                with patch('crunch.django.app.storages.default_storage', storage):
+                    run = Run(
+                        connection=self.connection, 
+                        dataset_slug="dataset", 
+                        storage_settings={}, 
+                        working_directory=local_dir,
+                        workflow_type=enums.WorkflowType.script, 
+                        workflow_path=None, 
+                    )
+                    run.base_file_path = "."
+                    result = run.upload()
 
-                assert statuses[0].state == State.START
-                assert statuses[1].state == State.FAIL
-                assert statuses[1].note == "This file does not exist."
+                    assert result == enums.RunResult.FAIL
+                    assert models.Status.objects.count() == 2
+                    assert self.dataset.statuses.count() == 2
+                    statuses = list(self.dataset.statuses.all())
+
+                    for status in statuses:
+                        assert status.stage == Stage.UPLOAD
+
+                    assert statuses[0].state == State.START
+                    assert statuses[1].state == State.FAIL
+                    assert statuses[1].note == "This file does not exist."
 
     @pytest.mark.django_db
     @patch('subprocess.run', lambda *args, **kwargs: 0 )
