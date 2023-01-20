@@ -8,6 +8,7 @@ from unittest.mock import patch
 from crunch.django.app import models
 from django.core.files.storage import FileSystemStorage
 
+from crunch.client.run import Run
 from .test_client_connections import MockConnection, MockResponse
 from .test_storages import TEST_DIR
 
@@ -70,7 +71,6 @@ def test_add_dataset_command():
     dataset = models.Dataset.objects.get(name="Dataset")
     assert dataset.description == "description"
     assert dataset.details == "details"
-
 
 
 @pytest.mark.django_db
@@ -196,3 +196,19 @@ def test_files_command():
         assert result.exit_code == 0
         assert "── dummy-files" in result.stdout
         assert "dummy-file2.txt" in result.stdout
+
+
+dataset_mock_response = MockResponse(data={"id": 2, "slug": "dataset", "parent": "project", "base_file_path": str(TEST_DIR)})
+@patch('requests.get', lambda *args, **kwargs: dataset_mock_response)
+@patch.object(Run, '__call__', return_value=None)
+def test_run_command(mock_run):
+    result = runner.invoke(app, [
+        "run", 
+        "dataset",
+        str(TEST_DIR/"settings.toml"),
+        "--directory", str(TEST_DIR),
+        "--url", EXAMPLE_URL, 
+        "--token", "token",
+    ])
+    assert result.exit_code == 0
+    mock_run.assert_called_once()

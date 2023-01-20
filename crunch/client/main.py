@@ -70,7 +70,6 @@ def run(
         storage_settings=storage_settings,
         workflow_path=path, 
         cores=cores,
-        storage=storages.get_storage_with_settings(storage_settings)
     )
 
     run()
