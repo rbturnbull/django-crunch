@@ -35,6 +35,7 @@ def request_get(url, **kwargs):
 @patch('requests.get', request_get)
 class TestRun(unittest.TestCase):
     def setUp(self):
+        super().setUp()
         self.connection = MockConnection(base_url="http://www.example.com", token="token") # ensure first
         self.project = models.Project.objects.create(name="project")    
         self.dataset = models.Dataset.objects.create(parent=self.project, name="dataset")    
@@ -169,3 +170,43 @@ class TestRun(unittest.TestCase):
 
                 assert statuses[0].state == State.START
                 assert statuses[1].state == State.FAIL
+
+
+@patch('requests.get', request_get)
+class TestRunUpload(unittest.TestCase):
+    def setUp(self):
+        super().setUp()
+        self.connection = MockConnection(base_url="http://www.example.com", token="token") # ensure first
+        self.project = models.Project.objects.create(name="project")    
+        self.dataset = models.Dataset.objects.create(parent=self.project, name="dataset")    
+
+    @pytest.mark.django_db
+    @patch("subprocess.run", raise_called_process_error )
+    def test_run_upload(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            storage = FileSystemStorage(location=tmpdir.absolute(), base_url="http://www.example.com")
+            with patch('crunch.django.app.storages.default_storage', storage):
+                run = Run(
+                    connection=self.connection, 
+                    dataset_slug="dataset", 
+                    storage_settings={}, 
+                    working_directory=TEST_DIR,  
+                    workflow_type=enums.WorkflowType.script, 
+                    workflow_path=None, 
+                )
+                run.base_file_path = "."
+                result = run.upload()
+
+                assert result == enums.RunResult.SUCCESS
+                assert models.Status.objects.count() == 2
+                assert self.dataset.statuses.count() == 2
+                statuses = list(self.dataset.statuses.all())
+
+                for status in statuses:
+                    assert status.stage == Stage.UPLOAD
+
+                assert statuses[0].state == State.START
+                assert statuses[1].state == State.SUCCESS
+
+                assert_test_data(tmpdir)
