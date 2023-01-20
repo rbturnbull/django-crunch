@@ -37,7 +37,7 @@ class Run():
         if not self.dataset_slug:
             raise ValueError("Please specifiy dataset.")
 
-        self.dataset_data = connection.get_json_response(f"/api/datasets/{dataset_slug}")
+        self.dataset_data = connection.get_json_response(f"/api/datasets/{dataset_slug}/")
         self.workflow_type = workflow_type
         self.workflow_path = workflow_path
         self.cores = cores
@@ -91,7 +91,7 @@ class Run():
                 json.dump(self.dataset_data, f, ensure_ascii=False, indent=4)
 
             # get project details
-            project_data = self.connection.get_json_response(f"/api/projects/{self.project}")
+            project_data = self.connection.get_json_response(f"/api/projects/{self.project}/")
             # TODO raise exception
             assert project_data["slug"] == self.project
 

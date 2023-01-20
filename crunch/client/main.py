@@ -62,7 +62,7 @@ def run(
     """
     Processes a dataset.
     """
-    run = Run(
+    r = Run(
         connection=connections.Connection(url, token), 
         dataset_slug=dataset, 
         working_directory=Path(directory),
@@ -72,7 +72,7 @@ def run(
         cores=cores,
     )
 
-    run()
+    r()
 
 
 @app.command()
@@ -96,11 +96,8 @@ def next(
 
     connection = connections.Connection(url, token)
 
-    next = (
-        connection.get_json_response(f"api/projects/{project}/next/")
-        if project
-        else connection.get_json_response(f"api/next/")
-    )
+    next_url = f"api/projects/{project}/next/" if project else "api/next/"
+    next = connection.get_json_response(next_url)
 
     if "dataset" in next and "project" in next and next["project"] and next["dataset"]:
         run(
@@ -390,7 +387,7 @@ def files(
 ):
     """Displays the files for a dataset."""
     connection = connections.Connection(url, token)
-    dataset_data = connection.get_json_response(f"/api/datasets/{dataset}")
+    dataset_data = connection.get_json_response(f"/api/datasets/{dataset}/")
     base_file_path = dataset_data.get("base_file_path")
 
     storage = storages.get_storage_with_settings(storage_settings)

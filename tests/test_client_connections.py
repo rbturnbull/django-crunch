@@ -30,13 +30,20 @@ class MockConnection(connections.Connection):
         User = get_user_model()
         self.username = "username"
         self.password = "password-for-unit-testing"
-        self.user = User.objects.create_superuser(username=self.username, password=self.password)
+        self.user = User.objects.filter(username=self.username).first()
+        if not self.user:
+            self.user = User.objects.create_superuser(username=self.username, password=self.password)
         self.client.login(username=self.username, password=self.password)
 
     def post(self, relative_url, **kwargs):
         if not relative_url.startswith("/"):
             relative_url = f"/{relative_url}"
         return self.client.post(relative_url, kwargs)        
+
+    def get_request(self, relative_url):
+        if not relative_url.startswith("/"):
+            relative_url = f"/{relative_url}"
+        return self.client.get(relative_url)        
 
 
 @patch('requests.get', lambda *args, **kwargs: MockResponse(data={"detail": "Not found"}))
