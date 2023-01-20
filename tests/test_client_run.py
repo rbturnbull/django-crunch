@@ -181,7 +181,6 @@ class TestRunUpload(unittest.TestCase):
         self.dataset = models.Dataset.objects.create(parent=self.project, name="dataset")    
 
     @pytest.mark.django_db
-    @patch("subprocess.run", raise_called_process_error )
     def test_run_upload(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
@@ -210,3 +209,39 @@ class TestRunUpload(unittest.TestCase):
                 assert statuses[1].state == State.SUCCESS
 
                 assert_test_data(tmpdir)
+
+    @pytest.mark.django_db
+    def test_run_upload_fail(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            storage = FileSystemStorage(location=tmpdir.absolute(), base_url="http://www.example.com")
+            def save_fail(*args, **kwargs):
+                raise FileNotFoundError("This file does not exist.") # force exception
+
+            storage._save = save_fail
+            with patch('crunch.django.app.storages.default_storage', storage):
+                run = Run(
+                    connection=self.connection, 
+                    dataset_slug="dataset", 
+                    storage_settings={}, 
+                    working_directory=TEST_DIR,
+                    workflow_type=enums.WorkflowType.script, 
+                    workflow_path=None, 
+                )
+                run.base_file_path = "."
+                result = run.upload()
+
+                assert result == enums.RunResult.FAIL
+                assert models.Status.objects.count() == 2
+                assert self.dataset.statuses.count() == 2
+                statuses = list(self.dataset.statuses.all())
+
+                for status in statuses:
+                    assert status.stage == Stage.UPLOAD
+
+                assert statuses[0].state == State.START
+                assert statuses[1].state == State.FAIL
+                assert statuses[1].note == "This file does not exist."
+
+
+    
