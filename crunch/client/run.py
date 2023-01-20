@@ -1,4 +1,5 @@
 from typing import Dict, Union
+from datetime import datetime
 import requests
 from functools import cached_property
 from pathlib import Path
@@ -41,6 +42,7 @@ class Run():
         self.workflow_path = workflow_path
         self.cores = cores
         self.storage_settings = storage_settings
+        self.setup_md5_checksums = dict()
 
         working_directory = Path(working_directory)
         working_directory.mkdir(exist_ok=True, parents=True)
@@ -80,6 +82,9 @@ class Run():
             storages.copy_recursive_from_storage(
                 self.base_file_path, self.working_directory, storage=self.storage
             )
+            self.setup_md5_checksums = utils.md5_checksums(self.working_directory)
+            with open(self.crunch_subdir / "setup_md5_checksums.json", "w", encoding="utf-8") as f:
+                json.dump(self.setup_md5_checksums, f, ensure_ascii=False, indent=4)
 
             # TODO check to see if dataset.json already exists
             with open(self.crunch_subdir / "dataset.json", "w", encoding="utf-8") as f:
@@ -146,11 +151,37 @@ class Run():
         console.print(f"Upload stage {self.dataset_slug}", style=STAGE_STYLE)
         try:
             self.send_status(State.START)
-            storages.copy_recursive_to_storage(
-                self.working_directory, 
-                self.base_file_path, 
-                storage=self.storage
+
+            # calculate checksums
+            self.upload_md5_checksums = utils.md5_checksums(self.working_directory)
+            upload_md5_checksums_path = self.crunch_subdir / "upload_md5_checksums.json"
+            with open(upload_md5_checksums_path, "w", encoding="utf-8") as f:
+                json.dump(self.upload_md5_checksums, f, ensure_ascii=False, indent=4)
+
+            setup_files = set(self.setup_md5_checksums.keys())
+            upload_files = set(self.upload_md5_checksums.keys())
+            new_files = upload_files - setup_files
+            deleted_files = setup_files - upload_files
+            remaining_files = setup_files.intersection(upload_files)
+            modified_files = set(
+                file for file in remaining_files 
+                if self.upload_md5_checksums[file] != self.setup_md5_checksums[file]
             )
+            deleted_log_path = self.crunch_subdir / "deleted.txt"
+            deleted_log_path.write_text("\n".join(deleted_files))
+
+            files_to_upload = modified_files | new_files | set([upload_md5_checksums_path, deleted_log_path])
+            paths_to_upload = [self.working_directory/file for file in files_to_upload]
+
+            storages.copy_to_storage(
+                paths_to_upload, 
+                local_dir=self.working_directory,
+                base=self.base_file_path, 
+                storage=self.storage,
+            )
+
+            # TODO Option to delete on remote storage?
+
             self.send_status(State.SUCCESS)
         except Exception as e:
             console.print(f"Upload failed {self.dataset_slug}: {e}", style=STAGE_STYLE)
@@ -170,6 +201,6 @@ class Run():
         if self.workflow_result:
             return self.workflow_result
 
-        self.upload_result = self.workflow()
+        self.upload_result = self.upload()
         return self.upload_result
 

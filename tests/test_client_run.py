@@ -8,15 +8,16 @@ from crunch.django.app.enums import Stage, State
 
 from django.core.files.storage import FileSystemStorage
 
-from crunch.client import connections, enums
+from crunch.client import enums
 from crunch.client.run import Run
+from crunch.django.app import storages
 
 from .test_client_connections import MockResponse, MockConnection
 from .test_storages import MockSettings, TEST_DIR, assert_test_data
 from .test_client_utils import raise_called_process_error
 
 
-def mock_snakemake_main(*args):
+def mock_snakemake_main(args):
     assert "--use-conda" in args
     raise SystemExit
 
@@ -195,8 +196,8 @@ class TestRun(unittest.TestCase):
 
     @pytest.mark.django_db
     @patch('subprocess.run', lambda *args, **kwargs: 0 )
-    @patch('snakemake.main', return_value=mock_snakemake_main )
-    def test_run_workflow_snakemake(self, mock_snakemake):
+    @patch('snakemake.main', mock_snakemake_main )
+    def test_run_workflow_snakemake(self):
         with patch('crunch.django.app.storages.default_storage', self.storage):
             with tempfile.TemporaryDirectory() as tmpdir:
                 run = Run(
@@ -210,7 +211,6 @@ class TestRun(unittest.TestCase):
                 run.workflow_path = Path(tmpdir)/"dummy_workflow"
                 result = run.workflow()
 
-                mock_snakemake.assert_called_once()
                 assert result == enums.RunResult.SUCCESS
                 assert models.Status.objects.count() == 2
                 assert self.dataset.statuses.count() == 2
@@ -221,7 +221,6 @@ class TestRun(unittest.TestCase):
 
                 assert statuses[0].state == State.START
                 assert statuses[1].state == State.SUCCESS
-
 
     @pytest.mark.django_db
     @patch("subprocess.run", raise_called_process_error )
@@ -252,7 +251,7 @@ class TestRun(unittest.TestCase):
 
 
 @patch('requests.get', request_get)
-class TestRunUpload(unittest.TestCase):
+class TestRunNoStorage(unittest.TestCase):
     def setUp(self):
         super().setUp()
         self.connection = MockConnection(base_url="http://www.example.com", token="token") # ensure first
@@ -322,5 +321,58 @@ class TestRunUpload(unittest.TestCase):
                 assert statuses[1].state == State.FAIL
                 assert statuses[1].note == "This file does not exist."
 
+    @pytest.mark.django_db
+    @patch('subprocess.run', lambda *args, **kwargs: 0 )
+    def test_run_all(self):
+        with tempfile.TemporaryDirectory() as remote_dir:
+            remote_dir = Path(remote_dir)
+            storage = FileSystemStorage(location=remote_dir.absolute(), base_url="http://www.example.com")
+            
+            # copy files from test data to mock remote store
+            storages.copy_recursive_to_storage(TEST_DIR, "./", storage=storage)
 
-    
+            with tempfile.TemporaryDirectory() as local_dir:
+                local_dir = Path(local_dir)
+
+                with patch('crunch.django.app.storages.default_storage', storage):
+                    run = Run(
+                        connection=self.connection, 
+                        dataset_slug="dataset", 
+                        storage_settings={}, 
+                        working_directory=local_dir,
+                        workflow_type=enums.WorkflowType.script, 
+                        workflow_path=None, 
+                    )
+                    run.base_file_path = remote_dir
+                    result = run()
+
+                    statuses = list(self.dataset.statuses.all())
+
+                    assert result == enums.RunResult.SUCCESS
+                    assert models.Status.objects.count() == 6
+                    assert self.dataset.statuses.count() == 6
+
+                    assert statuses[0].state == State.START
+                    assert statuses[1].state == State.SUCCESS
+                    assert statuses[2].state == State.START
+                    assert statuses[3].state == State.SUCCESS
+                    assert statuses[4].state == State.START
+                    assert statuses[5].state == State.SUCCESS
+
+                    assert statuses[0].stage == Stage.SETUP
+                    assert statuses[1].stage == Stage.SETUP
+                    assert statuses[2].stage == Stage.WORKFLOW
+                    assert statuses[3].stage == Stage.WORKFLOW
+                    assert statuses[4].stage == Stage.UPLOAD
+                    assert statuses[5].stage == Stage.UPLOAD
+
+                    dataset_json_text = (remote_dir/".crunch/dataset.json").read_text()
+                    assert str(TEST_DIR) in dataset_json_text
+
+                    project_json_text = (remote_dir/".crunch/project.json").read_text()
+                    assert "cat dataset.json" in project_json_text
+
+                    script_text = (remote_dir/".crunch/script.sh").read_text()
+                    assert "cat dataset.json" in script_text
+
+                    assert_test_data(remote_dir)

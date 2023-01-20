@@ -195,13 +195,16 @@ def default_dataset_path(project_slug, dataset_slug):
     return Path("crunch", project_slug, dataset_slug)
 
 
-def copy_recursive_to_storage(local_dir=".", base="/", storage=None):
+def copy_recursive_to_storage(local_dir=".", base="/", storage=None):    
+    copy_to_storage(local_dir.rglob("*"), local_dir=local_dir, base=base, storage=storage)
+
+
+def copy_to_storage(paths, local_dir, base="/", storage=None):
     base = Path(base)
-    local_dir = Path(local_dir)
     if storage is None:
         storage = default_storage
 
-    for local_path in local_dir.rglob("*"):
+    for local_path in paths:
         if local_path.is_dir():
             continue
 
@@ -211,20 +214,11 @@ def copy_recursive_to_storage(local_dir=".", base="/", storage=None):
         if str(local_relative_path).startswith(".snakemake/"):
             continue
 
-        if storage.exists(remote_path):
-            remote_mod_time = storage.get_modified_time(remote_path)
-            local_mod_time = datetime.datetime.fromtimestamp(
-                local_path.lstat().st_mtime
-            )
-
-            if remote_mod_time >= local_mod_time:
-                continue
-
         print(
             f"Copying '{local_path}' from local directory '{local_dir}' to storage at '{remote_path}'"
         )
         with local_path.open(mode="rb") as f:
-            storage._save(remote_path, File(f, name=str(local_path)))
+            storage._save(remote_path, File(f, name=str(local_path)))  
 
 
 def copy_recursive_from_storage(base="/", local_dir=".", storage=None):
@@ -250,8 +244,3 @@ def copy_recursive_from_storage(base="/", local_dir=".", storage=None):
             with storage.open(str(listing_path / filename), "rb") as source:
                 with open(local_path / filename, "wb") as target:
                     shutil.copyfileobj(source, target, length=1024)
-
-            # Set the modification time so it is the same as on the storage
-            mod_time = storage.get_modified_time(str(listing_path / filename))
-            utime = time.mktime(mod_time.timetuple())
-            os.utime(str(local_path / filename), (utime, utime))

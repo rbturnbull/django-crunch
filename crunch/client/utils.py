@@ -1,6 +1,7 @@
 import stat
 import subprocess
 from pathlib import Path
+import hashlib
 
 from .enums import WorkflowType
 
@@ -41,3 +42,17 @@ def write_workflow(data:str, working_directory:Path, workflow_type:WorkflowType)
         workflow_path.chmod(workflow_path.stat().st_mode | stat.S_IEXEC)
 
     return workflow_path
+
+
+def md5_checksums(directory):
+    directory = Path(directory)
+    result = dict()
+    for path in directory.rglob("*"):
+        if path.is_dir():
+            continue
+        
+        relative_path = path.relative_to(directory)
+        md5 = hashlib.md5(path.read_bytes()).hexdigest()
+        result[str(relative_path)] = md5
+
+    return result
