@@ -259,8 +259,8 @@ class TestRunNoStorage(unittest.TestCase):
     def setUp(self):
         super().setUp()
         self.connection = MockConnection(base_url="http://www.example.com", token="token") # ensure first
-        self.project = models.Project.objects.create(name="project")    
-        self.dataset = models.Dataset.objects.create(parent=self.project, name="dataset")   
+        self.project = models.Project.objects.create(name="project", workflow="cat .crunch/dataset.json")    
+        self.dataset = models.Dataset.objects.create(parent=self.project, name="dataset", base_file_path=str(TEST_DIR))    
 
     @pytest.mark.django_db
     def test_run_upload(self):
