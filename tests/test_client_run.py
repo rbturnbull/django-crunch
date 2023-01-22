@@ -31,18 +31,18 @@ def raise_system_error(*args, **kwargs):
 
 
 def request_get(url, **kwargs):
-    if url == "http://www.example.com/api/datasets/dataset":
+    if url == "http://www.example.com/api/datasets/dataset/":
         return MockResponse(data=dict(
             slug="dataset",
             parent="project",
             id=2,
             base_file_path=str(TEST_DIR),
         ))
-    elif url == "http://www.example.com/api/projects/project":
+    elif url == "http://www.example.com/api/projects/project/":
         return MockResponse(data=dict(
             slug="project",
             parent="project",
-            workflow="cat dataset.json",
+            workflow="cat .crunch/dataset.json",
         ))
     raise ValueError(f"url '{url}' cannot be interpreted.")
 
@@ -59,13 +59,13 @@ def test_run_blank_dataset_slug():
         )
 
 
-@patch('requests.get', request_get)
+# @patch('requests.get', request_get)
 class TestRun(unittest.TestCase):
     def setUp(self):
         super().setUp()
         self.connection = MockConnection(base_url="http://www.example.com", token="token") # ensure first
-        self.project = models.Project.objects.create(name="project")    
-        self.dataset = models.Dataset.objects.create(parent=self.project, name="dataset")    
+        self.project = models.Project.objects.create(name="project", workflow="cat .crunch/dataset.json")    
+        self.dataset = models.Dataset.objects.create(parent=self.project, name="dataset", base_file_path=str(TEST_DIR))    
         self.absolute_path = str(TEST_DIR.absolute())
         self.storage = FileSystemStorage(location=self.absolute_path, base_url="http://www.example.com")
 
@@ -75,7 +75,7 @@ class TestRun(unittest.TestCase):
             with tempfile.TemporaryDirectory() as tmpdir:
                 run = Run(
                     connection=self.connection, 
-                    dataset_slug="dataset", 
+                    dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
                     workflow_type=enums.WorkflowType.script, 
@@ -99,10 +99,10 @@ class TestRun(unittest.TestCase):
                 assert str(TEST_DIR) in dataset_json_text
 
                 project_json_text = (tmpdir/".crunch/project.json").read_text()
-                assert "cat dataset.json" in project_json_text
+                assert "cat .crunch/dataset.json" in project_json_text
 
                 script_text = (tmpdir/".crunch/script.sh").read_text()
-                assert "cat dataset.json" in script_text
+                assert "cat .crunch/dataset.json" in script_text
 
                 assert_test_data(tmpdir)
 
@@ -113,7 +113,7 @@ class TestRun(unittest.TestCase):
             with tempfile.TemporaryDirectory() as tmpdir:
                 run = Run(
                     connection=self.connection, 
-                    dataset_slug="dataset", 
+                    dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
                     workflow_type=enums.WorkflowType.script, 
@@ -139,7 +139,7 @@ class TestRun(unittest.TestCase):
             with tempfile.TemporaryDirectory() as tmpdir:
                 run = Run(
                     connection=self.connection, 
-                    dataset_slug="dataset", 
+                    dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
                     workflow_type=enums.WorkflowType.snakemake, 
@@ -163,10 +163,10 @@ class TestRun(unittest.TestCase):
                 assert str(TEST_DIR) in dataset_json_text
 
                 project_json_text = (tmpdir/".crunch/project.json").read_text()
-                assert "cat dataset.json" in project_json_text
+                assert "cat .crunch/dataset.json" in project_json_text
 
                 snakefile_text = (tmpdir/".crunch/Snakefile").read_text()
-                assert "cat dataset.json" in snakefile_text
+                assert "cat .crunch/dataset.json" in snakefile_text
 
                 assert_test_data(tmpdir)
 
@@ -177,7 +177,7 @@ class TestRun(unittest.TestCase):
             with tempfile.TemporaryDirectory() as tmpdir:
                 run = Run(
                     connection=self.connection, 
-                    dataset_slug="dataset", 
+                    dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
                     workflow_type=enums.WorkflowType.script, 
@@ -206,7 +206,7 @@ class TestRun(unittest.TestCase):
             with tempfile.TemporaryDirectory() as tmpdir:
                 run = Run(
                     connection=self.connection, 
-                    dataset_slug="dataset", 
+                    dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
                     workflow_type=enums.WorkflowType.snakemake, 
@@ -233,7 +233,7 @@ class TestRun(unittest.TestCase):
             with tempfile.TemporaryDirectory() as tmpdir:
                 run = Run(
                     connection=self.connection, 
-                    dataset_slug="dataset", 
+                    dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
                     workflow_type=enums.WorkflowType.script, 
@@ -277,7 +277,7 @@ class TestRunNoStorage(unittest.TestCase):
                 with patch('crunch.django.app.storages.default_storage', storage):
                     run = Run(
                         connection=self.connection, 
-                        dataset_slug="dataset", 
+                        dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
                         workflow_type=enums.WorkflowType.script, 
@@ -316,7 +316,7 @@ class TestRunNoStorage(unittest.TestCase):
                 with patch('crunch.django.app.storages.default_storage', storage):
                     run = Run(
                         connection=self.connection, 
-                        dataset_slug="dataset", 
+                        dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
                         workflow_type=enums.WorkflowType.script, 
@@ -353,7 +353,7 @@ class TestRunNoStorage(unittest.TestCase):
                 with patch('crunch.django.app.storages.default_storage', storage):
                     run = Run(
                         connection=self.connection, 
-                        dataset_slug="dataset", 
+                        dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
                         workflow_type=enums.WorkflowType.script, 
@@ -386,10 +386,10 @@ class TestRunNoStorage(unittest.TestCase):
                     assert str(TEST_DIR) in dataset_json_text
 
                     project_json_text = (remote_dir/".crunch/project.json").read_text()
-                    assert "cat dataset.json" in project_json_text
+                    assert "cat .crunch/dataset.json" in project_json_text
 
                     script_text = (remote_dir/".crunch/script.sh").read_text()
-                    assert "cat dataset.json" in script_text
+                    assert "cat .crunch/dataset.json" in script_text
 
                     assert_test_data(remote_dir)
 
@@ -410,7 +410,7 @@ class TestRunNoStorage(unittest.TestCase):
                 with patch('crunch.django.app.storages.default_storage', storage):
                     run = Run(
                         connection=self.connection, 
-                        dataset_slug="dataset", 
+                        dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
                         workflow_type=enums.WorkflowType.script, 
@@ -448,7 +448,7 @@ class TestRunNoStorage(unittest.TestCase):
                 with patch('crunch.django.app.storages.default_storage', storage):
                     run = Run(
                         connection=self.connection, 
-                        dataset_slug="dataset", 
+                        dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
                         workflow_type=enums.WorkflowType.script, 
@@ -490,7 +490,7 @@ class TestRunNoStorage(unittest.TestCase):
                 with patch('crunch.django.app.storages.default_storage', storage):
                     run = Run(
                         connection=self.connection, 
-                        dataset_slug="dataset", 
+                        dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
                         workflow_type=enums.WorkflowType.script, 

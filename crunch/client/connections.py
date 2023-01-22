@@ -457,12 +457,11 @@ class Connection():
             Dict: The JSON data from the API encoded as a dictionary.
         """
         response = self.get_request(relative_url)
-
         json_response = response.json()
         
         if len(json_response.keys()) == 1 and "detail" in json_response:
             raise CrunchAPIException(
-                f"Error getting JSON response from URL '{url}':\n" +
+                f"Error getting JSON response from URL '{self.absolute_url(relative_url)}':\n" +
                 f"{json_response['detail']}"
             )
 
