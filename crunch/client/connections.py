@@ -439,6 +439,10 @@ class Connection():
 
         return result
 
+    def get_request(self, relative_url:str):
+        url = self.absolute_url(relative_url)
+        return requests.get(url, headers=self.get_headers())
+        
     def get_json_response( self, relative_url:str ) -> Dict:
         """
         Requests JSON data from the API of a crunch hosted site and returns it as a dictionary.
@@ -452,14 +456,12 @@ class Connection():
         Returns:
             Dict: The JSON data from the API encoded as a dictionary.
         """
-        url = self.absolute_url(relative_url)
-        response = requests.get(url, headers=self.get_headers())
-
+        response = self.get_request(relative_url)
         json_response = response.json()
         
         if len(json_response.keys()) == 1 and "detail" in json_response:
             raise CrunchAPIException(
-                f"Error getting JSON response from URL '{url}':\n" +
+                f"Error getting JSON response from URL '{self.absolute_url(relative_url)}':\n" +
                 f"{json_response['detail']}"
             )
 

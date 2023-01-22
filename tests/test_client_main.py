@@ -6,8 +6,13 @@ from django.test import TestCase
 from crunch.client.main import app
 from unittest.mock import patch
 from crunch.django.app import models
+from django.contrib.contenttypes.models import ContentType
 
-from .test_client_connections import MockConnection
+from django.core.files.storage import FileSystemStorage
+
+from crunch.client.run import Run
+from .test_client_connections import MockConnection, MockResponse
+from .test_storages import TEST_DIR
 
 runner = CliRunner()
 
@@ -68,7 +73,6 @@ def test_add_dataset_command():
     dataset = models.Dataset.objects.get(name="Dataset")
     assert dataset.description == "description"
     assert dataset.details == "details"
-
 
 
 @pytest.mark.django_db
@@ -153,16 +157,18 @@ def test_add_url_attribute():
 
 @pytest.mark.django_db
 @patch('crunch.client.main.connections.Connection', get_mock_connection )
-def assert_add_lat_long_attribute():
+def test_add_lat_long_attribute():
     cls = models.LatLongAttribute
     key = "key"
 
     project = models.Project.objects.create(name="Test Project")    
 
     result = runner.invoke(app, [
-        "add-lat-long-attribute", project.slug, "key", -20, 40, 
+        "add-lat-long-attribute", project.slug, "key",
         "--url", EXAMPLE_URL, 
-        "--token", "token"
+        "--token", "token",
+        "--",         # needed because of negative number (https://github.com/pallets/click/issues/555)
+        "-20", "40", 
     ])
     assert result.exit_code == 0
     
@@ -171,3 +177,94 @@ def assert_add_lat_long_attribute():
     assert getattr(attribute, "key") == key
     assert getattr(attribute, "latitude") == -20
     assert getattr(attribute, "longitude") == 40
+
+
+@pytest.mark.django_db
+@patch('requests.get', lambda *args, **kwargs: MockResponse(data={"base_file_path": str(TEST_DIR)}))
+def test_files_command():
+    absolute_path = str(TEST_DIR.absolute())
+    storage = FileSystemStorage(location=absolute_path, base_url="http://www.example.com")
+    
+    with patch('crunch.django.app.storages.default_storage', storage):
+        project = models.Project.objects.create(name="Test Project")    
+        dataset = models.Dataset.objects.create(name="Test Dataset", parent=project)    
+        result = runner.invoke(app, [
+            "files", 
+            dataset.slug,
+            str(TEST_DIR/"settings.toml"),
+            "--url", EXAMPLE_URL, 
+            "--token", "token",
+        ])
+        assert result.exit_code == 0
+        assert "── dummy-files" in result.stdout
+        assert "dummy-file2.txt" in result.stdout
+
+
+dataset_mock_response = MockResponse(data={"id": 2, "slug": "dataset", "parent": "project", "base_file_path": str(TEST_DIR)})
+@patch('requests.get', lambda *args, **kwargs: dataset_mock_response)
+@patch.object(Run, '__call__', return_value=None)
+def test_run_command(mock_run):
+    result = runner.invoke(app, [
+        "run", 
+        "dataset",
+        str(TEST_DIR/"settings.toml"),
+        "--directory", str(TEST_DIR),
+        "--url", EXAMPLE_URL, 
+        "--token", "token",
+    ])
+    assert result.exit_code == 0
+    mock_run.assert_called_once()
+
+
+def mock_call_run(run):
+    dataset = models.Dataset.objects.get(slug=run.dataset_slug)
+    dataset.locked = True
+    dataset.save()
+
+
+@pytest.mark.django_db
+@patch('crunch.client.main.connections.Connection', get_mock_connection )
+@patch.object(Run, '__call__', mock_call_run)
+def test_next_command():
+    ContentType.objects.clear_cache()
+    project = models.Project.objects.create(name="Test Project")    
+    dataset1 = models.Dataset.objects.create(name="Test Dataset 1", parent=project)    
+    dataset2 = models.Dataset.objects.create(name="Test Dataset 2", parent=project)    
+
+    result = runner.invoke(app, [
+        "next", 
+        str(TEST_DIR/"settings.toml"),
+        "--directory", str(TEST_DIR),
+        "--url", EXAMPLE_URL, 
+        "--token", "token",
+    ])
+
+    dataset1.refresh_from_db()
+    dataset2.refresh_from_db()
+    assert dataset1.locked
+    assert not dataset2.locked    
+    assert result.exit_code == 0
+
+
+@pytest.mark.django_db
+@patch('crunch.client.main.connections.Connection', get_mock_connection )
+@patch.object(Run, '__call__', mock_call_run)
+def test_loop_command():
+    ContentType.objects.clear_cache()
+    project = models.Project.objects.create(name="Test Project")    
+    dataset1 = models.Dataset.objects.create(name="Test Dataset 1", parent=project)    
+    dataset2 = models.Dataset.objects.create(name="Test Dataset 2", parent=project)    
+
+    result = runner.invoke(app, [
+        "loop", 
+        str(TEST_DIR/"settings.toml"),
+        "--directory", str(TEST_DIR),
+        "--url", EXAMPLE_URL, 
+        "--token", "token",
+    ])
+
+    dataset1.refresh_from_db()
+    dataset2.refresh_from_db()
+    assert dataset1.locked
+    assert dataset2.locked    
+    assert result.exit_code == 0

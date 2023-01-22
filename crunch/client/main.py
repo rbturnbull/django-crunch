@@ -1,13 +1,5 @@
-from enum import Enum
-import json
 from pathlib import Path
-import stat
-from typing import Optional
-import traceback
-from typing import List
-from unicodedata import decimal
 import typer
-import subprocess
 from rich.console import Console
 
 console = Console()
@@ -15,13 +7,12 @@ console = Console()
 from crunch.django.app import storages
 from . import connections
 from .diagnostics import get_diagnostics
-
-from crunch.django.app.enums import Stage, State
+from .enums import WorkflowType
+from .run import Run
 
 
 class NoDatasets(Exception):
     """Raised when there are no more datasets to process on a crunch site."""
-
     pass
 
 
@@ -57,10 +48,6 @@ workflow_type_arg = typer.Option("snakemake", help="Workflow type (snakemake/scr
 path_arg = typer.Option(None, help="The path to the workflow file.")
 
 
-class WorkflowType(str, Enum):
-    snakemake = "snakemake"
-    script = "script"
-
 @app.command()
 def run(
     dataset: str = dataset_slug_arg,
@@ -75,125 +62,17 @@ def run(
     """
     Processes a dataset.
     """
-    if not dataset:
-        return
+    r = Run(
+        connection=connections.Connection(url, token), 
+        dataset_slug=dataset, 
+        working_directory=Path(directory),
+        workflow_type=workflow, 
+        storage_settings=storage_settings,
+        workflow_path=path, 
+        cores=cores,
+    )
 
-    console.print(f"Processing '{dataset}' from {url}.")
-
-    # Create temporary dir
-    directory = Path(directory)
-    directory.mkdir(exist_ok=True, parents=True)
-    console.print(f"Using temporary directory '{directory}'.")
-
-    # TODO Check to see if there is an old dataset.json
-    connection = connections.Connection(url, token)
-
-    # get dataset details
-    dataset_data = connection.get_json_response(f"/api/datasets/{dataset}")
-    # TODO raise exception
-    assert dataset_data["slug"] == dataset
-    project = dataset_data["parent"]
-    dataset_id = dataset_data["id"]
-
-    stage_style = "bold red"
-
-    #############################
-    ##       Setup Stage
-    #############################
-    console.print(f"Setup stage {dataset}", style=stage_style)
-    stage = Stage.SETUP
-    try:
-        connection.send_status(dataset_id, stage=stage, state=State.START)
-        with open(directory / "dataset.json", "w", encoding="utf-8") as f:
-            json.dump(dataset_data, f, ensure_ascii=False, indent=4)
-
-        # get project details
-        project_data = connection.get_json_response(f"/api/projects/{project}")
-        # TODO raise exception
-        assert project_data["slug"] == project
-        with open(directory / "project.json", "w", encoding="utf-8") as f:
-            json.dump(project_data, f, ensure_ascii=False, indent=4)
-
-        # Setup Storage
-        storage = storages.get_storage_with_settings(storage_settings)
-
-        # Pull data from storage
-        storages.copy_recursive_from_storage(
-            dataset_data["base_file_path"], directory, storage=storage
-        )
-
-        # get snakefile or script
-        if not path:
-            assert project_data["workflow"]
-            if workflow == WorkflowType.snakemake:
-                path = directory / "Snakefile"
-            elif workflow == WorkflowType.script:
-                path = directory / "script.sh"
-            with open(path, "w", encoding="utf-8") as f:
-                f.write(project_data["workflow"].replace('\r\n', '\n'))
-            if workflow == WorkflowType.script:
-                path.chmod(path.stat().st_mode | stat.S_IEXEC)
-
-        connection.send_status(dataset_id, stage=stage, state=State.SUCCESS)
-    except Exception as e:
-        console.print(f"Setup failed {dataset}: {e}", style=stage_style)
-        connection.send_status(dataset_id, stage=stage, state=State.FAIL, note=str(e))
-        return
-
-    #############################
-    ##       Workflow Stage
-    #############################
-    console.print(f"Workflow stage {dataset}", style=stage_style)
-    stage = Stage.WORKFLOW
-
-    try:
-        connection.send_status(dataset_id, stage=stage, state=State.START)
-        if workflow == WorkflowType.snakemake:
-            import snakemake
-
-            args = [
-                f"--snakefile={path}",
-                "--use-conda",
-                f"--cores={cores}",
-                f"--directory={directory}",
-            ]
-            mamba_found = True
-            try:
-                subprocess.run(["mamba", "--version"], capture_output=True, check=True)
-            except (subprocess.CalledProcessError, FileNotFoundError):
-                mamba_found = False
-            if not mamba_found:
-                args.append("--conda-frontend=conda")
-
-            try:
-                snakemake.main(args)
-            except SystemExit as result:
-                print(f"result {result}")
-        elif workflow == WorkflowType.script:
-            subprocess.run(f"{path.resolve()}", capture_output=True, check=True, cwd=directory)
-
-        connection.send_status(dataset_id, stage=stage, state=State.SUCCESS)
-    except Exception as e:
-        console.print(f"Workflow failed {dataset}: {e}", style=stage_style)
-        connection.send_status(dataset_id, stage=stage, state=State.FAIL, note=str(e))
-
-    #############################
-    ##       Upload Stage
-    #############################
-    console.print(f"Upload stage {dataset}", style=stage_style)
-    stage = Stage.UPLOAD
-    try:
-        connection.send_status(dataset_id, stage=stage, state=State.START)
-        storages.copy_recursive_to_storage(
-            directory, dataset_data["base_file_path"], storage=storage
-        )
-        connection.send_status(dataset_id, stage=stage, state=State.SUCCESS)
-    except Exception as e:
-        console.print(f"Upload failed {dataset}: {e}", style=stage_style)
-        traceback.print_exc()
-        connection.send_status(dataset_id, stage=stage, state=State.FAIL, note=str(e))
-
-    return dataset_data
+    r()
 
 
 @app.command()
@@ -217,14 +96,11 @@ def next(
 
     connection = connections.Connection(url, token)
 
-    next = (
-        connection.get_json_response(f"api/projects/{project}/next/")
-        if project
-        else connection.get_json_response(f"api/next/")
-    )
+    next_url = f"api/projects/{project}/next/" if project else "api/next/"
+    next = connection.get_json_response(next_url)
 
     if "dataset" in next and "project" in next and next["project"] and next["dataset"]:
-        return run(
+        run(
             dataset=next["dataset"],
             storage_settings=storage_settings,
             url=url,
@@ -236,6 +112,7 @@ def next(
         )
     else:
         console.print("No more datasets to process.")
+        raise NoDatasets
 
 
 @app.command()
@@ -245,6 +122,10 @@ def loop(
     cores: str = cores_arg,
     url: str = url_arg,
     token: str = token_arg,
+    project: str = typer.Option(
+        "",
+        help="The slug for a project the dataset is in. If not given, then it chooses any project.",
+    ),
     workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
 ):
@@ -255,16 +136,18 @@ def loop(
         f"Looping through all the datasets from {url} and will stop when complete."
     )
     while True:
-        result = next(
-            url=url,
-            token=token,
-            storage_settings=storage_settings,
-            directory=directory,
-            cores=cores,
-            workflow=workflow,
-            path=path,
-        )
-        if result is None:
+        try:
+            next(
+                url=url,
+                token=token,
+                storage_settings=storage_settings,
+                directory=directory,
+                cores=cores,
+                workflow=workflow,
+                path=path,
+                project=project,
+            )
+        except NoDatasets:
             console.print("Loop concluded.")
             break
 
@@ -508,11 +391,10 @@ def files(
     token: str = token_arg,
 ):
     """Displays the files for a dataset."""
-    # get dataset details
     connection = connections.Connection(url, token)
-    dataset_data = connection.get_json_response(f"/api/datasets/{dataset}")
+    dataset_data = connection.get_json_response(f"/api/datasets/{dataset}/")
     base_file_path = dataset_data.get("base_file_path")
 
     storage = storages.get_storage_with_settings(storage_settings)
     listing = storages.storage_walk(base_file_path, storage=storage)
-    console.print(listing.render_html())
+    console.print(listing.render())
