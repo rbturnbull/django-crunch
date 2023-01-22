@@ -57,11 +57,11 @@ def get_storage_with_settings(storage_settings:Union[Dict,Path]) -> DefaultStora
 
 class StorageDirectory(NodeMixin):
     def __init__(
-        self, *args, base_path: str, storage=None, parent=None, children=None, **kwargs
+        self, *args, base_path: Union[str,Path], storage=None, parent=None, children=None, **kwargs
     ):
         super().__init__(*args, **kwargs)
 
-        self.base_path = base_path
+        self.base_path = Path(base_path)
         self.storage = storage
         self.parent = parent
         if children:
@@ -83,7 +83,7 @@ class StorageDirectory(NodeMixin):
         return ""
 
     def render(self):
-        result = self.base_path + "\n"
+        result = f"{self.base_path}\n"
         for pre, _, node in RenderTree(self):
             if node == self:
                 continue
@@ -94,7 +94,7 @@ class StorageDirectory(NodeMixin):
     def render_html(self):
         try:
             result = "<div>"
-            result += self.base_path + "<br>\n"
+            result += f"{self.base_path}<br>\n"
             for pre, _, node in RenderTree(self):
                 if node == self:
                     continue
@@ -152,7 +152,7 @@ class StorageFile(NodeMixin):
 
 
 def storage_walk(
-    base_path="/", storage=None, error_handler=None, parent=None
+    base_path="/", storage=None, parent=None
 ) -> StorageDirectory:
     """
     Recursively walks a folder, using Django's File Storage.
@@ -162,13 +162,7 @@ def storage_walk(
     if storage is None:
         storage = default_storage
 
-    try:
-        folders, filenames = storage.listdir(str(base_path))
-    except OSError as e:
-        logging.exception("An error occurred while walking directory %s", base_path)
-        if error_handler:
-            error_handler(e)
-        return
+    folders, filenames = storage.listdir(str(base_path))
 
     directory = StorageDirectory(base_path=base_path, parent=parent, storage=storage)
 
@@ -181,7 +175,6 @@ def storage_walk(
         storage_walk(
             base_path=new_base,
             storage=storage,
-            error_handler=error_handler,
             parent=directory,
         )
 
@@ -210,9 +203,6 @@ def copy_to_storage(paths, local_dir, base="/", storage=None):
 
         local_relative_path = local_path.relative_to(local_dir)
         remote_path = str(base / local_relative_path)
-
-        if str(local_relative_path).startswith(".snakemake/"):
-            continue
 
         print(
             f"Copying '{local_path}' from local directory '{local_dir}' to storage at '{remote_path}'"
