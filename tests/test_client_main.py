@@ -191,7 +191,7 @@ def test_files_command():
         result = runner.invoke(app, [
             "files", 
             dataset.slug,
-            str(TEST_DIR/"settings.toml"),
+            "--storage-settings", str(TEST_DIR/"settings.toml"),
             "--url", EXAMPLE_URL, 
             "--token", "token",
         ])
@@ -207,7 +207,7 @@ def test_run_command(mock_run):
     result = runner.invoke(app, [
         "run", 
         "dataset",
-        str(TEST_DIR/"settings.toml"),
+        "--storage-settings", str(TEST_DIR/"settings.toml"),
         "--directory", str(TEST_DIR),
         "--url", EXAMPLE_URL, 
         "--token", "token",
@@ -233,7 +233,7 @@ def test_next_command():
 
     result = runner.invoke(app, [
         "next", 
-        str(TEST_DIR/"settings.toml"),
+        "--storage-settings", str(TEST_DIR/"settings.toml"),
         "--directory", str(TEST_DIR),
         "--url", EXAMPLE_URL, 
         "--token", "token",
@@ -257,7 +257,7 @@ def test_loop_command():
 
     result = runner.invoke(app, [
         "loop", 
-        str(TEST_DIR/"settings.toml"),
+        "--storage-settings", str(TEST_DIR/"settings.toml"),
         "--directory", str(TEST_DIR),
         "--url", EXAMPLE_URL, 
         "--token", "token",
