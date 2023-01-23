@@ -17,6 +17,7 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Intended Audience :: Science/Research",
     "Topic :: Software Development :: Libraries :: Python Modules",
+    "Framework :: Django",
 ]
 
 [tool.poetry.dependencies]
