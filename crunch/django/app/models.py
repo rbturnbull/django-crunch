@@ -423,6 +423,7 @@ class ValueAttribute(Attribute):
 
 
 class CharAttribute(ValueAttribute):
+    """ An attribute for storing metadata as a string (of maximum length 1023 characters). """
     value = models.CharField(max_length=1023)
 
 
@@ -467,6 +468,7 @@ class URLAttribute(ValueAttribute):
 
 
 class LatLongAttribute(Attribute):
+    """ An attribute for storing a geolocation (in decimal degrees). """
     latitude = models.DecimalField(
         max_digits=12,
         decimal_places=9,

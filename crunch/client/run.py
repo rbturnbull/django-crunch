@@ -21,6 +21,9 @@ from .enums import WorkflowType, RunResult
 STAGE_STYLE = "bold red"
 
 class Run():
+    """
+    An object to manage processing a crunch dataset.
+    """
     def __init__(
         self, 
         connection:Connection, 
@@ -55,6 +58,7 @@ class Run():
         self.base_file_path = self.dataset_data["base_file_path"]
 
     def send_status(self, state, note:str="") -> requests.Response:
+        """ Sends a status update about the processing of this dataset. """
         return self.connection.send_status(
             self.dataset_id, 
             stage=self.current_stage, 
@@ -63,16 +67,33 @@ class Run():
         )
 
     @cached_property
-    def crunch_subdir(self):
+    def crunch_subdir(self) -> Path:
+        """ Returns the path to the .crunch subdirectory in the working directory for this dataset. """
         crunch_subdir = self.working_directory/".crunch"        
         crunch_subdir.mkdir(exist_ok=True, parents=True)
         return crunch_subdir
 
     @cached_property
     def storage(self) -> DefaultStorage:
+        """ Gets the default storage object. """
         return storages.get_storage_with_settings(self.storage_settings)
 
     def setup(self) -> RunResult:
+        """ 
+        Sets up this dataset for processing.
+        
+        This involves:
+
+        - Copying the initial data from storage
+        - Saving the MD5 checksums for all the initial data in ``.crunch/setup_md5_checksums.json``
+        - Saves the metadata for the dataset in ``.crunch/dataset.json``
+        - Saves the metadata for the project in ``.crunch/project.json``
+        - Creates the script to run the workflow (either a bash script or a Snakefile for Snakemake)
+
+
+        Returns:
+            RunResult: Whether or not this stage was successful.
+        """
         self.current_stage = Stage.SETUP
         console.print(f"Setup stage {self.dataset_slug}", style=STAGE_STYLE)
         try:
@@ -116,6 +137,14 @@ class Run():
         return RunResult.SUCCESS
 
     def workflow(self) -> RunResult:
+        """ 
+        Runs the workflow on a dataset that has been set up.
+        
+        This involves running a bash script as a subprocess or running Snakemake with a Snakefile.
+
+        Returns:
+            RunResult: Whether or not this stage was successful.
+        """
         self.current_stage = Stage.WORKFLOW
 
         try:
@@ -147,6 +176,16 @@ class Run():
         return RunResult.SUCCESS
 
     def upload(self) -> RunResult:
+        """
+        Uploads new or modified files to the storage for the dataset.
+
+        It also creates the following files:
+        - .crunch/upload_md5_checksums.json which lists all MD5 checksums after the dataset has finished.
+        - .crunch/deleted.txt which lists all files that were present after setup but which were deleted as the workflow ran.
+
+        Returns:
+            RunResult: Whether or not this stage was successful.
+        """
         self.current_stage = Stage.UPLOAD
         console.print(f"Upload stage {self.dataset_slug}", style=STAGE_STYLE)
         try:
