@@ -13,6 +13,7 @@ repository = "https://github.com/rbturnbull/django-crunch"
 documentation = "https://rbturnbull.github.io/django-crunch/"
 keywords = ["django", "data processing"]
 classifiers = [
+    "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: Apache Software License",
     "Intended Audience :: Science/Research",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -52,7 +53,7 @@ pydeck = "^0.7.1"
 toml = "^0.10.2"
 setuptools = "^65.3.0"
 djangocms-bootstrap = "^1.1.2"
-djangocms-themata = {git = "https://github.com/rbturnbull/djangocms-themata.git", branch="main"}
+djangocms-themata = "^0.1.0"
 pandas = "^1.4.4"
 anytree = "^2.8.0"
 
