@@ -61,12 +61,17 @@ to just the team for while the data is being processed and once the results are 
 Installation
 ==================================
 
-The crunch app for a Django website and the command-line client are installed with pip:
+The crunch app for a Django website and the command-line client are installed from PyPI:
+
+.. code-block:: bash
+
+    pip install django-crunch
+
+Or install directory from Github:
 
 .. code-block:: bash
 
     pip install git+https://github.com/rbturnbull/django-crunch
-
 
 Install the crunch app to the Djanco website project by adding it to the settings:
 
