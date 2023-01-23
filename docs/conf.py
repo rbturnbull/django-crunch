@@ -41,6 +41,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_copybutton",
     "sphinx_click",
+    'sphinx.ext.autosectionlabel',
 ]
 
 source_suffix = {

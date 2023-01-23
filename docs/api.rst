@@ -2,21 +2,21 @@
 API Reference
 =======================
 
-Connections 
+Connection Class
 =======================
 
 .. automodule:: crunch.client.connections
    :members:
 
 
-Run 
+Run class
 =======================
 
 .. automodule:: crunch.client.run
    :members:
 
 
-Diagnostics 
+Diagnostics Class
 =======================
 
 .. automodule:: crunch.client.diagnostics
