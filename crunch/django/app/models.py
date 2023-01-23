@@ -46,6 +46,11 @@ class NextPrevMixin(models.Model):
 
 
 class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
+    """
+    A general class of object which can be placed in a hierachical tree. 
+
+    Each item can be viewed online with a details page and each item can be given any number of attributes to store metadata.
+    """
     parent = PolymorphicTreeForeignKey(
         "self",
         blank=True,
@@ -158,6 +163,11 @@ class Item(NextPrevMixin, TimeStampedModel, PolymorphicMPTTModel):
 
 
 class Project(Item):
+    """ 
+    An item which collects a number of datasets which should be run with the same workflow. 
+
+    Projects ought not to have parents in the tree structure of items.
+    """
     workflow = models.TextField(
         default="",
         blank=True,
@@ -198,6 +208,11 @@ class Project(Item):
 
 
 class Dataset(Item):
+    """ 
+    An item should be run once in a workflow.
+
+    The parent of a dataset should be its project.
+    """
     base_file_path = models.CharField(max_length=4096, default="", blank=True)
     locked = models.BooleanField(
         default=False,
@@ -423,6 +438,7 @@ class ValueAttribute(Attribute):
 
 
 class CharAttribute(ValueAttribute):
+    """ An attribute for storing metadata as a string (of maximum length 1023 characters). """
     value = models.CharField(max_length=1023)
 
 
@@ -467,6 +483,7 @@ class URLAttribute(ValueAttribute):
 
 
 class LatLongAttribute(Attribute):
+    """ An attribute for storing a geolocation (in decimal degrees). """
     latitude = models.DecimalField(
         max_digits=12,
         decimal_places=9,
