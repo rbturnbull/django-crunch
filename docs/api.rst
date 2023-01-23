@@ -9,6 +9,13 @@ Connections
    :members:
 
 
+Run 
+=======================
+
+.. automodule:: crunch.client.run
+   :members:
+
+
 Diagnostics 
 =======================
 

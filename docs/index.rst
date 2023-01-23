@@ -21,7 +21,9 @@ The main use-case is for crunching a number of datasets that need to be processe
    :caption: Contents:
 
    quickstart
-   datasets
+   cloud
+   storage
+   compute
    cli
    api
    credits
