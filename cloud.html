@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloud Server &mdash; django-crunch 0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Storage" href="storage.html" />
+    <link rel="prev" title="Quickstart" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> django-crunch
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Cloud Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#items">Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#projects">Projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datasets">Datasets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#categories">Categories</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#status">Status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#attributes">Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="storage.html">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Command Line Interface Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">django-crunch</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Cloud Server</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cloud.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cloud-server">
+<h1>Cloud Server<a class="headerlink" href="#cloud-server" title="Permalink to this headline"></a></h1>
+<p>The database on the cloud server includes the following types of Django models.</p>
+<section id="items">
+<h2>Items<a class="headerlink" href="#items" title="Permalink to this headline"></a></h2>
+<p>A general class of object which can be placed in a hierachical tree.</p>
+<p>Each item can be viewed online with a details page and each item can be given any number of attributes to store metadata.</p>
+<p>The most important types of items are Projects and Datasets.</p>
+</section>
+<section id="projects">
+<h2>Projects<a class="headerlink" href="#projects" title="Permalink to this headline"></a></h2>
+<p>An item which collects a number of datasets which should be run with the same workflow.</p>
+<p>Projects ought not to have parents in the tree structure of items.</p>
+<p>Datasets can have any number of items as decendants.</p>
+</section>
+<section id="datasets">
+<h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline"></a></h2>
+<p>An item should be run once in a workflow.</p>
+<p>The parent of a dataset should be its project.</p>
+<section id="categories">
+<h3>Categories<a class="headerlink" href="#categories" title="Permalink to this headline"></a></h3>
+<p>Datasets can be in one of four categories.</p>
+<ul class="simple">
+<li><p><strong>Completed</strong>: If they have a <a class="reference internal" href="#status"><span class="std std-ref">Status</span></a> at stage <code class="docutils literal notranslate"><span class="pre">UPLOAD</span></code> and state <code class="docutils literal notranslate"><span class="pre">SUCCESS</span></code>.</p></li>
+<li><p><strong>Unprocessed</strong>: If they are not complete and they are not locked.</p></li>
+<li><p><strong>Failed</strong>: If they are not complete and unlocked and the latest status has a state of <code class="docutils literal notranslate"><span class="pre">FAILED</span></code>.</p></li>
+<li><p><strong>Running</strong>: If they are not complete and unlocked and the latest status is not <code class="docutils literal notranslate"><span class="pre">FAILED</span></code>.</p></li>
+</ul>
+<p>Querysets for all datasts in these four categories can be obtained by class methods:
+<code class="docutils literal notranslate"><span class="pre">Dataset.completed()</span></code>, <code class="docutils literal notranslate"><span class="pre">Dataset.unprocessed()</span></code>, <code class="docutils literal notranslate"><span class="pre">Dataset.failed()</span></code>, <code class="docutils literal notranslate"><span class="pre">Dataset.running()</span></code>.</p>
+</section>
+</section>
+<section id="status">
+<h2>Status<a class="headerlink" href="#status" title="Permalink to this headline"></a></h2>
+<p>The result of an action at one stage in the workflow. For more information, see the documetation about the computational <a class="reference internal" href="compute.html#stages"><span class="std std-ref">Stages</span></a>.</p>
+</section>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline"></a></h2>
+<p>Attributes are a way of adding metadata to items (including Projects and Datasets). There are several different kinds of attributes:</p>
+<ul class="simple">
+<li><p><strong>CharAttribute</strong>: An attribute for storing metadata as a string (of maximum length 1023 characters).</p></li>
+<li><p><strong>FloatAttribute</strong>:</p></li>
+<li><p><strong>IntegerAttribute</strong>:</p></li>
+<li><p><strong>FilesizeAttribute</strong>:</p></li>
+<li><p><strong>BooleanAttribute</strong>:</p></li>
+<li><p><strong>DateTimeAttribute</strong>:</p></li>
+<li><p><strong>DateAttribute</strong>:</p></li>
+<li><p><strong>URLAttribute</strong>:</p></li>
+<li><p><strong>LatLongAttribute</strong>: An attribute for storing a geolocation (in decimal degrees).</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="storage.html" class="btn btn-neutral float-right" title="Storage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Robert Turnbull.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

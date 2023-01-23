@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Datasets &mdash; django-crunch 0.1.0 documentation</title>
+  <title>Storage &mdash; django-crunch 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Command Line Interface Reference" href="cli.html" />
-    <link rel="prev" title="Quickstart" href="quickstart.html" /> 
+    <link rel="next" title="Compute" href="compute.html" />
+    <link rel="prev" title="Cloud Server" href="cloud.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,7 +43,9 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloud.html">Cloud Server</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli.html">Command Line Interface Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
@@ -63,9 +65,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">Datasets</li>
+      <li class="breadcrumb-item active">Storage</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/datasets.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/storage.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -73,25 +75,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="datasets">
-<h1>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline"></a></h1>
-<p>Datasets can be in one of four categories.</p>
+  <section id="storage">
+<h1>Storage<a class="headerlink" href="#storage" title="Permalink to this headline"></a></h1>
+<p>Django uses an abstract <a class="reference external" href="https://docs.djangoproject.com/en/4.1/ref/files/storage/">file storage class</a>.
+to connect to different kinds of data storage options.</p>
+<p>The widely used <a class="reference external" href="https://django-storages.readthedocs.io/en/latest/">django-storages</a> app allows you to use one of the following storage backends:</p>
 <ul class="simple">
-<li><p>Completed: If they have a Status at stage ‘UPLOAD’ and state ‘SUCCESS’.</p></li>
-<li><p>Unprocessed: If they are not complete and they are not locked.</p></li>
-<li><p>Failed: If they are not complete and unlocked and the latest status has a state of ‘FAILED’.</p></li>
-<li><p>Running: If they are not complete and unlocked and the latest status is not ‘FAILED’.</p></li>
+<li><p>Amazon S3</p></li>
+<li><p>Apache Libcloud</p></li>
+<li><p>Azure Storage</p></li>
+<li><p>Backblaze B2</p></li>
+<li><p>Digital Ocean</p></li>
+<li><p>Dropbox</p></li>
+<li><p>FTP</p></li>
+<li><p>Google Cloud Storage</p></li>
+<li><p>SFTP</p></li>
 </ul>
-<p>Querysets for all datasts in these four categories can be obtained by class methods:
-Dataset.completed(), Dataset.unprossed(), Dataset.failed(), Dataset.running().</p>
+<p>Other plugins are available for other types of storage or you can write your own custom class using the Django reference for your system.</p>
+<p>Whatever storage system you use will need to be specified in the settings for the cloud server
+and these values must be available in a TOML file or JSON file when running the client to perform the computation. For more information, see the section on <a class="reference internal" href="compute.html#environment-variables"><span class="std std-ref">Environment Variables</span></a>.</p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="cli.html" class="btn btn-neutral float-right" title="Command Line Interface Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="cloud.html" class="btn btn-neutral float-left" title="Cloud Server" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="compute.html" class="btn btn-neutral float-right" title="Compute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

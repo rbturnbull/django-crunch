@@ -40,7 +40,9 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="datasets.html">Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloud.html">Cloud Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="storage.html">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli.html">Command Line Interface Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
@@ -84,8 +86,11 @@
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="Symbols">Symbols</h2>
@@ -205,6 +210,19 @@
 
       <ul>
         <li><a href="cli.html#cmdoption-crunch-show-completion">crunch command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --storage-settings
+
+      <ul>
+        <li><a href="cli.html#cmdoption-crunch-files-storage-settings">crunch-files command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-loop-storage-settings">crunch-loop command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-storage-settings">crunch-next command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-storage-settings">crunch-run command line option</a>
 </li>
       </ul></li>
       <li>
@@ -330,7 +348,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#crunch.client.connections.Connection.__init__">__init__() (crunch.client.connections.Connection method)</a>
+
+      <ul>
+        <li><a href="api.html#crunch.client.run.Run.__init__">(crunch.client.run.Run method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -542,8 +564,6 @@
         <li><a href="cli.html#cmdoption-crunch-add-integer-attribute-arg-VALUE">VALUE</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     crunch-add-item command line option
 
@@ -565,6 +585,8 @@
         <li><a href="cli.html#cmdoption-crunch-add-item-arg-PARENT">PARENT</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     crunch-add-lat-long-attribute command line option
 
@@ -628,13 +650,13 @@
     crunch-files command line option
 
       <ul>
+        <li><a href="cli.html#cmdoption-crunch-files-storage-settings">--storage-settings</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-files-token">--token</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-files-url">--url</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-files-arg-DATASET">DATASET</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-files-arg-STORAGE_SETTINGS">STORAGE_SETTINGS</a>
 </li>
       </ul></li>
       <li>
@@ -649,13 +671,13 @@
 </li>
         <li><a href="cli.html#cmdoption-crunch-loop-project">--project</a>
 </li>
+        <li><a href="cli.html#cmdoption-crunch-loop-storage-settings">--storage-settings</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-loop-token">--token</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-loop-url">--url</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-loop-workflow">--workflow</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-loop-arg-STORAGE_SETTINGS">STORAGE_SETTINGS</a>
 </li>
       </ul></li>
       <li>
@@ -670,13 +692,13 @@
 </li>
         <li><a href="cli.html#cmdoption-crunch-next-project">--project</a>
 </li>
+        <li><a href="cli.html#cmdoption-crunch-next-storage-settings">--storage-settings</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-next-token">--token</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-next-url">--url</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-next-workflow">--workflow</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-next-arg-STORAGE_SETTINGS">STORAGE_SETTINGS</a>
 </li>
       </ul></li>
       <li>
@@ -689,6 +711,8 @@
 </li>
         <li><a href="cli.html#cmdoption-crunch-run-path">--path</a>
 </li>
+        <li><a href="cli.html#cmdoption-crunch-run-storage-settings">--storage-settings</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-run-token">--token</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-run-url">--url</a>
@@ -696,8 +720,6 @@
         <li><a href="cli.html#cmdoption-crunch-run-workflow">--workflow</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-run-arg-DATASET">DATASET</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-run-arg-STORAGE_SETTINGS">STORAGE_SETTINGS</a>
 </li>
       </ul></li>
       <li>
@@ -714,6 +736,15 @@
         <li><a href="api.html#module-crunch.client.diagnostics">module</a>
 </li>
       </ul></li>
+      <li>
+    crunch.client.run
+
+      <ul>
+        <li><a href="api.html#module-crunch.client.run">module</a>
+</li>
+      </ul></li>
+      <li><a href="api.html#crunch.client.run.Run.crunch_subdir">crunch_subdir (crunch.client.run.Run property)</a>
+</li>
       <li><a href="api.html#crunch.client.connections.CrunchAPIException">CrunchAPIException</a>
 </li>
   </ul></td>
@@ -845,6 +876,8 @@
 </li>
         <li><a href="api.html#module-crunch.client.diagnostics">crunch.client.diagnostics</a>
 </li>
+        <li><a href="api.html#module-crunch.client.run">crunch.client.run</a>
+</li>
       </ul></li>
   </ul></td>
 </tr></table>
@@ -873,24 +906,37 @@
   </ul></td>
 </tr></table>
 
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#crunch.client.run.Run">Run (class in crunch.client.run)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#crunch.client.connections.Connection.send_status">send_status() (crunch.client.connections.Connection method)</a>
-</li>
-      <li>
-    STORAGE_SETTINGS
 
       <ul>
-        <li><a href="cli.html#cmdoption-crunch-files-arg-STORAGE_SETTINGS">crunch-files command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-loop-arg-STORAGE_SETTINGS">crunch-loop command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-next-arg-STORAGE_SETTINGS">crunch-next command line option</a>
-</li>
-        <li><a href="cli.html#cmdoption-crunch-run-arg-STORAGE_SETTINGS">crunch-run command line option</a>
+        <li><a href="api.html#crunch.client.run.Run.send_status">(crunch.client.run.Run method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#crunch.client.run.Run.setup">setup() (crunch.client.run.Run method)</a>
+</li>
+      <li><a href="api.html#crunch.client.run.Run.storage">storage (crunch.client.run.Run property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#crunch.client.run.Run.upload">upload() (crunch.client.run.Run method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -921,6 +967,14 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#crunch.client.diagnostics.version">version() (in module crunch.client.diagnostics)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#crunch.client.run.Run.workflow">workflow() (crunch.client.run.Run method)</a>
 </li>
   </ul></td>
 </tr></table>

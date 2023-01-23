@@ -43,11 +43,14 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="datasets.html">Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloud.html">Cloud Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="storage.html">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli.html">Command Line Interface Reference</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-crunch.client.connections">Connections</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-crunch.client.diagnostics">Diagnostics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-crunch.client.connections">Connection Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-crunch.client.run">Run class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-crunch.client.diagnostics">Diagnostics Class</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
@@ -80,7 +83,7 @@
   <section id="api-reference">
 <h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline"></a></h1>
 <section id="module-crunch.client.connections">
-<span id="connections"></span><h2>Connections<a class="headerlink" href="#module-crunch.client.connections" title="Permalink to this headline"></a></h2>
+<span id="connection-class"></span><h2>Connection Class<a class="headerlink" href="#module-crunch.client.connections" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="crunch.client.connections.Connection">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crunch.client.connections.</span></span><span class="sig-name descname"><span class="pre">Connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#crunch.client.connections.Connection" title="Permalink to this definition"></a></dt>
@@ -475,8 +478,94 @@ If not provided then it attempts to use the ‘CRUNCH_TOKEN’ environment varia
 </dd></dl>
 
 </section>
+<section id="module-crunch.client.run">
+<span id="run-class"></span><h2>Run class<a class="headerlink" href="#module-crunch.client.run" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="crunch.client.run.Run">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crunch.client.run.</span></span><span class="sig-name descname"><span class="pre">Run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#crunch.client.connections.Connection" title="crunch.client.connections.Connection"><span class="pre">crunch.client.connections.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_slug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage_settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">crunch.client.enums.WorkflowType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#crunch.client.run.Run" title="Permalink to this definition"></a></dt>
+<dd><p>An object to manage processing a crunch dataset.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="crunch.client.run.Run.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#crunch.client.connections.Connection" title="crunch.client.connections.Connection"><span class="pre">crunch.client.connections.Connection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_slug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage_settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">working_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">crunch.client.enums.WorkflowType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#crunch.client.run.Run.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="crunch.client.run.Run.crunch_subdir">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">crunch_subdir</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pathlib.Path</span></em><a class="headerlink" href="#crunch.client.run.Run.crunch_subdir" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the path to the .crunch subdirectory in the working directory for this dataset.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crunch.client.run.Run.send_status">
+<span class="sig-name descname"><span class="pre">send_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">note</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">requests.models.Response</span></span></span><a class="headerlink" href="#crunch.client.run.Run.send_status" title="Permalink to this definition"></a></dt>
+<dd><p>Sends a status update about the processing of this dataset.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crunch.client.run.Run.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">crunch.client.enums.RunResult</span></span></span><a class="headerlink" href="#crunch.client.run.Run.setup" title="Permalink to this definition"></a></dt>
+<dd><p>Sets up this dataset for processing.</p>
+<p>This involves:</p>
+<ul class="simple">
+<li><p>Copying the initial data from storage</p></li>
+<li><p>Saving the MD5 checksums for all the initial data in <code class="docutils literal notranslate"><span class="pre">.crunch/setup_md5_checksums.json</span></code></p></li>
+<li><p>Saves the metadata for the dataset in <code class="docutils literal notranslate"><span class="pre">.crunch/dataset.json</span></code></p></li>
+<li><p>Saves the metadata for the project in <code class="docutils literal notranslate"><span class="pre">.crunch/project.json</span></code></p></li>
+<li><p>Creates the script to run the workflow (either a bash script or a Snakefile for Snakemake)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether or not this stage was successful.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>RunResult</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="crunch.client.run.Run.storage">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">storage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">django.core.files.storage.DefaultStorage</span></em><a class="headerlink" href="#crunch.client.run.Run.storage" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the default storage object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crunch.client.run.Run.upload">
+<span class="sig-name descname"><span class="pre">upload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">crunch.client.enums.RunResult</span></span></span><a class="headerlink" href="#crunch.client.run.Run.upload" title="Permalink to this definition"></a></dt>
+<dd><p>Uploads new or modified files to the storage for the dataset.</p>
+<p>It also creates the following files:
+- .crunch/upload_md5_checksums.json which lists all MD5 checksums after the dataset has finished.
+- .crunch/deleted.txt which lists all files that were present after setup but which were deleted as the workflow ran.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether or not this stage was successful.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>RunResult</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="crunch.client.run.Run.workflow">
+<span class="sig-name descname"><span class="pre">workflow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">crunch.client.enums.RunResult</span></span></span><a class="headerlink" href="#crunch.client.run.Run.workflow" title="Permalink to this definition"></a></dt>
+<dd><p>Runs the workflow on a dataset that has been set up.</p>
+<p>This involves running a bash script as a subprocess or running Snakemake with a Snakefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether or not this stage was successful.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>RunResult</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-crunch.client.diagnostics">
-<span id="diagnostics"></span><h2>Diagnostics<a class="headerlink" href="#module-crunch.client.diagnostics" title="Permalink to this headline"></a></h2>
+<span id="diagnostics-class"></span><h2>Diagnostics Class<a class="headerlink" href="#module-crunch.client.diagnostics" title="Permalink to this headline"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="crunch.client.diagnostics.get_diagnostics">
 <span class="sig-prename descclassname"><span class="pre">crunch.client.diagnostics.</span></span><span class="sig-name descname"><span class="pre">get_diagnostics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#crunch.client.diagnostics.get_diagnostics" title="Permalink to this definition"></a></dt>

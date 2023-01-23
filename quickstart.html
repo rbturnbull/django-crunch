@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Datasets" href="datasets.html" />
+    <link rel="next" title="Cloud Server" href="cloud.html" />
     <link rel="prev" title="django-crunch" href="index.html" /> 
 </head>
 
@@ -43,11 +43,14 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#description">Description</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="datasets.html">Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloud.html">Cloud Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="storage.html">Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli.html">Command Line Interface Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
@@ -80,18 +83,60 @@
   <section id="quickstart">
 <h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline"></a></h1>
 <p>A data processing orcestration tool.
-Crunch allows you to visualize the datasets, orchestrate and manage the processing online and present the results to the world.
-The main usecase is for crunching a number of datasets that need to be processed with the same workflow which do not fit on disk.</p>
+Crunch allows you to visualize the datasets, orchestrate and manage the processing online and present the results to the world.</p>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline"></a></h2>
+<p>Crunch coordinates three components. First there is a web application in the cloud.
+Crunch includes a Django app which can be included in a website built using the Django framework for building database driven websites.
+The website allows users to create what we call <code class="docutils literal notranslate"><span class="pre">datasets</span></code>.
+Each dataset corresponds to one collection of files and metadata which is designed to be run through the workflow.
+Each dataset has its own page on the website which displays all the information about it.</p>
+<p>The second component is data storage.
+The main use-case for crunch is when your datasets are so many and so large that you cannott fit them all on to the disk where you are doing your computation.
+With crunch, the data can be stored in any of the media storage options available with Django.
+These can be Amazon S3, Google Cloud or many other storage options.</p>
+<p>The third component is the client which runs at the place where you are performing the computation.
+This could be in a high-performance computing environment, or it could be on a virtual machine in the cloud or it could be just on your own laptop.
+The user just runs the crunch command line tool.
+The command line tool communicates with the website to find out which dataset should be processed next,
+then it copies it from storage and saves it locally.
+Then it processes the dataset using a pre-defined workflow provided by the user.
+When it is finished, it copies back the data to the storage with the resulting files.
+At each stage the user can see the status on the website interface.
+If you run the <cite>crunch loop`</cite> command then the client continually loops through the datasets until they are completely finished.
+You can run as many clients in parallel as you have computing resources.</p>
+<p>Once each dataset is processed, the resulting files can be accessed via the website.
+The permissions for the website can be set dynamically so that users can restrict access
+to just the team for while the data is being processed and once the results are ready for the world then you can allow access to the public.</p>
+</section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
-<p>Install crunch using pip:</p>
+<p>The crunch app for a Django website and the command-line client are installed with pip:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/rbturnbull/django-crunch
 </pre></div>
 </div>
+<p>Install the crunch app to the Djanco website project by adding it to the settings:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">INSTALLED_APPS</span> <span class="o">+=</span> <span class="p">[</span>
+    <span class="s2">&quot;crunch&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Then add the urls to your main urls.py:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">urlpatterns</span> <span class="o">+=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;crunch/&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s1">&#39;crunch.django.app.urls&#39;</span><span class="p">))),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>The path <code class="docutils literal notranslate"><span class="pre">crunch/</span></code> can be changed to be whatever you choose.</p>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
-<p>Information to come.</p>
+<p>Create projects, datasets, items and attributes on the website using the HTML interface, the crunch command-line client or the Python API.</p>
+<p>Upload initial data for each dataset as needed to the storage using the Crunch HTML interface or direct to the folder for each dataset on the storage.</p>
+<p>Then process each dataset at the location where you are performing your compute with the crunch client. All datasets can be processed with the single command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>crunch<span class="w"> </span>loop
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -100,7 +145,7 @@ The main usecase is for crunching a number of datasets that need to be processed
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="django-crunch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="datasets.html" class="btn btn-neutral float-right" title="Datasets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="cloud.html" class="btn btn-neutral float-right" title="Cloud Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
