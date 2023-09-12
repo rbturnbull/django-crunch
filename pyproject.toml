@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-crunch"
-version = "0.1.13"
+version = "0.1.14"
 description = "A data processing orcestration tool."
 authors = ["Robert Turnbull, Mar Quiroga and Simon Mutch <robert.turnbull@unimelb.edu.au>"]
 license = "Apache-2.0"
@@ -21,7 +21,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<=3.11"
+python = ">=3.8,<3.12"
 Django = "^3.2"
 django-cms = "^3.9.0"
 typer = {extras = ["all"], version = "^0.4.0"}
