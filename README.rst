@@ -86,7 +86,7 @@ Then add the urls to your main urls.py:
 .. code-block:: python
 
     urlpatterns += [
-        path('crunch/', include('crunch.django.app.urls'))),    
+        path('crunch/', include('crunch.django.app.urls')),    
     ]
 
 The path ``crunch/`` can be changed to be whatever you choose.
