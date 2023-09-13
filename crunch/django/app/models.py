@@ -299,6 +299,13 @@ class Dataset(Item):
     def files(self):
         return storages.storage_walk(self.base_file_path)
 
+    def files_html(self):
+        try:
+            directory = storages.storage_walk(self.base_file_path)
+            return directory.render_html()
+        except Exception:
+            return f"<p>Failed to read files in dataset {self}</p>"
+
 
 class Status(NextPrevMixin, TimeStampedModel):
     dataset = models.ForeignKey(
