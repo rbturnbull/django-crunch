@@ -24,7 +24,7 @@ classifiers = [
 python = ">=3.8,<3.12"
 Django = "^3.2"
 django-cms = "^3.9.0"
-typer = {extras = ["all"], version = "^0.4.0"}
+typer = {extras = ["all"], version = ">=0.4.0"}
 djangorestframework = "^3.13.1"
 rich = "^11.1.0"
 django-extensions = "^3.1.5"
