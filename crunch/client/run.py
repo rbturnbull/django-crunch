@@ -32,6 +32,7 @@ class Run():
         working_directory:Path, 
         workflow_type:WorkflowType, 
         workflow_path:Path=None, 
+        download:bool=True,
         cores:str="1",
     ):
         self.connection = connection
@@ -46,6 +47,7 @@ class Run():
         self.cores = cores
         self.storage_settings = storage_settings
         self.setup_md5_checksums = dict()
+        self.download = download
 
         working_directory = Path(working_directory)
         working_directory.mkdir(exist_ok=True, parents=True)
@@ -100,9 +102,10 @@ class Run():
             self.send_status(State.START)
             
             # Pull data from storage
-            storages.copy_recursive_from_storage(
-                self.base_file_path, self.working_directory, storage=self.storage
-            )
+            if self.download:
+                storages.copy_recursive_from_storage(
+                    self.base_file_path, self.working_directory, storage=self.storage
+                )
             self.setup_md5_checksums = utils.md5_checksums(self.working_directory)
             with open(self.crunch_subdir / "setup_md5_checksums.json", "w", encoding="utf-8") as f:
                 json.dump(self.setup_md5_checksums, f, ensure_ascii=False, indent=4)

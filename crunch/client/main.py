@@ -49,6 +49,7 @@ cores_arg = typer.Option(
 )
 workflow_type_arg = typer.Option("snakemake", help="Workflow type (snakemake/script).")
 path_arg = typer.Option(None, help="The path to the workflow file.")
+download_arg = typer.Option(True, help="Whether or not to download the data from storage in the setup.")
 
 
 @app.command()
@@ -61,6 +62,7 @@ def run(
     token: str = token_arg,
     workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
+    download:bool = download_arg,
 ):
     """
     Processes a dataset.
@@ -73,6 +75,7 @@ def run(
         storage_settings=storage_settings,
         workflow_path=path, 
         cores=cores,
+        download=download,
     )
 
     r()
@@ -91,6 +94,7 @@ def next(
     ),
     workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
+    download:bool = download_arg,
 ):
     """
     Processes the next dataset in a project.
@@ -112,6 +116,7 @@ def next(
             cores=cores,
             workflow=workflow,
             path=path,
+            download=download,
         )
     else:
         console.print("No more datasets to process.")
@@ -131,6 +136,7 @@ def loop(
     ),
     workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
+    download:bool = download_arg,
 ):
     """
     Loops through all the datasets in a project and stops when complete.
@@ -149,6 +155,7 @@ def loop(
                 workflow=workflow,
                 path=path,
                 project=project,
+                download=download,
             )
         except NoDatasets:
             console.print("Loop concluded.")
