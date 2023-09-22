@@ -49,8 +49,9 @@ cores_arg = typer.Option(
 )
 workflow_type_arg = typer.Option("snakemake", help="Workflow type (snakemake/script).")
 path_arg = typer.Option(None, help="The path to the workflow file.")
-download_arg = typer.Option(True, help="Whether or not to download the data from storage in the setup.")
-
+download_arg = typer.Option(True, help="Whether or not to download the data from storage in the setup of a run.")
+upload_arg = typer.Option(True, help="Whether or not to upload the data to storage after a run.")
+cleanup_arg = typer.Option(False, help="Whether or not to delete the local data after a run.")
 
 @app.command()
 def run(
@@ -63,6 +64,8 @@ def run(
     workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
     download:bool = download_arg,
+    upload:bool = upload_arg,
+    cleanup:bool = cleanup_arg,
 ):
     """
     Processes a dataset.
@@ -75,7 +78,9 @@ def run(
         storage_settings=storage_settings,
         workflow_path=path, 
         cores=cores,
-        download=download,
+        download_from_storage=download,
+        upload_to_storage=upload,
+        cleanup=cleanup,
     )
 
     r()
@@ -95,6 +100,8 @@ def next(
     workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
     download:bool = download_arg,
+    upload:bool = upload_arg,
+    cleanup:bool = cleanup_arg,
 ):
     """
     Processes the next dataset in a project.
@@ -117,6 +124,8 @@ def next(
             workflow=workflow,
             path=path,
             download=download,
+            upload=upload,
+            cleanup=cleanup,
         )
     else:
         console.print("No more datasets to process.")
@@ -137,6 +146,8 @@ def loop(
     workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
     download:bool = download_arg,
+    upload:bool = upload_arg,
+    cleanup:bool = cleanup_arg,
 ):
     """
     Loops through all the datasets in a project and stops when complete.
@@ -156,6 +167,8 @@ def loop(
                 path=path,
                 project=project,
                 download=download,
+                upload=upload,
+                cleanup=cleanup,
             )
         except NoDatasets:
             console.print("Loop concluded.")

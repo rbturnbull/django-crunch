@@ -238,12 +238,12 @@ def test_next_command():
         "--url", EXAMPLE_URL, 
         "--token", "token",
     ])
+    assert result.exit_code == 0
 
     dataset1.refresh_from_db()
     dataset2.refresh_from_db()
     assert dataset1.locked
     assert not dataset2.locked    
-    assert result.exit_code == 0
 
 
 @pytest.mark.django_db
@@ -262,9 +262,9 @@ def test_loop_command():
         "--url", EXAMPLE_URL, 
         "--token", "token",
     ])
+    assert result.exit_code == 0
 
     dataset1.refresh_from_db()
     dataset2.refresh_from_db()
     assert dataset1.locked
     assert dataset2.locked    
-    assert result.exit_code == 0

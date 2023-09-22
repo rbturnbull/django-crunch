@@ -6,6 +6,7 @@ from pathlib import Path
 import traceback
 import subprocess
 import json
+import shutil
 from django.core.files.storage import DefaultStorage
 
 from crunch.django.app.enums import Stage, State
@@ -32,7 +33,9 @@ class Run():
         working_directory:Path, 
         workflow_type:WorkflowType, 
         workflow_path:Path=None, 
-        download:bool=True,
+        download_from_storage:bool=True,
+        upload_to_storage:bool=True,
+        cleanup:bool=False,
         cores:str="1",
     ):
         self.connection = connection
@@ -47,7 +50,9 @@ class Run():
         self.cores = cores
         self.storage_settings = storage_settings
         self.setup_md5_checksums = dict()
-        self.download = download
+        self.download_from_storage = download_from_storage
+        self.upload_to_storage = upload_to_storage
+        self.cleanup = cleanup
 
         working_directory = Path(working_directory)
         working_directory.mkdir(exist_ok=True, parents=True)
@@ -102,7 +107,7 @@ class Run():
             self.send_status(State.START)
             
             # Pull data from storage
-            if self.download:
+            if self.download_from_storage:
                 storages.copy_recursive_from_storage(
                     self.base_file_path, self.working_directory, storage=self.storage
                 )
@@ -194,35 +199,38 @@ class Run():
         try:
             self.send_status(State.START)
 
-            # calculate checksums
-            self.upload_md5_checksums = utils.md5_checksums(self.working_directory)
-            upload_md5_checksums_path = self.crunch_subdir / "upload_md5_checksums.json"
-            with open(upload_md5_checksums_path, "w", encoding="utf-8") as f:
-                json.dump(self.upload_md5_checksums, f, ensure_ascii=False, indent=4)
+            if self.upload_to_storage:
+                # calculate checksums
+                self.upload_md5_checksums = utils.md5_checksums(self.working_directory)
+                upload_md5_checksums_path = self.crunch_subdir / "upload_md5_checksums.json"
+                with open(upload_md5_checksums_path, "w", encoding="utf-8") as f:
+                    json.dump(self.upload_md5_checksums, f, ensure_ascii=False, indent=4)
 
-            setup_files = set(self.setup_md5_checksums.keys())
-            upload_files = set(self.upload_md5_checksums.keys())
-            new_files = upload_files - setup_files
-            deleted_files = setup_files - upload_files
-            remaining_files = setup_files.intersection(upload_files)
-            modified_files = set(
-                file for file in remaining_files 
-                if self.upload_md5_checksums[file] != self.setup_md5_checksums[file]
-            )
-            deleted_log_path = self.crunch_subdir / "deleted.txt"
-            deleted_log_path.write_text("\n".join(deleted_files))
+                setup_files = set(self.setup_md5_checksums.keys())
+                upload_files = set(self.upload_md5_checksums.keys())
+                new_files = upload_files - setup_files
+                deleted_files = setup_files - upload_files
+                remaining_files = setup_files.intersection(upload_files)
+                modified_files = set(
+                    file for file in remaining_files 
+                    if self.upload_md5_checksums[file] != self.setup_md5_checksums[file]
+                )
+                deleted_log_path = self.crunch_subdir / "deleted.txt"
+                deleted_log_path.write_text("\n".join(deleted_files))
 
-            files_to_upload = modified_files | new_files | set([upload_md5_checksums_path, deleted_log_path])
-            paths_to_upload = [self.working_directory/file for file in files_to_upload]
+                files_to_upload = modified_files | new_files | set([upload_md5_checksums_path, deleted_log_path])
+                paths_to_upload = [self.working_directory/file for file in files_to_upload]
 
-            storages.copy_to_storage(
-                paths_to_upload, 
-                local_dir=self.working_directory,
-                base=self.base_file_path, 
-                storage=self.storage,
-            )
+                storages.copy_to_storage(
+                    paths_to_upload, 
+                    local_dir=self.working_directory,
+                    base=self.base_file_path, 
+                    storage=self.storage,
+                )
 
-            # TODO Option to delete on remote storage?
+            # Option to delete on remote storage?
+            if self.cleanup:
+                shutil.rmtree(self.working_directory)	
 
             self.send_status(State.SUCCESS)
         except Exception as e:
