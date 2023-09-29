@@ -86,6 +86,9 @@ def test_connection_no_url():
 
 
 def test_connection_no_token():
+    # Remove token from environment if it exists just in case the testing user has one
+    if 'CRUNCH_TOKEN' in os.environ:
+        del os.environ['CRUNCH_TOKEN']
     with pytest.raises(connections.CrunchAPIException, match=r"Please provide an authentication token"):
         connections.Connection(base_url="http://www.example.com")
 
