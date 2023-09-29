@@ -54,15 +54,15 @@ class Run():
         self.upload_to_storage = upload_to_storage
         self.cleanup = cleanup
 
-        working_directory = Path(working_directory)
-        working_directory.mkdir(exist_ok=True, parents=True)
-        self.working_directory = working_directory
-        
         # TODO raise exception
         assert self.dataset_data["slug"] == dataset_slug
         self.project = self.dataset_data["parent"]
         self.dataset_id = self.dataset_data["id"]
         self.base_file_path = self.dataset_data["base_file_path"]
+
+        my_working_directory = Path(working_directory, self.dataset_data["slug"].replace(":", "--"))
+        my_working_directory.mkdir(exist_ok=True, parents=True)
+        self.working_directory = my_working_directory
 
     def send_status(self, state, note:str="") -> requests.Response:
         """ Sends a status update about the processing of this dataset. """
@@ -111,9 +111,9 @@ class Run():
                 storages.copy_recursive_from_storage(
                     self.base_file_path, self.working_directory, storage=self.storage
                 )
-            self.setup_md5_checksums = utils.md5_checksums(self.working_directory)
-            with open(self.crunch_subdir / "setup_md5_checksums.json", "w", encoding="utf-8") as f:
-                json.dump(self.setup_md5_checksums, f, ensure_ascii=False, indent=4)
+                self.setup_md5_checksums = utils.md5_checksums(self.working_directory)
+                with open(self.crunch_subdir / "setup_md5_checksums.json", "w", encoding="utf-8") as f:
+                    json.dump(self.setup_md5_checksums, f, ensure_ascii=False, indent=4)
 
             # TODO check to see if dataset.json already exists
             with open(self.crunch_subdir / "dataset.json", "w", encoding="utf-8") as f:
@@ -137,6 +137,7 @@ class Run():
                 )
 
             self.send_status(State.SUCCESS)
+            console.print(f"Setup success {self.dataset_slug}", style=STAGE_STYLE)
         except Exception as e:
             console.print(f"Setup failed {self.dataset_slug}: {e}", style=STAGE_STYLE)
             self.send_status(State.FAIL, note=str(e))
@@ -154,7 +155,7 @@ class Run():
             RunResult: Whether or not this stage was successful.
         """
         self.current_stage = Stage.WORKFLOW
-
+        console.print(f"Worlflow stage {self.dataset_slug}", style=STAGE_STYLE)
         try:
             self.send_status(State.START)
             if self.workflow_type == WorkflowType.snakemake:
@@ -173,9 +174,12 @@ class Run():
                 except SystemExit as result:
                     print(f"result {result}")
             elif self.workflow_type == WorkflowType.script:
-                subprocess.run(f"{self.workflow_path.resolve()}", capture_output=True, check=True, cwd=self.working_directory)
+                result = subprocess.run(f"{self.workflow_path.resolve()}", capture_output=True, check=True, cwd=self.working_directory)
+                # if result.returncode:
+                #     raise ChildProcessError(result.stderr.decode("utf-8"))
 
             self.send_status(State.SUCCESS)
+            console.print(f"Workflow success {self.dataset_slug}", style=STAGE_STYLE)
         except Exception as e:
             console.print(f"Workflow failed {self.dataset_slug}: {e}", style=STAGE_STYLE)
             self.send_status(State.FAIL, note=str(e))
@@ -233,6 +237,7 @@ class Run():
                 shutil.rmtree(self.working_directory)	
 
             self.send_status(State.SUCCESS)
+            console.print(f"Upload success {self.dataset_slug}", style=STAGE_STYLE)
         except Exception as e:
             console.print(f"Upload failed {self.dataset_slug}: {e}", style=STAGE_STYLE)
             traceback.print_exc()

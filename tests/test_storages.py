@@ -103,10 +103,10 @@ def test_storage_walk():
         rendered = root_dir.render()
         assert 'django-crunch/tests/test-data\n' in rendered
         assert '── dummy-files\n' in rendered
-        assert '   ├── dummy-file1.txt\n' in rendered
-        assert '   └── dummy-file2.txt\n' in rendered
+        assert '── dummy-file1.txt\n' in rendered
+        assert '── dummy-file2.txt\n' in rendered
         assert '── dummy-files2\n' in rendered
-        assert '   └── dummy-file3.txt\n' in rendered
+        assert '── dummy-file3.txt\n' in rendered
         assert '── settings.json\n' in rendered
         assert '── settings.toml\n' in rendered
 
@@ -151,10 +151,10 @@ def test_storage_walk_with_dot():
         rendered = root_dir.render()
         assert 'django-crunch/tests/test-data\n' in rendered
         assert '── dummy-files\n' in rendered
-        assert '   ├── dummy-file1.txt\n' in rendered
-        assert '   └── dummy-file2.txt\n' in rendered
+        assert '── dummy-file1.txt\n' in rendered
+        assert '── dummy-file2.txt\n' in rendered
         assert '── dummy-files2\n' in rendered
-        assert '   └── dummy-file3.txt\n' in rendered
+        assert '── dummy-file3.txt\n' in rendered
         assert '── settings.json\n' in rendered
         assert '── settings.toml\n' in rendered
 

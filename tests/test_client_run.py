@@ -94,7 +94,7 @@ class TestRun(unittest.TestCase):
                 assert statuses[0].state == State.START
                 assert statuses[1].state == State.SUCCESS
 
-                tmpdir = Path(tmpdir)
+                tmpdir = Path(tmpdir, "project--dataset")
                 dataset_json_text = (tmpdir/".crunch/dataset.json").read_text()
                 assert str(TEST_DIR) in dataset_json_text
 
@@ -158,7 +158,7 @@ class TestRun(unittest.TestCase):
                 assert statuses[0].state == State.START
                 assert statuses[1].state == State.SUCCESS
 
-                tmpdir = Path(tmpdir)
+                tmpdir = Path(tmpdir, "project--dataset")
                 dataset_json_text = (tmpdir/".crunch/dataset.json").read_text()
                 assert str(TEST_DIR) in dataset_json_text
 
