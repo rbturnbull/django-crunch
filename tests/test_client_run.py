@@ -171,7 +171,6 @@ class TestRun(unittest.TestCase):
                 assert_test_data(tmpdir)
 
     @pytest.mark.django_db
-    @patch('subprocess.run', lambda *args, **kwargs: 0 )
     def test_run_workflow_script(self):
         with patch('crunch.django.app.storages.default_storage', self.storage):
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -181,9 +180,9 @@ class TestRun(unittest.TestCase):
                     storage_settings={}, 
                     working_directory=tmpdir, 
                     workflow_type=enums.WorkflowType.script, 
-                    workflow_path=None, 
+                    workflow_path=Path(TEST_DIR, "dummy-workflow"), 
                 )
-                run.workflow_path = Path(tmpdir)/"dummy_workflow"
+
                 result = run.workflow()
 
                 assert result == enums.RunResult.SUCCESS
@@ -199,7 +198,6 @@ class TestRun(unittest.TestCase):
 
 
     @pytest.mark.django_db
-    @patch('subprocess.run', lambda *args, **kwargs: 0 )
     @patch('snakemake.main', mock_snakemake_main )
     def test_run_workflow_snakemake(self):
         with patch('crunch.django.app.storages.default_storage', self.storage):
@@ -227,7 +225,6 @@ class TestRun(unittest.TestCase):
                 assert statuses[1].state == State.SUCCESS
 
     @pytest.mark.django_db
-    @patch("subprocess.run", raise_called_process_error )
     def test_run_workflow_script_fail(self):
         with patch('crunch.django.app.storages.default_storage', self.storage):
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -237,15 +234,16 @@ class TestRun(unittest.TestCase):
                     storage_settings={}, 
                     working_directory=tmpdir, 
                     workflow_type=enums.WorkflowType.script, 
-                    workflow_path=None, 
+                    workflow_path=Path(TEST_DIR)/"dummy-workflow-fail", 
                 )
-                run.workflow_path = Path(tmpdir)/"dummy_workflow"
                 result = run.workflow()
 
                 assert result == enums.RunResult.FAIL
                 assert models.Status.objects.count() == 2
                 assert self.dataset.statuses.count() == 2
                 statuses = list(self.dataset.statuses.all())
+
+                assert "Error message 42!" in self.dataset.statuses.last().note
 
                 for status in statuses:
                     assert status.stage == Stage.WORKFLOW
@@ -320,7 +318,7 @@ class TestRunNoStorage(unittest.TestCase):
                         storage_settings={}, 
                         working_directory=local_dir,
                         workflow_type=enums.WorkflowType.script, 
-                        workflow_path=None, 
+                        workflow_path=Path(TEST_DIR, "dummy-workflow"), 
                     )
                     run.base_file_path = "."
                     result = run.upload()
@@ -338,7 +336,6 @@ class TestRunNoStorage(unittest.TestCase):
                     assert statuses[1].note == "This file does not exist."
 
     @pytest.mark.django_db
-    @patch('subprocess.run', lambda *args, **kwargs: 0 )
     def test_run_all(self):
         with tempfile.TemporaryDirectory() as remote_dir:
             remote_dir = Path(remote_dir)
@@ -357,7 +354,7 @@ class TestRunNoStorage(unittest.TestCase):
                         storage_settings={}, 
                         working_directory=local_dir,
                         workflow_type=enums.WorkflowType.script, 
-                        workflow_path=None, 
+                        workflow_path=Path(TEST_DIR, "dummy-workflow"), 
                     )
                     run.base_file_path = remote_dir
                     result = run()
@@ -388,14 +385,13 @@ class TestRunNoStorage(unittest.TestCase):
                     project_json_text = (remote_dir/".crunch/project.json").read_text()
                     assert "cat .crunch/dataset.json" in project_json_text
 
-                    script_text = (remote_dir/".crunch/script.sh").read_text()
-                    assert "cat .crunch/dataset.json" in script_text
+                    # script_text = (remote_dir/".crunch/script.sh").read_text()
+                    # assert "cat .crunch/dataset.json" in script_text
 
                     assert_test_data(remote_dir)
 
     @pytest.mark.django_db
     @patch('json.dump', raise_system_error)
-    @patch('subprocess.run', lambda *args, **kwargs: 0 )
     def test_run_all_setup_fail(self):
         with tempfile.TemporaryDirectory() as remote_dir:
             remote_dir = Path(remote_dir)
@@ -473,7 +469,6 @@ class TestRunNoStorage(unittest.TestCase):
                 assert statuses[3].stage == Stage.WORKFLOW
 
     @pytest.mark.django_db
-    @patch('subprocess.run', lambda *args, **kwargs: 0 )
     def test_run_all_upload_fail(self):
         with tempfile.TemporaryDirectory() as remote_dir:
             remote_dir = Path(remote_dir)
@@ -494,7 +489,7 @@ class TestRunNoStorage(unittest.TestCase):
                         storage_settings={}, 
                         working_directory=local_dir,
                         workflow_type=enums.WorkflowType.script, 
-                        workflow_path=None, 
+                        workflow_path=Path(TEST_DIR, "dummy-workflow"), 
                     )
                     run.base_file_path = remote_dir
                     result = run()

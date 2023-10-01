@@ -1,0 +1,6 @@
+#!/bin/bash 
+
+echo "Dummy Workflow"
+
+echo "Error message 42!" 1>&2
+exit 42

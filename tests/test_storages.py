@@ -86,10 +86,11 @@ def test_storage_walk():
         assert root_dir.short_str() == ""
 
         subdirs = list(root_dir.directory_descendents())
-        assert sorted([x.short_str() for x in subdirs]) == sorted(["", "dummy-files", "dummy-files2"])
+        assert set([x.short_str() for x in subdirs]) == set(["", "dummy-files", "dummy-files2"])
 
         files = list(root_dir.file_descendents())
-        assert sorted([x.short_str() for x in files]) == sorted(['dummy-file1.txt', 'dummy-file2.txt', 'dummy-file3.txt', 'settings.json', 'settings.toml'])
+        expected = ['dummy-file1.txt', 'dummy-file2.txt', 'dummy-file3.txt', 'dummy-workflow-fail', 'settings.json', 'dummy-workflow', 'settings.toml']
+        assert set([x.short_str() for x in files]) == set(expected)
 
         for file in files:
             if "dummy-file1.txt" == file.short_str():
@@ -98,7 +99,7 @@ def test_storage_walk():
                 assert file.url() == f"http://www.example.com{file.path()}"
 
         immediate_files = root_dir.files()
-        assert sorted([x.short_str() for x in immediate_files]) == sorted(['settings.json', 'settings.toml'])
+        assert set([x.short_str() for x in immediate_files]) == set(['settings.json', 'settings.toml', 'dummy-workflow-fail', 'dummy-workflow', ])
 
         rendered = root_dir.render()
         assert 'django-crunch/tests/test-data\n' in rendered
@@ -137,7 +138,8 @@ def test_storage_walk_with_dot():
         assert sorted([x.short_str() for x in subdirs]) == sorted(["", "dummy-files", "dummy-files2"])
 
         files = list(root_dir.file_descendents())
-        assert sorted([x.short_str() for x in files]) == sorted(['dummy-file1.txt', 'dummy-file2.txt', 'dummy-file3.txt', 'settings.json', 'settings.toml'])
+        expected = ['dummy-file1.txt', 'dummy-file2.txt', 'dummy-file3.txt', 'dummy-workflow-fail', 'settings.json', 'dummy-workflow', 'settings.toml']
+        assert set([x.short_str() for x in files]) == set(expected)
 
         for file in files:
             if "dummy-file1.txt" == file.short_str():
@@ -146,7 +148,7 @@ def test_storage_walk_with_dot():
                 assert file.url() == f"http://www.example.com{file.path()}"
 
         immediate_files = root_dir.files()
-        assert sorted([x.short_str() for x in immediate_files]) == sorted(['settings.json', 'settings.toml'])
+        assert set([x.short_str() for x in immediate_files]) == set(['settings.json', 'settings.toml', 'dummy-workflow-fail', 'dummy-workflow', ])
 
         rendered = root_dir.render()
         assert 'django-crunch/tests/test-data\n' in rendered

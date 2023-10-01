@@ -54,5 +54,7 @@ def test_md5_checksums():
         "settings.toml":"47bfe028dba88f4f04a72b9e60f0b54a",
         "dummy-files/dummy-file1.txt":"d35cf79ba12e01ed0f9b850263c3692d",
         "dummy-files/dummy-file2.txt":"3efe3d9bd803f9514e0eeb8033114efe",
-        "dummy-files2/dummy-file3.txt":"e0fd2de670cc2b9e43b198a7ff5f952d"
+        "dummy-files2/dummy-file3.txt":"e0fd2de670cc2b9e43b198a7ff5f952d",
+        'dummy-workflow-fail': '8e7afad177af27fd5e93af0c199dc7c7',
+        'dummy-workflow': 'e0f10798ad1df2b1032189ec5c7b62f6',
     }

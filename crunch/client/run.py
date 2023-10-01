@@ -174,9 +174,9 @@ class Run():
                 except SystemExit as result:
                     print(f"result {result}")
             elif self.workflow_type == WorkflowType.script:
-                result = subprocess.run(f"{self.workflow_path.resolve()}", capture_output=True, check=True, cwd=self.working_directory)
-                # if result.returncode:
-                #     raise ChildProcessError(result.stderr.decode("utf-8"))
+                result = subprocess.run(f"{self.workflow_path.resolve()}", capture_output=True, cwd=self.working_directory)
+                if result.returncode:
+                    raise ChildProcessError(result.stderr.decode("utf-8"))
 
             self.send_status(State.SUCCESS)
             console.print(f"Workflow success {self.dataset_slug}", style=STAGE_STYLE)
