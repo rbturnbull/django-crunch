@@ -27,11 +27,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> django-crunch
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            django-crunch
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -61,7 +65,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Index</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -96,6 +100,17 @@
 <h2 id="Symbols">Symbols</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    --cleanup
+
+      <ul>
+        <li><a href="cli.html#cmdoption-crunch-loop-cleanup">crunch-loop command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-cleanup">crunch-next command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-cleanup">crunch-run command line option</a>
+</li>
+      </ul></li>
       <li>
     --cores
 
@@ -141,6 +156,17 @@
 </li>
       </ul></li>
       <li>
+    --download
+
+      <ul>
+        <li><a href="cli.html#cmdoption-crunch-loop-download">crunch-loop command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-download">crunch-next command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-download">crunch-run command line option</a>
+</li>
+      </ul></li>
+      <li>
     --format
 
       <ul>
@@ -154,6 +180,39 @@
 
       <ul>
         <li><a href="cli.html#cmdoption-crunch-install-completion">crunch command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --no-cleanup
+
+      <ul>
+        <li><a href="cli.html#cmdoption-crunch-loop-cleanup">crunch-loop command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-cleanup">crunch-next command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-cleanup">crunch-run command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --no-download
+
+      <ul>
+        <li><a href="cli.html#cmdoption-crunch-loop-download">crunch-loop command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-download">crunch-next command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-download">crunch-run command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --no-upload
+
+      <ul>
+        <li><a href="cli.html#cmdoption-crunch-loop-upload">crunch-loop command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-upload">crunch-next command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-upload">crunch-run command line option</a>
 </li>
       </ul></li>
       <li>
@@ -205,6 +264,8 @@
         <li><a href="cli.html#cmdoption-crunch-next-project">crunch-next command line option</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     --show-completion
 
@@ -262,8 +323,17 @@
         <li><a href="cli.html#cmdoption-crunch-run-token">crunch-run command line option</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    --upload
+
+      <ul>
+        <li><a href="cli.html#cmdoption-crunch-loop-upload">crunch-loop command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-upload">crunch-next command line option</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-upload">crunch-run command line option</a>
+</li>
+      </ul></li>
       <li>
     --url
 
@@ -585,8 +655,6 @@
         <li><a href="cli.html#cmdoption-crunch-add-item-arg-PARENT">PARENT</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     crunch-add-lat-long-attribute command line option
 
@@ -608,6 +676,8 @@
         <li><a href="cli.html#cmdoption-crunch-add-lat-long-attribute-arg-LONGITUDE">LONGITUDE</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     crunch-add-project command line option
 
@@ -663,9 +733,19 @@
     crunch-loop command line option
 
       <ul>
+        <li><a href="cli.html#cmdoption-crunch-loop-cleanup">--cleanup</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-loop-cores">--cores</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-loop-directory">--directory</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-loop-download">--download</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-loop-cleanup">--no-cleanup</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-loop-download">--no-download</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-loop-upload">--no-upload</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-loop-path">--path</a>
 </li>
@@ -674,6 +754,8 @@
         <li><a href="cli.html#cmdoption-crunch-loop-storage-settings">--storage-settings</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-loop-token">--token</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-loop-upload">--upload</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-loop-url">--url</a>
 </li>
@@ -684,9 +766,19 @@
     crunch-next command line option
 
       <ul>
+        <li><a href="cli.html#cmdoption-crunch-next-cleanup">--cleanup</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-next-cores">--cores</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-next-directory">--directory</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-download">--download</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-cleanup">--no-cleanup</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-download">--no-download</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-upload">--no-upload</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-next-path">--path</a>
 </li>
@@ -695,6 +787,8 @@
         <li><a href="cli.html#cmdoption-crunch-next-storage-settings">--storage-settings</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-next-token">--token</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-next-upload">--upload</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-next-url">--url</a>
 </li>
@@ -705,15 +799,27 @@
     crunch-run command line option
 
       <ul>
+        <li><a href="cli.html#cmdoption-crunch-run-cleanup">--cleanup</a>
+</li>
         <li><a href="cli.html#cmdoption-crunch-run-cores">--cores</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-run-directory">--directory</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-download">--download</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-cleanup">--no-cleanup</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-download">--no-download</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-upload">--no-upload</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-run-path">--path</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-run-storage-settings">--storage-settings</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-run-token">--token</a>
+</li>
+        <li><a href="cli.html#cmdoption-crunch-run-upload">--upload</a>
 </li>
         <li><a href="cli.html#cmdoption-crunch-run-url">--url</a>
 </li>
