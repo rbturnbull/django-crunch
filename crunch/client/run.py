@@ -19,7 +19,50 @@ from . import utils
 from .connections import Connection
 from .enums import WorkflowType, RunResult
 
-STAGE_STYLE = "bold red"
+STAGE_STYLE = "bold magenta"
+ERROR_STYLE = "red on white"
+
+def run_subprocess(command:str, working_directory:Path=None) -> int:
+    """
+    Runs a subprocess.
+
+    Args:
+        command (str): The command to run.
+        working_directory (Path, optional): The working directory to run the command in. Defaults to None.
+
+    Returns:
+        int: The returncode of the subprocess.
+    """
+    process = subprocess.Popen(
+        [command],
+        cwd=working_directory,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+        shell=False,  # Use shell=True if it is a shell command
+    )
+
+    # Read and print stdout while the process is running
+    with open(working_directory/"crunch-stdout.log", "w") as f:
+        while True:
+            output = process.stdout.readline()
+            if output == '' and process.poll() is not None:
+                break
+            if output:
+                print(output, end='')
+                print(output, end='', file=f, flush=True)
+
+    # Capture and handle stderr
+    stderr_output = process.communicate()[1]
+    if stderr_output:
+        with open(working_directory/"crunch-stderr.log", "w") as f:
+            f.write(stderr_output)
+            console.print("[bold]Error output:[/bold]", style=ERROR_STYLE)
+            console.print(stderr_output, style=ERROR_STYLE)
+            raise ChildProcessError(f"Error: {process.returncode}\n" + stderr_output)
+
+    return process.returncode
+
 
 class Run():
     """
@@ -174,9 +217,7 @@ class Run():
                 except SystemExit as result:
                     print(f"result {result}")
             elif self.workflow_type == WorkflowType.script:
-                result = subprocess.run(f"{self.workflow_path.resolve()}", capture_output=True, cwd=self.working_directory)
-                if result.returncode:
-                    raise ChildProcessError(result.stderr.decode("utf-8"))
+                run_subprocess(f"{self.workflow_path.resolve()}", working_directory=self.working_directory)
 
             self.send_status(State.SUCCESS)
             console.print(f"Workflow success {self.dataset_slug}", style=STAGE_STYLE)
