@@ -237,6 +237,14 @@ class TestRun(unittest.TestCase):
                     workflow_path=Path(TEST_DIR)/"dummy-workflow-fail", 
                 )
                 result = run.workflow()
+                
+                stdout_file = Path(tmpdir)/"project--dataset"/"crunch-stdout.log"
+                stderr_file = Path(tmpdir)/"project--dataset"/"crunch-stderr.log"
+
+                assert stdout_file.exists()
+                assert "Dummy Workflow" in stdout_file.read_text()
+                assert stderr_file.exists()
+                assert "Error message 42!" in stderr_file.read_text()
 
                 assert result == enums.RunResult.FAIL
                 assert models.Status.objects.count() == 2
