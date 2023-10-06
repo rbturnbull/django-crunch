@@ -14,6 +14,7 @@ from crunch.django.app import storages
 from rich.console import Console
 
 console = Console()
+err_console = Console(stderr=True)
 
 from . import utils
 from .connections import Connection
@@ -57,9 +58,7 @@ def run_subprocess(command:str, working_directory:Path=None) -> int:
     if stderr_output:
         with open(working_directory/"crunch-stderr.log", "w") as f:
             f.write(stderr_output)
-            console.print("[bold]Error output:[/bold]", style=ERROR_STYLE)
-            console.print(stderr_output, style=ERROR_STYLE)
-            raise ChildProcessError(f"Error: {process.returncode}\n" + stderr_output)
+            raise ChildProcessError(f"Error running {command}: {process.returncode}\n" + stderr_output)
 
     return process.returncode
 
@@ -182,7 +181,7 @@ class Run():
             self.send_status(State.SUCCESS)
             console.print(f"Setup success {self.dataset_slug}", style=STAGE_STYLE)
         except Exception as e:
-            console.print(f"Setup failed {self.dataset_slug}: {e}", style=STAGE_STYLE)
+            err_console.print(f"Setup failed {self.dataset_slug}: {e}", style=STAGE_STYLE)
             self.send_status(State.FAIL, note=str(e))
             return RunResult.FAIL
         
@@ -198,7 +197,7 @@ class Run():
             RunResult: Whether or not this stage was successful.
         """
         self.current_stage = Stage.WORKFLOW
-        console.print(f"Worlflow stage {self.dataset_slug}", style=STAGE_STYLE)
+        console.print(f"Workflow stage {self.dataset_slug}", style=STAGE_STYLE)
         try:
             self.send_status(State.START)
             if self.workflow_type == WorkflowType.snakemake:
@@ -222,7 +221,7 @@ class Run():
             self.send_status(State.SUCCESS)
             console.print(f"Workflow success {self.dataset_slug}", style=STAGE_STYLE)
         except Exception as e:
-            console.print(f"Workflow failed {self.dataset_slug}: {e}", style=STAGE_STYLE)
+            err_console.print(f"Workflow failed {self.dataset_slug}: {e}", style=STAGE_STYLE)
             self.send_status(State.FAIL, note=str(e))
             return RunResult.FAIL
         
@@ -280,8 +279,7 @@ class Run():
             self.send_status(State.SUCCESS)
             console.print(f"Upload success {self.dataset_slug}", style=STAGE_STYLE)
         except Exception as e:
-            console.print(f"Upload failed {self.dataset_slug}: {e}", style=STAGE_STYLE)
-            traceback.print_exc()
+            err_console.print(f"Upload failed {self.dataset_slug}: {e}", style=STAGE_STYLE)
             self.send_status(State.FAIL, note=str(e))
             return RunResult.FAIL
         

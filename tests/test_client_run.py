@@ -61,6 +61,10 @@ def test_run_blank_dataset_slug():
 
 # @patch('requests.get', request_get)
 class TestRun(unittest.TestCase):
+    @pytest.fixture(autouse=True)
+    def capsys(self, capsys):
+        self.capsys = capsys
+
     def setUp(self):
         super().setUp()
         self.connection = MockConnection(base_url="http://www.example.com", token="token") # ensure first
@@ -237,7 +241,11 @@ class TestRun(unittest.TestCase):
                     workflow_path=Path(TEST_DIR)/"dummy-workflow-fail", 
                 )
                 result = run.workflow()
-                
+                captured = self.capsys.readouterr()
+                assert "Workflow stage project:dataset\nDummy Workflow\n" in captured.out
+                assert "Workflow failed project:dataset: Error running" in captured.err
+                assert "tests/test-data/dummy-workflow-fail: 42\nError message 42!" in captured.err
+
                 stdout_file = Path(tmpdir)/"project--dataset"/"crunch-stdout.log"
                 stderr_file = Path(tmpdir)/"project--dataset"/"crunch-stderr.log"
 
