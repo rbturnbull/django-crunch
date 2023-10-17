@@ -58,7 +58,9 @@ def run_subprocess(command:str, working_directory:Path=None) -> int:
     if stderr_output:
         with open(working_directory/"crunch-stderr.log", "w") as f:
             f.write(stderr_output)
-            raise ChildProcessError(f"Error running {command}: {process.returncode}\n" + stderr_output)
+    
+    if process.returncode != 0:
+        raise ChildProcessError(f"Error running {command}: {process.returncode}\n" + stderr_output)
 
     return process.returncode
 
