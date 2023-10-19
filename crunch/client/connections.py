@@ -1,3 +1,4 @@
+import certifi
 from os import getenv
 from typing import Union, Dict
 from unicodedata import decimal
@@ -9,6 +10,9 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from rich.console import Console
 from crunch.django.app.enums import Stage, State
+from requests.exceptions import SSLError
+from requests import Response
+
 
 console = Console()
 
@@ -74,12 +78,16 @@ class Connection():
         url = f"{self.base_url}/{relative_url}"
         return url
 
-    def post(self, relative_url:str, **kwargs) -> requests.Response:
+    def post(self, relative_url:str, **kwargs) -> Response:
         url = self.absolute_url(relative_url) 
         if self.verbose:
             console.print(f"Posting to {url} : {kwargs}")
 
-        result = requests.post(url, headers=self.get_headers(), data=kwargs)
+        try:
+            result = requests.post(url, headers=self.get_headers(), data=kwargs)
+        except SSLError:
+            result = requests.post(url, headers=self.get_headers(), data=kwargs, cert=certifi.where())
+            
         if self.verbose:
             console.print(f"Response {result.status_code}: {result.reason}")
 
@@ -88,7 +96,7 @@ class Connection():
             console.print(result.json())
         return result
 
-    def add_project(self, project:str, description:str="", details:str="") -> requests.Response:
+    def add_project(self, project:str, description:str="", details:str="") -> Response:
         """
         Creates a new project on a hosted django-crunch site.
 
@@ -98,7 +106,7 @@ class Connection():
             details (str, optional): A long description of this project in Markdown format. Defaults to "".
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         if self.verbose:
             console.print(f"Adding project '{project}' on the site {self.base_url}")
@@ -110,7 +118,7 @@ class Connection():
             details=details,
         )
 
-    def add_dataset(self, project:str, dataset:str, description:str="", details:str="") -> requests.Response:
+    def add_dataset(self, project:str, dataset:str, description:str="", details:str="") -> Response:
         """
         Creates a new dataset and adds it to a project on a hosted django-crunch site.
 
@@ -121,7 +129,7 @@ class Connection():
             details (str, optional): A long description of this dataset in Markdown format. Defaults to "".
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         if self.verbose:
             console.print(f"Adding dataset '{dataset}' to project '{project}' on the site {self.base_url}")
@@ -134,7 +142,7 @@ class Connection():
             details=details,
         )
 
-    def add_item(self, parent:str, item:str, description:str="", details:str="") -> requests.Response:
+    def add_item(self, parent:str, item:str, description:str="", details:str="") -> Response:
         """
         Creates a new item on a hosted django-crunch site.
 
@@ -145,7 +153,7 @@ class Connection():
             details (str, optional): A long description of this dataset in Markdown format. Defaults to "".
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         if self.verbose:
             console.print(f"Adding item '{item}' to parent '{parent}' on the site {self.base_url}")
@@ -158,7 +166,7 @@ class Connection():
             details=details,
         )
 
-    def add_key_value_attribute(self, url:str, item:str, key:str, value) -> requests.Response:
+    def add_key_value_attribute(self, url:str, item:str, key:str, value) -> Response:
         """
         Adds an attribute as a key/value pair on an item. 
         
@@ -171,7 +179,7 @@ class Connection():
             value: The data to be used for this attribute. The object needs to be serializable.
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         if self.verbose:
             console.print(f"Adding attribute '{key}'->'{value}' to item '{item}' on the hosted site {self.base_url}")
@@ -183,7 +191,7 @@ class Connection():
             value=value,
         )
 
-    def add_char_attribute(self, item:str, key:str, value:str) -> requests.Response:
+    def add_char_attribute(self, item:str, key:str, value:str) -> Response:
         """
         Adds an attribute as a key/value pair on a dataset when the value is a string of characters. 
 
@@ -194,7 +202,7 @@ class Connection():
             value (str): The string of characters for this attribute.
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         return self.add_key_value_attribute(
             url="api/attributes/char/", 
@@ -234,7 +242,7 @@ class Connection():
             else:
                 raise CrunchAPIException(f"Cannot infer type of value '{value}' ({type(value).__name__}). (The key was '{key}')")
 
-    def add_float_attribute(self, item:str, key:str, value:float) -> requests.Response:
+    def add_float_attribute(self, item:str, key:str, value:float) -> Response:
         """
         Adds an attribute as a key/value pair on a dataset when the value is a float. 
 
@@ -244,7 +252,7 @@ class Connection():
             value (str): The float value for this attribute.
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         return self.add_key_value_attribute(
             url="api/attributes/float/", 
@@ -253,7 +261,7 @@ class Connection():
             value=value,
         )                
 
-    def add_datetime_attribute(self, item:str, key:str, value:Union[datetime,str], format:str="") -> requests.Response:
+    def add_datetime_attribute(self, item:str, key:str, value:Union[datetime,str], format:str="") -> Response:
         """
         Adds an attribute as a key/value pair on a dataset when the value is a datetime. 
 
@@ -264,7 +272,7 @@ class Connection():
             format (str): If the `value` is a string then this format string can be used with datetime.strptime to convert to a datetime object. If no format is given then the string is interpreted using dateutil.parser.
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         if isinstance(value, str):
             if format:
@@ -280,7 +288,7 @@ class Connection():
             value=value,
         )                
 
-    def add_date_attribute(self, item:str, key:str, value:Union[date,str], format:str="") -> requests.Response:
+    def add_date_attribute(self, item:str, key:str, value:Union[date,str], format:str="") -> Response:
         """
         Adds an attribute as a key/value pair on a dataset when the value is a datetime. 
 
@@ -291,7 +299,7 @@ class Connection():
             format (str): If the `value` is a string then this format string can be used with datetime.strptime to convert to a date object. If no format is given then the string is interpreted using dateutil.parser.
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         if isinstance(value, str):
             if format:
@@ -310,7 +318,7 @@ class Connection():
             value=value,
         )                
 
-    def add_integer_attribute(self, item:str, key:str, value:int) -> requests.Response:
+    def add_integer_attribute(self, item:str, key:str, value:int) -> Response:
         """
         Adds an attribute as a key/value pair on a dataset when the value is an integer. 
 
@@ -320,7 +328,7 @@ class Connection():
             value (int): The integer value for this attribute.
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         return self.add_key_value_attribute(
             url="api/attributes/int/", 
@@ -329,7 +337,7 @@ class Connection():
             value=value,
         )               
         
-    def add_filesize_attribute(self, item:str, key:str, value:int) -> requests.Response:
+    def add_filesize_attribute(self, item:str, key:str, value:int) -> Response:
         """
         Adds an attribute as a key/value pair on a dataset when the value is an filesize. 
 
@@ -339,7 +347,7 @@ class Connection():
             value (int): The size of the file in bytes.
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         return self.add_key_value_attribute(
             url="api/attributes/filesize/", 
@@ -348,7 +356,7 @@ class Connection():
             value=value,
         )               
                 
-    def add_boolean_attribute(self, item:str, key:str, value:bool) -> requests.Response:
+    def add_boolean_attribute(self, item:str, key:str, value:bool) -> Response:
         """
         Adds an attribute as a key/value pair on a dataset when the value is a boolean. 
 
@@ -358,7 +366,7 @@ class Connection():
             value (bool): The integer value for this attribute.
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         return self.add_key_value_attribute(
             url="api/attributes/bool/", 
@@ -367,7 +375,7 @@ class Connection():
             value=value,
         )                  
 
-    def add_url_attribute(self, item:str, key:str, value:str) -> requests.Response:
+    def add_url_attribute(self, item:str, key:str, value:str) -> Response:
         """
         Adds an attribute as a key/value pair on a dataset when the value is a URL. 
 
@@ -377,7 +385,7 @@ class Connection():
             value (str): The str value for this attribute.
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         return self.add_key_value_attribute(
             url="api/attributes/url/", 
@@ -386,7 +394,7 @@ class Connection():
             value=value,
         )       
 
-    def add_lat_long_attribute(self, item:str, key:str, latitude:Union[str,float,decimal], longitude:Union[str,float,decimal]) -> requests.Response:
+    def add_lat_long_attribute(self, item:str, key:str, latitude:Union[str,float,decimal], longitude:Union[str,float,decimal]) -> Response:
         """
         Adds an attribute as a key/value pair on a dataset when the value is a coordinate with latitude and longitude. 
 
@@ -397,7 +405,7 @@ class Connection():
             longitude (Union[str,float,decimal]): The longitude for this coordinate.
 
         Returns:
-            requests.Response: The request object from posting to the crunch API.
+            Response: The request object from posting to the crunch API.
         """
         if self.verbose:
             console.print(f"Adding attribute '{key}'->'{latitude},{longitude}' to item '{item}' on the hosted site {self.base_url}")
@@ -410,7 +418,7 @@ class Connection():
             longitude=longitude,
         )
 
-    def send_status(self, dataset_id:str, stage:Stage, state:State, note:str="") -> requests.Response:
+    def send_status(self, dataset_id:str, stage:Stage, state:State, note:str="") -> Response:
         """
         Sends an update of the status of one stage in processing a dataset.
 
@@ -424,7 +432,7 @@ class Connection():
             CrunchAPIException: If there was an error posting this status update to the API.
 
         Returns:
-            requests.Response: The resulting response from the request to the API.
+            Response: The resulting response from the request to the API.
         """
         data = dict(
             dataset=dataset_id,
@@ -441,7 +449,12 @@ class Connection():
 
     def get_request(self, relative_url:str):
         url = self.absolute_url(relative_url)
-        return requests.get(url, headers=self.get_headers())
+        try:
+            result = requests.get(url, headers=self.get_headers())
+        except SSLError:
+            result = requests.get(url, headers=self.get_headers(), cert=certifi.where())
+        
+        return result
         
     def get_json_response( self, relative_url:str ) -> Dict:
         """
