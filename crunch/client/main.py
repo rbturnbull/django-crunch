@@ -7,7 +7,6 @@ console = Console()
 from crunch.django.app import storages
 from . import connections
 from .diagnostics import get_diagnostics
-from .enums import WorkflowType
 from .run import Run
 
 
@@ -46,7 +45,6 @@ cores_arg = typer.Option(
     "1",
     help="The maximum number of cores/jobs to use to run the workflow. If 'all' then it uses all available cores.",
 )
-workflow_type_arg = typer.Option("snakemake", help="Workflow type (snakemake/script).")
 path_arg = typer.Option(None, help="The path to the workflow file.")
 download_arg = typer.Option(True, help="Whether or not to download the data from storage in the setup of a run.")
 upload_arg = typer.Option(True, help="Whether or not to upload the data to storage after a run.")
@@ -60,7 +58,6 @@ def run(
     cores: str = cores_arg,
     url: str = url_arg,
     token: str = token_arg,
-    workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
     download:bool = download_arg,
     upload:bool = upload_arg,
@@ -73,7 +70,6 @@ def run(
         connection=connections.Connection(url, token), 
         dataset_slug=dataset, 
         working_directory=Path(directory),
-        workflow_type=workflow, 
         storage_settings=storage_settings,
         workflow_path=path, 
         cores=cores,
@@ -96,7 +92,6 @@ def next(
         "",
         help="The slug for a project the dataset is in. If not given, then it chooses any project.",
     ),
-    workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
     download:bool = download_arg,
     upload:bool = upload_arg,
@@ -120,7 +115,6 @@ def next(
             token=token,
             directory=directory,
             cores=cores,
-            workflow=workflow,
             path=path,
             download=download,
             upload=upload,
@@ -142,7 +136,6 @@ def loop(
         "",
         help="The slug for a project the dataset is in. If not given, then it chooses any project.",
     ),
-    workflow: WorkflowType = workflow_type_arg,
     path: Path = path_arg,
     download:bool = download_arg,
     upload:bool = upload_arg,
@@ -162,7 +155,6 @@ def loop(
                 storage_settings=storage_settings,
                 directory=directory,
                 cores=cores,
-                workflow=workflow,
                 path=path,
                 project=project,
                 download=download,

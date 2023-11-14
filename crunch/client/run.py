@@ -17,7 +17,7 @@ console = Console()
 
 from . import utils
 from .connections import Connection
-from .enums import WorkflowType, RunResult
+from .enums import RunResult
 
 STAGE_STYLE = "bold red"
 
@@ -31,7 +31,6 @@ class Run():
         dataset_slug:str, 
         storage_settings:Union[Dict,Path], 
         working_directory:Path, 
-        workflow_type:WorkflowType, 
         workflow_path:Path=None, 
         download_from_storage:bool=True,
         upload_to_storage:bool=True,
@@ -45,7 +44,6 @@ class Run():
             raise ValueError("Please specifiy dataset.")
 
         self.dataset_data = connection.get_json_response(f"/api/datasets/{dataset_slug}/")
-        self.workflow_type = workflow_type
         self.workflow_path = workflow_path
         self.cores = cores
         self.storage_settings = storage_settings
@@ -133,7 +131,6 @@ class Run():
                 self.workflow_path = utils.write_workflow(
                     project_data["workflow"], 
                     working_directory=self.crunch_subdir,
-                    workflow_type=self.workflow_type,
                 )
 
             self.send_status(State.SUCCESS)
@@ -155,28 +152,13 @@ class Run():
             RunResult: Whether or not this stage was successful.
         """
         self.current_stage = Stage.WORKFLOW
-        console.print(f"Worlflow stage {self.dataset_slug}", style=STAGE_STYLE)
+        console.print(f"Workflow stage {self.dataset_slug}", style=STAGE_STYLE)
         try:
             self.send_status(State.START)
-            if self.workflow_type == WorkflowType.snakemake:
-                import snakemake
 
-                args = [
-                    f"--snakefile={self.workflow_path}",
-                    "--use-conda",
-                    f"--cores={self.cores}",
-                    f"--directory={self.working_directory}",
-                    f"--conda-frontend={utils.conda_frontend()}"
-                ]
-
-                try:
-                    snakemake.main(args)
-                except SystemExit as result:
-                    print(f"result {result}")
-            elif self.workflow_type == WorkflowType.script:
-                result = subprocess.run(f"{self.workflow_path.resolve()}", capture_output=True, cwd=self.working_directory)
-                if result.returncode:
-                    raise ChildProcessError(result.stderr.decode("utf-8"))
+            result = subprocess.run(f"{self.workflow_path.resolve()}", capture_output=True, cwd=self.working_directory)
+            if result.returncode:
+                raise ChildProcessError(result.stderr.decode("utf-8"))
 
             self.send_status(State.SUCCESS)
             console.print(f"Workflow success {self.dataset_slug}", style=STAGE_STYLE)

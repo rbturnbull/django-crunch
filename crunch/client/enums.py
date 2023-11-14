@@ -1,9 +1,6 @@
 from enum import Enum
 
 
-class WorkflowType(str, Enum):
-    snakemake = "snakemake"
-    script = "script"
 
 
 class RunResult(Enum):

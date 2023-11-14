@@ -3,8 +3,6 @@ import subprocess
 from pathlib import Path
 import hashlib
 
-from .enums import WorkflowType
-
 
 def has_mamba()->bool:
     """
@@ -25,21 +23,17 @@ def conda_frontend() -> str:
     return "mamba" if has_mamba() else "conda"
 
 
-def write_workflow(data:str, working_directory:Path, workflow_type:WorkflowType) -> Path:
+def write_workflow(data:str, working_directory:Path) -> Path:
     assert data
     working_directory = Path(working_directory)
     working_directory.mkdir(exist_ok=True, parents=True)
     
-    if workflow_type == WorkflowType.snakemake:
-        workflow_path = working_directory / "Snakefile"
-    elif workflow_type == WorkflowType.script:
-        workflow_path = working_directory / "script.sh"
+    workflow_path = working_directory / "script.sh"
     
     with open(workflow_path, "w", encoding="utf-8") as f:
         f.write(data.replace('\r\n', '\n'))
 
-    if workflow_type == WorkflowType.script:
-        workflow_path.chmod(workflow_path.stat().st_mode | stat.S_IEXEC)
+    workflow_path.chmod(workflow_path.stat().st_mode | stat.S_IEXEC)
 
     return workflow_path
 
