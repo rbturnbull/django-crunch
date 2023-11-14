@@ -35,6 +35,7 @@ def get_storage_with_settings(storage_settings:Union[Dict,Path]) -> DefaultStora
     Returns:
         DefaultStorage: The default storage object used by Django.
     """
+    storage_settings = storage_settings or dict()
     if not settings.configured:
         if isinstance(storage_settings, Path):
             with open(storage_settings) as storage_settings_file:

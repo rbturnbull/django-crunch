@@ -33,10 +33,9 @@ token_arg = typer.Option(
 dataset_slug_arg = typer.Argument(..., help="The slug for the dataset.")
 item_slug_arg = typer.Argument(..., help="The slug for the item.")
 storage_settings_arg = typer.Option(
-    ..., 
+    None, 
     envvar="CRUNCH_STORAGE_SETTINGS",
     help="The path to a JSON or TOML file with the Django settings for the storage.",
-    prompt=True,
 )
 key_arg = typer.Argument(..., help="The key for this attribute.")
 value_arg = typer.Argument(..., help="The value of this attribute.")
