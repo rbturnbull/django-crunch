@@ -39,7 +39,7 @@ storage_settings_arg = typer.Option(
 key_arg = typer.Argument(..., help="The key for this attribute.")
 value_arg = typer.Argument(..., help="The value of this attribute.")
 directory_arg = typer.Option(
-    "./tmp", help="The path to a directory to store the temporary files."
+    "./crunch-runs", help="The path to a directory to store the temporary files."
 )
 cores_arg = typer.Option(
     "1",
