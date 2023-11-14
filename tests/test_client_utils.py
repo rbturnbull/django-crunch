@@ -34,7 +34,7 @@ def test_conda_frontend():
 
 def test_write_workflow_script():
     with tempfile.TemporaryDirectory() as tmpdir:
-        path = utils.write_workflow("test", tmpdir, enums.WorkflowType.script)
+        path = utils.write_workflow("test", tmpdir)
         assert path.name == "script.sh"
         assert str(path.parent) == str(tmpdir)
         assert os.access(path, os.X_OK)
@@ -42,7 +42,7 @@ def test_write_workflow_script():
 
 def test_write_workflow_snakemake():
     with tempfile.TemporaryDirectory() as tmpdir:
-        path = utils.write_workflow("test", tmpdir, enums.WorkflowType.snakemake)
+        path = utils.write_workflow("test", tmpdir)
         assert path.name == "Snakefile"
         assert str(path.parent) == str(tmpdir)
 

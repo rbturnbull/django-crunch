@@ -54,7 +54,6 @@ def test_run_blank_dataset_slug():
             dataset_slug="", 
             storage_settings={}, 
             working_directory=None, 
-            workflow_type=enums.WorkflowType.script, 
             workflow_path=None, 
         )
 
@@ -82,7 +81,6 @@ class TestRun(unittest.TestCase):
                     dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
-                    workflow_type=enums.WorkflowType.script, 
                     workflow_path=None, 
                 )
                 result = run.setup()
@@ -120,7 +118,6 @@ class TestRun(unittest.TestCase):
                     dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
-                    workflow_type=enums.WorkflowType.script, 
                     workflow_path=None, 
                 )
                 result = run.setup()
@@ -146,7 +143,6 @@ class TestRun(unittest.TestCase):
                     dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
-                    workflow_type=enums.WorkflowType.snakemake, 
                     workflow_path=None, 
                 )
                 result = run.setup()
@@ -183,7 +179,6 @@ class TestRun(unittest.TestCase):
                     dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
-                    workflow_type=enums.WorkflowType.script, 
                     workflow_path=Path(TEST_DIR, "dummy-workflow"), 
                 )
 
@@ -211,7 +206,6 @@ class TestRun(unittest.TestCase):
                     dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
-                    workflow_type=enums.WorkflowType.snakemake, 
                     workflow_path=None, 
                 )
                 run.workflow_path = Path(tmpdir)/"dummy_workflow"
@@ -237,7 +231,6 @@ class TestRun(unittest.TestCase):
                     dataset_slug="project:dataset", 
                     storage_settings={}, 
                     working_directory=tmpdir, 
-                    workflow_type=enums.WorkflowType.script, 
                     workflow_path=Path(TEST_DIR)/"dummy-workflow-fail", 
                 )
                 result = run.workflow()
@@ -294,7 +287,6 @@ class TestRunNoStorage(unittest.TestCase):
                         dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
-                        workflow_type=enums.WorkflowType.script, 
                         workflow_path=None, 
                     )
                     run.base_file_path = "."
@@ -333,7 +325,6 @@ class TestRunNoStorage(unittest.TestCase):
                         dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
-                        workflow_type=enums.WorkflowType.script, 
                         workflow_path=Path(TEST_DIR, "dummy-workflow"), 
                     )
                     run.base_file_path = "."
@@ -369,7 +360,6 @@ class TestRunNoStorage(unittest.TestCase):
                         dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
-                        workflow_type=enums.WorkflowType.script, 
                         workflow_path=Path(TEST_DIR, "dummy-workflow"), 
                     )
                     run.base_file_path = remote_dir
@@ -425,7 +415,6 @@ class TestRunNoStorage(unittest.TestCase):
                         dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
-                        workflow_type=enums.WorkflowType.script, 
                         workflow_path=None, 
                     )
                     run.base_file_path = remote_dir
@@ -463,7 +452,6 @@ class TestRunNoStorage(unittest.TestCase):
                         dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
-                        workflow_type=enums.WorkflowType.script, 
                         workflow_path=None, 
                     )
                     run.base_file_path = remote_dir
@@ -504,7 +492,6 @@ class TestRunNoStorage(unittest.TestCase):
                         dataset_slug="project:dataset", 
                         storage_settings={}, 
                         working_directory=local_dir,
-                        workflow_type=enums.WorkflowType.script, 
                         workflow_path=Path(TEST_DIR, "dummy-workflow"), 
                     )
                     run.base_file_path = remote_dir
